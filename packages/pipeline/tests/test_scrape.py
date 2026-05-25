@@ -2,10 +2,12 @@ import httpx
 import pytest
 import respx
 
+from ato_pipeline.config import PipelineConfig
 from ato_pipeline.scrape import (
+    canonical_doc_id,
     discover_links_from_page,
     fetch_page,
-    canonical_doc_id,
+    fetch_sitemap_urls,
 )
 
 
@@ -39,6 +41,35 @@ def test_canonical_doc_id_from_url():
 def test_canonical_doc_id_strips_query_and_fragment():
     url = "https://www.ato.gov.au/some/path?foo=bar#anchor"
     assert canonical_doc_id(url) == "ato:some/path"
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_fetch_sitemap_urls_filters_to_include_prefixes():
+    sitemap_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.ato.gov.au/individuals-and-families/deductions/uniform</loc></url>
+  <url><loc>https://www.ato.gov.au/individuals-and-families/deductions/uniform</loc></url>
+  <url><loc>https://www.ato.gov.au/businesses-and-organisations/gst/register</loc></url>
+  <url><loc>https://www.ato.gov.au/forms-and-instructions/trust-tax-return</loc></url>
+  <url><loc>https://www.ato.gov.au/about-ato/contact-us</loc></url>
+  <url><loc>https://www.ato.gov.au/careers/grad-program</loc></url>
+  <url><loc>https://www.ato.gov.au/media-centre/press-release</loc></url>
+</urlset>"""
+    respx.get("https://www.ato.gov.au/sitemap.xml").mock(
+        return_value=httpx.Response(200, text=sitemap_xml)
+    )
+    cfg = PipelineConfig()
+    urls = await fetch_sitemap_urls(cfg)
+    assert "https://www.ato.gov.au/individuals-and-families/deductions/uniform" in urls
+    assert "https://www.ato.gov.au/businesses-and-organisations/gst/register" in urls
+    assert "https://www.ato.gov.au/forms-and-instructions/trust-tax-return" in urls
+    # Excluded sections
+    assert not any("/about-ato/" in u for u in urls)
+    assert not any("/careers/" in u for u in urls)
+    assert not any("/media-centre/" in u for u in urls)
+    # No duplicates
+    assert len(urls) == len(set(urls))
 
 
 def test_discover_links_from_page_keeps_same_host_only():
