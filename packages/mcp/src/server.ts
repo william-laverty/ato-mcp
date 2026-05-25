@@ -10,8 +10,9 @@ import {
   GetDocInputSchema,
   GetDocAnchorsInputSchema,
   GetThresholdInputSchema,
+  UserFactsSchema,
 } from "@ato-pro/shared";
-import type { Store, Embedder } from "@ato-pro/shared";
+import type { Store, Embedder, UserFacts } from "@ato-pro/shared";
 import { SqliteStore } from "./store/sqlite.js";
 import { RemoteStore } from "./store/remote.js";
 import { OnnxEmbedder } from "./embed/onnx.js";
@@ -23,18 +24,22 @@ import { getDefinition } from "@ato-pro/shared/tools/get_definition";
 import { getDoc } from "@ato-pro/shared/tools/get_doc";
 import { getDocAnchors } from "@ato-pro/shared/tools/get_doc_anchors";
 import { getThreshold } from "@ato-pro/shared/tools/get_threshold";
+import { getUserFacts } from "@ato-pro/shared/tools/get_user_facts";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
   store: Store | null;
   embedder: Embedder;
   wordnetLookup?: (term: string) => Promise<string | null>;
+  facts?: UserFacts | null;
+  mode?: "local" | "hosted";
 }
 
 interface Config {
   mode?: "local" | "hosted";
   api_endpoint?: string;
   bearer_token?: string;
+  facts?: unknown;
 }
 
 function readConfig(): Config {
@@ -103,6 +108,10 @@ const TOOLS = {
     description: "Time-keyed scalar tax fact lookup (e.g. gst_registration_threshold, instant_asset_write_off, super_concessional_cap). PIT-aware.",
     inputSchema: { type: "object", properties: { name: { type: "string", minLength: 1 }, pit: { type: "string" } }, required: ["name"], additionalProperties: false },
   },
+  get_user_facts: {
+    description: "Return the authenticated user's personal tax facts (state, ABN, business structure, GST, dependants, etc.). Call once on initialise and reason from the result throughout the session.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
 } as const;
 
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
@@ -123,6 +132,15 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
       return getDocAnchors({ store: deps.store }, GetDocAnchorsInputSchema.parse(args));
     case "get_threshold":
       return getThreshold({ store: deps.store }, GetThresholdInputSchema.parse(args));
+    case "get_user_facts":
+      return getUserFacts(
+        {
+          facts: deps.facts ?? null,
+          fetchedFrom: deps.mode === "hosted" ? "hosted_api" : "config_file",
+          mode: deps.mode ?? "local",
+        },
+        {},
+      );
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
@@ -142,18 +160,36 @@ export function buildServerForTesting(deps: ServerDeps) {
   };
 }
 
+function readFactsFromConfig(cfg: Config): UserFacts | null {
+  if (!cfg.facts) return null;
+  const parsed = UserFactsSchema.safeParse(cfg.facts);
+  if (!parsed.success) {
+    process.stderr.write(
+      `[ato-pro] Warning: facts in config.json failed validation: ${parsed.error.message}\n`,
+    );
+    return null;
+  }
+  return parsed.data;
+}
+
 export async function runMcp(): Promise<void> {
   const cfg = readConfig();
   let store: Store | null;
+  const mode: "local" | "hosted" = cfg.mode === "hosted" ? "hosted" : "local";
+
   if (cfg.mode === "hosted") {
     if (!cfg.api_endpoint || !cfg.bearer_token) {
       throw new Error("Hosted mode configured but api_endpoint/bearer_token missing in config");
     }
     store = new RemoteStore(cfg.api_endpoint, cfg.bearer_token);
+    // TODO(hosted): fetch facts from https://api.ato-mcp.com/v1/facts once at startup
+    // and cache for the session once the hosted backend exists.
   } else {
     const dbPath = corpusPath();
     store = fs.existsSync(dbPath) ? new SqliteStore(dbPath) : null;
   }
+
+  const facts = readFactsFromConfig(cfg);
   const embedder = await OnnxEmbedder.load();
 
   const server = new Server(
@@ -170,7 +206,7 @@ export async function runMcp(): Promise<void> {
   server.setRequestHandler(CallToolRequestSchema, async (req) => {
     const { name, arguments: args } = req.params;
     try {
-      const result = await dispatch(name, args ?? {}, { store, embedder });
+      const result = await dispatch(name, args ?? {}, { store, embedder, facts, mode });
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };

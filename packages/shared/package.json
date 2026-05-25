@@ -42,6 +42,10 @@
       "types": "./dist/tools/get_threshold.d.ts",
       "import": "./dist/tools/get_threshold.js"
     },
+    "./tools/get_user_facts": {
+      "types": "./dist/tools/get_user_facts.d.ts",
+      "import": "./dist/tools/get_user_facts.js"
+    },
     "./lib/rrf": {
       "types": "./dist/lib/rrf.d.ts",
       "import": "./dist/lib/rrf.js"
