@@ -11,7 +11,13 @@ class Embedder:
 
     def __init__(self, model_name: str, device: str = "cpu") -> None:
         self.model = SentenceTransformer(model_name, device=device)
-        self.dim = self.model.get_sentence_embedding_dimension() or 0
+        # `get_embedding_dimension` is the post-3.x name; fall back to the old
+        # name on older sentence-transformers releases.
+        get_dim = getattr(
+            self.model, "get_embedding_dimension",
+            self.model.get_sentence_embedding_dimension,
+        )
+        self.dim = get_dim() or 0
         if self.dim != 384:
             raise RuntimeError(
                 f"Expected 384-dim embeddings, got {self.dim} from {model_name}"

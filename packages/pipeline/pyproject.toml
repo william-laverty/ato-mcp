@@ -34,3 +34,6 @@ ato-pipeline = "ato_pipeline.cli:app"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+  "slow: end-to-end tests that download models or hit the network",
+]
