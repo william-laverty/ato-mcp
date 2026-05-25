@@ -16,7 +16,7 @@ from .config import PipelineConfig
 from .embed import Embedder
 from .package import build_sqlite
 from .schema import Chunk, Doc
-from .scrape import canonical_doc_id, crawl
+from .scrape import canonical_doc_id, crawl, crawl_from_sitemap
 
 
 app = typer.Typer(help="ato-pro corpus pipeline")
@@ -26,6 +26,7 @@ app = typer.Typer(help="ato-pro corpus pipeline")
 def build(
     out_dir: Path = typer.Option(Path("corpus-out"), help="Output directory"),
     max_total_pages: int = typer.Option(0, help="Override max_total_pages (0 = config default)"),
+    mode: str = typer.Option("sitemap", help="Crawl mode: 'sitemap' (default, broad) or 'bfs' (legacy seeds)"),
 ) -> None:
     """Run the full pipeline: scrape -> clean -> chunk -> embed -> package."""
     cfg = PipelineConfig(out_dir=out_dir)
@@ -34,8 +35,23 @@ def build(
 
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    typer.echo(f"[1/4] Crawling ATO (max {cfg.max_total_pages} pages)...")
-    pages = asyncio.run(crawl(cfg))
+    if mode == "sitemap":
+        typer.echo(f"[1/4] Crawling ATO via sitemap (max {cfg.max_total_pages or 'unlimited'} pages)...")
+        pbar: tqdm | None = None
+        def progress(fetched: int, total: int) -> None:
+            nonlocal pbar
+            if pbar is None:
+                pbar = tqdm(total=total, desc="      scrape", mininterval=1.0)
+            pbar.update(fetched - pbar.n)
+            if fetched == total:
+                pbar.close()
+        pages = asyncio.run(crawl_from_sitemap(cfg, progress_cb=progress))
+    elif mode == "bfs":
+        typer.echo(f"[1/4] BFS crawl from seeds (max {cfg.max_total_pages} pages)...")
+        pages = asyncio.run(crawl(cfg))
+    else:
+        typer.echo(f"Unknown mode: {mode!r}. Use 'sitemap' or 'bfs'.", err=True)
+        raise typer.Exit(code=2)
     typer.echo(f"      Crawled {len(pages)} pages")
 
     raw_pages_path = out_dir / "pages.jsonl"
