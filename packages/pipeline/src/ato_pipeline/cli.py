@@ -37,7 +37,7 @@ def build(
         "ato_website",
         help=(
             "Comma-separated list of content sources to include. "
-            "Options: ato_website, legislation, thresholds. "
+            "Options: ato_website, legislation, thresholds, law_ato. "
             "Default: ato_website"
         ),
     ),
@@ -184,6 +184,35 @@ def build(
             typer.echo(f"      {len(thresh_rows)} threshold rows extracted")
         except Exception as exc:
             typer.echo(f"      WARNING: threshold extraction failed: {exc}", err=True)
+
+    # ------------------------------------------------------------------
+    # Source: law_ato — ATO Legal Database public rulings
+    # ------------------------------------------------------------------
+    if "law_ato" in enabled:
+        from .sources.law_ato import LawAtoSource
+
+        typer.echo("[law_ato] Fetching ATO public rulings from law.ato.gov.au...")
+        src_law = LawAtoSource(cfg)
+        law_out = asyncio.run(src_law.fetch())
+
+        new_docs = 0
+        for doc in law_out.docs:
+            if doc.doc_id not in seen_doc_ids:
+                seen_doc_ids.add(doc.doc_id)
+                all_docs.append(doc)
+                new_docs += 1
+        for chunk in law_out.chunks:
+            if chunk.doc_id in seen_doc_ids:
+                all_chunks.append(chunk)
+        all_anchors.extend(law_out.anchors)
+        all_citations.extend(law_out.citations)
+        all_definitions.extend(law_out.definitions)
+        all_thresholds.extend(law_out.thresholds)
+
+        typer.echo(
+            f"      {new_docs} ruling docs, "
+            f"{len(law_out.chunks)} chunks"
+        )
 
     # ------------------------------------------------------------------
     # Guard: need at least some chunks to embed
