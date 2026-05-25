@@ -1,9 +1,9 @@
 import type { Store } from "../store/types.js";
-import { corpusPath, dataDir } from "../lib/paths.js";
-import fs from "node:fs";
 
 export interface StatsArgs {
   store: Store | null;
+  data_dir?: string;
+  corpus_path?: string;
 }
 
 export interface StatsOutput {
@@ -17,14 +17,16 @@ export interface StatsOutput {
 }
 
 export async function stats(args: StatsArgs): Promise<StatsOutput> {
+  const data_dir = args.data_dir ?? "";
+  const corpus_path = args.corpus_path ?? "";
   if (!args.store) {
     return {
       installed: false,
       schema_version: null,
       docs: 0,
       chunks: 0,
-      data_dir: dataDir(),
-      corpus_path: corpusPath(),
+      data_dir,
+      corpus_path,
       staleness_days: null,
     };
   }
@@ -34,21 +36,8 @@ export async function stats(args: StatsArgs): Promise<StatsOutput> {
     schema_version: s.schema_version,
     docs: s.docs,
     chunks: s.chunks,
-    data_dir: dataDir(),
-    corpus_path: corpusPath(),
+    data_dir,
+    corpus_path,
     staleness_days: s.staleness_days,
   };
-}
-
-/** Used by the `ato-pro-mcp stats` CLI command. */
-export async function statsCli(): Promise<StatsOutput> {
-  const path = corpusPath();
-  if (!fs.existsSync(path)) return stats({ store: null });
-  const { SqliteStore } = await import("../store/sqlite.js");
-  const store = new SqliteStore(path);
-  try {
-    return await stats({ store });
-  } finally {
-    store.close();
-  }
 }

@@ -1,4 +1,4 @@
-import type { GetThresholdInput } from "@ato-pro/shared";
+import type { GetThresholdInput } from "../tools.js";
 import type { Store } from "../store/types.js";
 
 export interface GetThresholdDeps { store: Store | null }

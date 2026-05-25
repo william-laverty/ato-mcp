@@ -1,4 +1,4 @@
-import type { GetDefinitionInput } from "@ato-pro/shared";
+import type { GetDefinitionInput } from "../tools.js";
 import type { Store } from "../store/types.js";
 
 export interface GetDefinitionDeps {

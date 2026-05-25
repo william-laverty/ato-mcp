@@ -11,25 +11,36 @@ import {
   GetDocAnchorsInputSchema,
   GetThresholdInputSchema,
 } from "@ato-pro/shared";
+import type { Store, Embedder } from "@ato-pro/shared";
 import { SqliteStore } from "./store/sqlite.js";
-import type { Store } from "./store/types.js";
+import { RemoteStore } from "./store/remote.js";
 import { OnnxEmbedder } from "./embed/onnx.js";
-import { stats } from "./tools/stats.js";
-import { search } from "./tools/search.js";
-import { getChunks } from "./tools/get_chunks.js";
-import { fetchUri } from "./tools/fetch.js";
-import { getDefinition } from "./tools/get_definition.js";
-import { getDoc } from "./tools/get_doc.js";
-import { getDocAnchors } from "./tools/get_doc_anchors.js";
-import { getThreshold } from "./tools/get_threshold.js";
-import { corpusPath } from "./lib/paths.js";
-
-interface EmbedderLike { embed(text: string): Promise<Float32Array> }
+import { stats } from "@ato-pro/shared/tools/stats";
+import { search } from "@ato-pro/shared/tools/search";
+import { getChunks } from "@ato-pro/shared/tools/get_chunks";
+import { fetchUri } from "@ato-pro/shared/tools/fetch";
+import { getDefinition } from "@ato-pro/shared/tools/get_definition";
+import { getDoc } from "@ato-pro/shared/tools/get_doc";
+import { getDocAnchors } from "@ato-pro/shared/tools/get_doc_anchors";
+import { getThreshold } from "@ato-pro/shared/tools/get_threshold";
+import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
   store: Store | null;
-  embedder: EmbedderLike;
+  embedder: Embedder;
   wordnetLookup?: (term: string) => Promise<string | null>;
+}
+
+interface Config {
+  mode?: "local" | "hosted";
+  api_endpoint?: string;
+  bearer_token?: string;
+}
+
+function readConfig(): Config {
+  const p = configPath();
+  if (!fs.existsSync(p)) return {};
+  return JSON.parse(fs.readFileSync(p, "utf-8")) as Config;
 }
 
 const TOOLS = {
@@ -97,7 +108,7 @@ const TOOLS = {
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
   switch (name) {
     case "stats":
-      return stats({ store: deps.store });
+      return stats({ store: deps.store, data_dir: dataDir(), corpus_path: corpusPath() });
     case "search":
       return search(deps, SearchInputSchema.parse(args));
     case "get_chunks":
@@ -132,8 +143,17 @@ export function buildServerForTesting(deps: ServerDeps) {
 }
 
 export async function runMcp(): Promise<void> {
-  const dbPath = corpusPath();
-  const store: Store | null = fs.existsSync(dbPath) ? new SqliteStore(dbPath) : null;
+  const cfg = readConfig();
+  let store: Store | null;
+  if (cfg.mode === "hosted") {
+    if (!cfg.api_endpoint || !cfg.bearer_token) {
+      throw new Error("Hosted mode configured but api_endpoint/bearer_token missing in config");
+    }
+    store = new RemoteStore(cfg.api_endpoint, cfg.bearer_token);
+  } else {
+    const dbPath = corpusPath();
+    store = fs.existsSync(dbPath) ? new SqliteStore(dbPath) : null;
+  }
   const embedder = await OnnxEmbedder.load();
 
   const server = new Server(

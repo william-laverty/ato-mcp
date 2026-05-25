@@ -1,21 +1,11 @@
-import type { SearchInput, SearchHit } from "@ato-pro/shared";
+import type { SearchInput } from "../tools.js";
+import type { SearchHit } from "../corpus.js";
 import type { Store } from "../store/types.js";
+import type { Embedder } from "../embed/types.js";
 import { rrfFuse } from "../lib/rrf.js";
 
-interface EmbedderLike {
-  embed(text: string): Promise<Float32Array>;
-}
-
-export interface SearchDeps {
-  store: Store | null;
-  embedder: EmbedderLike;
-}
-
-export interface SearchOutput {
-  query: string;
-  mode: SearchInput["mode"];
-  hits: SearchHit[];
-}
+export interface SearchDeps { store: Store | null; embedder: Embedder }
+export interface SearchOutput { query: string; mode: SearchInput["mode"]; hits: SearchHit[] }
 
 export async function search(deps: SearchDeps, args: SearchInput): Promise<SearchOutput> {
   if (!deps.store) {

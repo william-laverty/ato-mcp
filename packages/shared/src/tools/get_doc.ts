@@ -1,4 +1,4 @@
-import type { GetDocInput } from "@ato-pro/shared";
+import type { GetDocInput } from "../tools.js";
 import type { Store, AnchorRow } from "../store/types.js";
 
 export interface GetDocDeps { store: Store | null }

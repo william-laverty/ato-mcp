@@ -1,8 +1,6 @@
 import Database from "better-sqlite3";
 import * as sqliteVec from "sqlite-vec";
-import type { SearchHit } from "@ato-pro/shared";
-import type { Doc } from "@ato-pro/shared";
-import type { Store, AnchorRow, CitationRow, DefinitionRow, ThresholdRow } from "./types.js";
+import type { SearchHit, Doc, Store, AnchorRow, CitationRow, DefinitionRow, ThresholdRow } from "@ato-pro/shared";
 
 interface ChunkRow {
   chunk_id: string;

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { fetchUri } from "../../src/tools/fetch.js";
+import { fetchUri } from "@ato-pro/shared/tools/fetch";
 
 const originalFetch = globalThis.fetch;
 

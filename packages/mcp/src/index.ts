@@ -23,7 +23,7 @@ Data directory: ${dataDir()}
     return import("./lib/download.js").then((m) => m.runUpdate());
   }
   if (cmd === "stats") {
-    return import("./tools/stats.js").then(async (m) => {
+    return import("./lib/stats-cli.js").then(async (m) => {
       const out = await m.statsCli();
       process.stdout.write(JSON.stringify(out, null, 2) + "\n");
     });

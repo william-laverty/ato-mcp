@@ -1,4 +1,4 @@
-import type { FetchInput } from "@ato-pro/shared";
+import type { FetchInput } from "../tools.js";
 
 export interface FetchOutput {
   uri: string;

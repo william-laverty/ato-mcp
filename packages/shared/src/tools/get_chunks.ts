@@ -1,4 +1,5 @@
-import type { GetChunksInput, SearchHit } from "@ato-pro/shared";
+import type { GetChunksInput } from "../tools.js";
+import type { SearchHit } from "../corpus.js";
 import type { Store } from "../store/types.js";
 
 export interface GetChunksDeps {
