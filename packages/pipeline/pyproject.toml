@@ -17,6 +17,7 @@ dependencies = [
 dev = [
   "pytest>=8.3",
   "pytest-asyncio>=0.24",
+  "respx>=0.21",
 ]
 
 [build-system]
@@ -31,3 +32,4 @@ ato-pipeline = "ato_pipeline.cli:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+asyncio_mode = "auto"
