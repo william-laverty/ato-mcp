@@ -19,7 +19,7 @@ cd packages/pipeline && uv sync && cd ../..
 pnpm test
 
 # Build a small corpus (~5 minutes, includes model download)
-cd packages/pipeline && uv run ato-pipeline build --out-dir corpus-out && cd ../..
+cd packages/pipeline && uv run ato-pipeline --out-dir corpus-out && cd ../..
 
 # Install corpus
 node packages/mcp/bin/ato-pro-mcp.js update ./packages/pipeline/corpus-out/ato.sqlite

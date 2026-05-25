@@ -46,13 +46,19 @@ def build(
     typer.echo("[2/4] Cleaning + chunking...")
     docs: list[Doc] = []
     all_chunks: list[Chunk] = []
+    seen_doc_ids: set[str] = set()
     now = datetime.now(timezone.utc).isoformat()
     for url, html in tqdm(pages):
-        title = extract_title(html) or url
+        doc_id = canonical_doc_id(url)
+        if doc_id in seen_doc_ids:
+            # Two URLs canonicalised to the same doc_id (e.g. trailing-slash variants).
+            # Keep the first; skip duplicates rather than producing duplicate chunk_ids.
+            continue
         cleaned = clean_html(html)
         if not cleaned:
             continue
-        doc_id = canonical_doc_id(url)
+        title = extract_title(html) or url
+        seen_doc_ids.add(doc_id)
         docs.append(Doc(
             doc_id=doc_id,
             source="ato",

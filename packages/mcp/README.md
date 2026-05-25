@@ -14,7 +14,7 @@ pnpm --filter @ato-pro/mcp build
 ```bash
 cd packages/pipeline
 uv sync
-uv run ato-pipeline build --out-dir corpus-out --max-total-pages 100
+uv run ato-pipeline --out-dir corpus-out --max-total-pages 100
 ```
 
 ## Install corpus into data dir
