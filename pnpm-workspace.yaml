@@ -1,2 +1,5 @@
 packages:
-  - "packages/*"
+  - packages/*
+
+patchedDependencies:
+  sharp@0.32.6: patches/sharp@0.32.6.patch

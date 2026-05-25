@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  sharp@0.32.6:
+    hash: 82446e00af3a624d7709ce4be5cda7799b1cc67cf6e56cf053f6ae6de86042fc
+    path: patches/sharp@0.32.6.patch
+
 importers:
 
   .:
@@ -1450,7 +1455,7 @@ snapshots:
     dependencies:
       '@huggingface/jinja': 0.2.2
       onnxruntime-web: 1.14.0
-      sharp: 0.32.6
+      sharp: 0.32.6(patch_hash=82446e00af3a624d7709ce4be5cda7799b1cc67cf6e56cf053f6ae6de86042fc)
     optionalDependencies:
       onnxruntime-node: 1.14.0
     transitivePeerDependencies:
@@ -1854,7 +1859,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  sharp@0.32.6:
+  sharp@0.32.6(patch_hash=82446e00af3a624d7709ce4be5cda7799b1cc67cf6e56cf053f6ae6de86042fc):
     dependencies:
       color: 4.2.3
       detect-libc: 2.1.2
