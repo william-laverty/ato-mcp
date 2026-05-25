@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+export const DOC_TYPES = [
+  "ATO_GUIDE",
+  "ATO_RULING_TR", "ATO_RULING_TD", "ATO_RULING_GSTR", "ATO_RULING_GSTD",
+  "ATO_RULING_PR", "ATO_RULING_CR", "ATO_RULING_LCR", "ATO_RULING_PCG",
+  "ATO_RULING_MT", "ATO_RULING_FTR",
+  "ATO_PBR", "ATO_CASE_SUMMARY",
+  "LEGISLATION_ITAA1997", "LEGISLATION_ITAA1936", "LEGISLATION_GST_ACT",
+  "LEGISLATION_FBT_ACT", "LEGISLATION_TAA", "LEGISLATION_SIS_ACT",
+  "LEGISLATION_ABN_ACT",
+] as const;
+export type DocType = typeof DOC_TYPES[number] | `STATE_REV_${string}_${string}`;
+
 export const DocSchema = z.object({
   doc_id: z.string().min(1),
   source: z.enum(["ato", "legislation", "austlii", "state_revenue"]),
