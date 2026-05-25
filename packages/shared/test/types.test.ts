@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DocSchema, ChunkSchema, SearchInputSchema } from "../src/index.js";
+import { DocSchema, ChunkSchema, SearchInputSchema, GetDefinitionInputSchema, GetThresholdInputSchema } from "../src/index.js";
 
 describe("DocSchema", () => {
   it("parses a valid doc", () => {
@@ -49,5 +49,29 @@ describe("SearchInputSchema", () => {
 
   it("rejects empty query", () => {
     expect(() => SearchInputSchema.parse({ query: "" })).toThrow();
+  });
+});
+
+describe("GetDefinitionInputSchema", () => {
+  it("parses with default jurisdiction", () => {
+    const parsed = GetDefinitionInputSchema.parse({ term: "trading stock" });
+    expect(parsed.jurisdiction).toBe("AU");
+  });
+  it("rejects empty term", () => {
+    expect(() => GetDefinitionInputSchema.parse({ term: "" })).toThrow();
+  });
+});
+
+describe("GetThresholdInputSchema", () => {
+  it("parses with explicit pit", () => {
+    const parsed = GetThresholdInputSchema.parse({ name: "gst_registration_threshold", pit: "2025-06-30" });
+    expect(parsed.pit).toBe("2025-06-30");
+  });
+});
+
+describe("SearchInputSchema pit", () => {
+  it("accepts an optional pit", () => {
+    const parsed = SearchInputSchema.parse({ query: "x", pit: "2024-01-01" });
+    expect(parsed.pit).toBe("2024-01-01");
   });
 });
