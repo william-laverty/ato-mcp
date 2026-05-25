@@ -18,6 +18,7 @@ from .embed import Embedder
 from .package import build_sqlite
 from .schema import Chunk, Doc
 from .scrape import canonical_doc_id, crawl, crawl_from_sitemap
+from . import manifest as _manifest_mod
 
 
 app = typer.Typer(help="ato-pro corpus pipeline")
@@ -238,6 +239,28 @@ async def _fetch_thresholds(headers: dict, timeout: float) -> list[dict]:
         timeout=timeout, headers=headers, follow_redirects=True, http2=True
     ) as client:
         return await extract_all(client)
+
+
+@app.command()
+def package(
+    db: Path = typer.Option(..., help="Path to built ato.sqlite"),
+    out: Path = typer.Option(..., help="Path to write manifest.json"),
+    zst: Path = typer.Option(..., help="Path to write compressed .sqlite.zst"),
+    model: str = typer.Option(
+        _manifest_mod.EMBEDDING_MODEL, help="Embedding model name recorded in manifest"
+    ),
+) -> None:
+    """Build a release manifest + zstd-compressed corpus file from a completed ato.sqlite."""
+    if not db.exists():
+        typer.echo(f"Error: database not found: {db}", err=True)
+        raise typer.Exit(code=1)
+    typer.echo(f"Packaging {db} ...")
+    manifest = _manifest_mod.package(db, out, zst, embedding_model=model)
+    typer.echo(f"  corpus_sha256:     {manifest['corpus_sha256']}")
+    typer.echo(f"  uncompressed_size: {manifest['uncompressed_size']:,} bytes")
+    typer.echo(f"  compressed_size:   {manifest['compressed_size']:,} bytes")
+    typer.echo(f"Wrote manifest -> {out}")
+    typer.echo(f"Wrote corpus   -> {zst}")
 
 
 if __name__ == "__main__":
