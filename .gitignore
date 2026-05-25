@@ -12,7 +12,12 @@ __pycache__/
 coverage/
 data/
 corpus-out/
+corpus-real/
+corpus-smoke/
+packages/pipeline/corpus-*/
 *.sqlite
+*.jsonl
+!packages/pipeline/tests/fixtures/*
 *.sqlite-shm
 *.sqlite-wal
 !packages/mcp/test/fixtures/*.sqlite
