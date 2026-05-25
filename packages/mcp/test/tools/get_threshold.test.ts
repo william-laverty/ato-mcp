@@ -1,0 +1,39 @@
+import { describe, it, expect } from "vitest";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { getThreshold } from "../../src/tools/get_threshold.js";
+import { makeStore } from "../helpers/make-store.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SEED = path.join(__dirname, "..", "fixtures", "seed.sql");
+
+describe("get_threshold", () => {
+  it("returns the seeded threshold value", async () => {
+    const store = makeStore(SEED);
+    const out = await getThreshold({ store }, { name: "gst_registration_threshold", pit: "2025-06-30" });
+    expect(out.value).toBe(75000);
+    expect(out.unit).toBe("AUD");
+    store.close();
+  });
+
+  it("uses today as default pit", async () => {
+    const store = makeStore(SEED);
+    const out = await getThreshold({ store }, { name: "gst_registration_threshold" });
+    expect(out.value).toBe(75000);
+    store.close();
+  });
+
+  it("throws for unknown threshold name", async () => {
+    const store = makeStore(SEED);
+    await expect(
+      getThreshold({ store }, { name: "nonexistent_threshold", pit: "2025-01-01" }),
+    ).rejects.toThrow(/Threshold not found/);
+    store.close();
+  });
+
+  it("throws when store is missing", async () => {
+    await expect(
+      getThreshold({ store: null }, { name: "gst_registration_threshold" }),
+    ).rejects.toThrow(/corpus/i);
+  });
+});

@@ -28,4 +28,31 @@ describe("fetch tool", () => {
     expect(out.status).toBe(404);
     expect(out.body).toBe("");
   });
+
+  it("ato-law: scheme maps to ATO law viewer URL", async () => {
+    globalThis.fetch = vi.fn(async () =>
+      new Response("<html><body>Ruling content</body></html>", { status: 200, headers: { "content-type": "text/html" } }),
+    ) as unknown as typeof fetch;
+    const out = await fetchUri({ uri: "ato-law:TXR/TR2024-5" });
+    expect(out.status).toBe(200);
+    expect(out.url).toContain("law/view.htm?docid=TXR/TR2024-5");
+  });
+
+  it("legis: scheme maps to legislation.gov.au URL", async () => {
+    globalThis.fetch = vi.fn(async () =>
+      new Response("<html><body>Legislation</body></html>", { status: 200, headers: { "content-type": "text/html" } }),
+    ) as unknown as typeof fetch;
+    const out = await fetchUri({ uri: "legis:C2004A05138/8-1" });
+    expect(out.status).toBe(200);
+    expect(out.url).toContain("legislation.gov.au");
+  });
+
+  it("staterev-nsw: scheme maps to revenue.nsw.gov.au", async () => {
+    globalThis.fetch = vi.fn(async () =>
+      new Response("<html><body>NSW</body></html>", { status: 200, headers: { "content-type": "text/html" } }),
+    ) as unknown as typeof fetch;
+    const out = await fetchUri({ uri: "staterev-nsw:payroll-tax/rates" });
+    expect(out.status).toBe(200);
+    expect(out.url).toContain("revenue.nsw.gov.au");
+  });
 });

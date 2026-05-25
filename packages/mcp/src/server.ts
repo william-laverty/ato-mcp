@@ -6,6 +6,10 @@ import {
   SearchInputSchema,
   GetChunksInputSchema,
   FetchInputSchema,
+  GetDefinitionInputSchema,
+  GetDocInputSchema,
+  GetDocAnchorsInputSchema,
+  GetThresholdInputSchema,
 } from "@ato-pro/shared";
 import { SqliteStore } from "./store/sqlite.js";
 import type { Store } from "./store/types.js";
@@ -14,6 +18,10 @@ import { stats } from "./tools/stats.js";
 import { search } from "./tools/search.js";
 import { getChunks } from "./tools/get_chunks.js";
 import { fetchUri } from "./tools/fetch.js";
+import { getDefinition } from "./tools/get_definition.js";
+import { getDoc } from "./tools/get_doc.js";
+import { getDocAnchors } from "./tools/get_doc_anchors.js";
+import { getThreshold } from "./tools/get_threshold.js";
 import { corpusPath } from "./lib/paths.js";
 
 interface EmbedderLike { embed(text: string): Promise<Float32Array> }
@@ -21,6 +29,7 @@ interface EmbedderLike { embed(text: string): Promise<Float32Array> }
 interface ServerDeps {
   store: Store | null;
   embedder: EmbedderLike;
+  wordnetLookup?: (term: string) => Promise<string | null>;
 }
 
 const TOOLS = {
@@ -38,6 +47,7 @@ const TOOLS = {
         k: { type: "integer", minimum: 1, maximum: 50, default: 10 },
         mode: { type: "string", enum: ["hybrid", "vector", "keyword"], default: "hybrid" },
         include_old: { type: "boolean", default: false },
+        pit: { type: "string" },
       },
       required: ["query"],
       additionalProperties: true,
@@ -50,6 +60,7 @@ const TOOLS = {
       properties: {
         chunk_ids: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 50 },
         neighbours: { type: "integer", minimum: 0, maximum: 5, default: 0 },
+        pit: { type: "string" },
       },
       required: ["chunk_ids"],
       additionalProperties: false,
@@ -57,13 +68,29 @@ const TOOLS = {
   },
   fetch: {
     description:
-      "Live-fetch a document by URI (v0.1 supports `ato:<path>`). Use when the corpus doesn't have the page.",
+      "Live-fetch a document by URI. Supports `ato:`, `ato-law:`, `legis:`, and `staterev-<juris>:` schemes.",
     inputSchema: {
       type: "object",
       properties: { uri: { type: "string", minLength: 1 } },
       required: ["uri"],
       additionalProperties: false,
     },
+  },
+  get_definition: {
+    description: "Statutory definition with optional point-in-time. Falls back to labelled ordinary-meaning (WordNet) when no statutory match. Caller MUST respect kind:'ordinary' vs kind:'statutory'.",
+    inputSchema: { type: "object", properties: { term: { type: "string", minLength: 1 }, pit: { type: "string" }, jurisdiction: { type: "string", default: "AU" } }, required: ["term"], additionalProperties: false },
+  },
+  get_doc: {
+    description: "Fetch full document by doc_id with cleaned HTML and anchor list.",
+    inputSchema: { type: "object", properties: { doc_id: { type: "string", minLength: 1 }, pit: { type: "string" } }, required: ["doc_id"], additionalProperties: false },
+  },
+  get_doc_anchors: {
+    description: "List in-document anchors and the citation graph (inbound + outbound) for a doc.",
+    inputSchema: { type: "object", properties: { doc_id: { type: "string", minLength: 1 } }, required: ["doc_id"], additionalProperties: false },
+  },
+  get_threshold: {
+    description: "Time-keyed scalar tax fact lookup (e.g. gst_registration_threshold, instant_asset_write_off, super_concessional_cap). PIT-aware.",
+    inputSchema: { type: "object", properties: { name: { type: "string", minLength: 1 }, pit: { type: "string" } }, required: ["name"], additionalProperties: false },
   },
 } as const;
 
@@ -77,6 +104,14 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
       return getChunks(deps, GetChunksInputSchema.parse(args));
     case "fetch":
       return fetchUri(FetchInputSchema.parse(args));
+    case "get_definition":
+      return getDefinition({ store: deps.store, wordnetLookup: deps.wordnetLookup }, GetDefinitionInputSchema.parse(args));
+    case "get_doc":
+      return getDoc({ store: deps.store }, GetDocInputSchema.parse(args));
+    case "get_doc_anchors":
+      return getDocAnchors({ store: deps.store }, GetDocAnchorsInputSchema.parse(args));
+    case "get_threshold":
+      return getThreshold({ store: deps.store }, GetThresholdInputSchema.parse(args));
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
@@ -102,7 +137,7 @@ export async function runMcp(): Promise<void> {
   const embedder = await OnnxEmbedder.load();
 
   const server = new Server(
-    { name: "ato-pro", version: "0.1.0" },
+    { name: "ato-pro", version: "0.2.0" },
     {
       capabilities: { tools: {} },
     },
