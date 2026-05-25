@@ -12,7 +12,7 @@ describe("stats tool", () => {
     const store = makeStore(SEED);
     const out = await stats({ store });
     expect(out.installed).toBe(true);
-    expect(out.docs).toBe(3);
+    expect(out.docs).toBe(5);
     expect(out.chunks).toBe(4);
     store.close();
   });

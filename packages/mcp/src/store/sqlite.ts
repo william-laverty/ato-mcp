@@ -1,7 +1,8 @@
 import Database from "better-sqlite3";
 import * as sqliteVec from "sqlite-vec";
 import type { SearchHit } from "@ato-pro/shared";
-import type { Store } from "./types.js";
+import type { Doc } from "@ato-pro/shared";
+import type { Store, AnchorRow, CitationRow, DefinitionRow, ThresholdRow } from "./types.js";
 
 interface ChunkRow {
   chunk_id: string;
@@ -36,9 +37,12 @@ export class SqliteStore implements Store {
     };
   }
 
-  async keywordSearch(query: string, k: number): Promise<SearchHit[]> {
+  async keywordSearch(query: string, k: number, pit?: string): Promise<SearchHit[]> {
     const sanitised = query.replace(/[^\p{L}\p{N}\s]/gu, " ").trim();
     if (!sanitised) return [];
+    const pitClause = pit
+      ? "AND (c.effective_from IS NULL OR c.effective_from <= ?) AND (c.effective_to IS NULL OR c.effective_to > ?)"
+      : "";
     const sql = `
       SELECT c.chunk_id, c.doc_id, c.ord, c.text, c.heading_path,
              d.title, d.url, d.doc_type,
@@ -46,15 +50,35 @@ export class SqliteStore implements Store {
       FROM fts_chunks
       JOIN chunks c ON c.chunk_id = fts_chunks.chunk_id
       JOIN docs   d ON d.doc_id  = c.doc_id
-      WHERE fts_chunks MATCH ?
+      WHERE fts_chunks MATCH ? ${pitClause}
       ORDER BY bm25_score
       LIMIT ?`;
-    const rows = this.db.prepare(sql).all(sanitised, k) as Array<ChunkRow & { bm25_score: number }>;
+    const params: any[] = [sanitised];
+    if (pit) params.push(pit, pit);
+    params.push(k);
+    const rows = this.db.prepare(sql).all(...params) as Array<ChunkRow & { bm25_score: number }>;
     return rows.map((r, i) => this.rowToHit(r, 1.0 / (1 + i)));
   }
 
-  async vectorSearch(vector: Float32Array, k: number): Promise<SearchHit[]> {
+  async vectorSearch(vector: Float32Array, k: number, pit?: string): Promise<SearchHit[]> {
     const buf = Buffer.from(vector.buffer);
+    if (pit) {
+      // With PIT filter: use a subquery to get top knn candidates then filter
+      const sql = `
+        SELECT c.chunk_id, c.doc_id, c.ord, c.text, c.heading_path,
+               d.title, d.url, d.doc_type,
+               vec_chunks.distance AS distance
+        FROM vec_chunks
+        JOIN chunks c ON c.chunk_id = vec_chunks.chunk_id
+        JOIN docs   d ON d.doc_id  = c.doc_id
+        WHERE vec_chunks.embedding MATCH ?
+          AND k = ?
+          AND (c.effective_from IS NULL OR c.effective_from <= ?)
+          AND (c.effective_to IS NULL OR c.effective_to > ?)
+        ORDER BY distance`;
+      const rows = this.db.prepare(sql).all(buf, k, pit, pit) as Array<ChunkRow & { distance: number }>;
+      return rows.map((r) => this.rowToHit(r, 1 - r.distance));
+    }
     // sqlite-vec vec0 requires `AND k=?` constraint for knn queries
     const sql = `
       SELECT c.chunk_id, c.doc_id, c.ord, c.text, c.heading_path,
@@ -70,7 +94,7 @@ export class SqliteStore implements Store {
     return rows.map((r) => this.rowToHit(r, 1 - r.distance));
   }
 
-  async getChunks(chunkIds: string[], neighbours: number): Promise<SearchHit[]> {
+  async getChunks(chunkIds: string[], neighbours: number, pit?: string): Promise<SearchHit[]> {
     if (chunkIds.length === 0) return [];
     const targets = this.db
       .prepare("SELECT chunk_id, doc_id, ord FROM chunks WHERE chunk_id IN (" + chunkIds.map(() => "?").join(",") + ")")
@@ -86,14 +110,56 @@ export class SqliteStore implements Store {
     }
     const idsList = [...wanted];
     if (idsList.length === 0) return [];
+    const pitClause = pit
+      ? "AND (c.effective_from IS NULL OR c.effective_from <= ?) AND (c.effective_to IS NULL OR c.effective_to > ?)"
+      : "";
     const sql = `
       SELECT c.chunk_id, c.doc_id, c.ord, c.text, c.heading_path,
              d.title, d.url, d.doc_type
       FROM chunks c JOIN docs d ON d.doc_id = c.doc_id
-      WHERE c.chunk_id IN (${idsList.map(() => "?").join(",")})
+      WHERE c.chunk_id IN (${idsList.map(() => "?").join(",")}) ${pitClause}
       ORDER BY c.doc_id, c.ord`;
-    const rows = this.db.prepare(sql).all(...idsList) as ChunkRow[];
+    const params: any[] = [...idsList];
+    if (pit) params.push(pit, pit);
+    const rows = this.db.prepare(sql).all(...params) as ChunkRow[];
     return rows.map((r) => this.rowToHit(r, 0));
+  }
+
+  async getDoc(docId: string): Promise<{ doc: Doc; cleaned_html: string | null; anchors: AnchorRow[] } | null> {
+    const doc = this.db.prepare("SELECT * FROM docs WHERE doc_id = ?").get(docId) as any;
+    if (!doc) return null;
+    const anchors = this.db.prepare("SELECT * FROM anchors WHERE doc_id = ?").all(docId) as AnchorRow[];
+    return { doc, cleaned_html: null, anchors };  // cleaned_html populated in v0.2-c
+  }
+
+  async getDocAnchors(docId: string): Promise<{ anchors: AnchorRow[]; inbound: CitationRow[]; outbound: CitationRow[] }> {
+    const anchors = this.db.prepare("SELECT * FROM anchors WHERE doc_id = ?").all(docId) as AnchorRow[];
+    const inbound = this.db.prepare("SELECT * FROM citations WHERE to_doc_id = ?").all(docId) as CitationRow[];
+    const outbound = this.db.prepare(`
+      SELECT cc.* FROM citations cc
+      JOIN chunks ck ON ck.chunk_id = cc.from_chunk_id
+      WHERE ck.doc_id = ?`).all(docId) as CitationRow[];
+    return { anchors, inbound, outbound };
+  }
+
+  async getDefinition(term: string, pit: string | null): Promise<DefinitionRow[]> {
+    const pitClause = pit
+      ? "AND (effective_from IS NULL OR effective_from <= ?) AND (effective_to IS NULL OR effective_to > ?)"
+      : "";
+    const sql = `SELECT * FROM definitions WHERE term = ? COLLATE NOCASE ${pitClause}`;
+    const params: any[] = [term];
+    if (pit) params.push(pit, pit);
+    return this.db.prepare(sql).all(...params) as DefinitionRow[];
+  }
+
+  async getThreshold(name: string, pit: string | null): Promise<ThresholdRow | null> {
+    const pitClause = pit
+      ? "AND (effective_from IS NULL OR effective_from <= ?) AND (effective_to IS NULL OR effective_to > ?)"
+      : "";
+    const sql = `SELECT * FROM thresholds WHERE name = ? ${pitClause} ORDER BY effective_from DESC LIMIT 1`;
+    const params: any[] = [name];
+    if (pit) params.push(pit, pit);
+    return (this.db.prepare(sql).get(...params) as ThresholdRow | undefined) ?? null;
   }
 
   close(): void {

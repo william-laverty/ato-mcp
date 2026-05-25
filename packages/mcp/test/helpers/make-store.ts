@@ -25,6 +25,43 @@ const SCHEMA_SQL = `
   );
   CREATE VIRTUAL TABLE vec_chunks USING vec0(chunk_id TEXT PRIMARY KEY, embedding FLOAT[384]);
   CREATE VIRTUAL TABLE fts_chunks USING fts5(chunk_id UNINDEXED, text, tokenize='porter unicode61');
+  CREATE TABLE anchors(
+    anchor_id TEXT PRIMARY KEY,
+    doc_id TEXT NOT NULL,
+    anchor_name TEXT NOT NULL,
+    chunk_id TEXT NOT NULL
+  );
+  CREATE INDEX idx_anchors_doc ON anchors(doc_id);
+  CREATE TABLE citations(
+    from_chunk_id TEXT NOT NULL,
+    to_doc_id TEXT NOT NULL,
+    to_anchor TEXT,
+    citation_kind TEXT NOT NULL,
+    PRIMARY KEY (from_chunk_id, to_doc_id, to_anchor, citation_kind)
+  );
+  CREATE INDEX idx_citations_from ON citations(from_chunk_id);
+  CREATE INDEX idx_citations_to ON citations(to_doc_id);
+  CREATE TABLE definitions(
+    term TEXT NOT NULL,
+    doc_id TEXT NOT NULL,
+    anchor_id TEXT,
+    body TEXT NOT NULL,
+    effective_from TEXT,
+    effective_to TEXT,
+    PRIMARY KEY (term, doc_id, effective_from)
+  );
+  CREATE INDEX idx_definitions_term ON definitions(term);
+  CREATE TABLE thresholds(
+    name TEXT NOT NULL,
+    value REAL NOT NULL,
+    unit TEXT NOT NULL,
+    effective_from TEXT,
+    effective_to TEXT,
+    source_doc_id TEXT,
+    source_anchor TEXT,
+    PRIMARY KEY (name, effective_from)
+  );
+  CREATE INDEX idx_thresholds_name ON thresholds(name);
 `;
 
 export function makeStore(seedSqlPath: string, embeddings?: Map<string, Float32Array>): SqliteStore {

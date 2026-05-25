@@ -28,7 +28,7 @@ describe("MCP tool registration", () => {
   it("calls the stats tool", async () => {
     const out = await server.callTool("stats", {});
     expect(out.installed).toBe(true);
-    expect(out.docs).toBe(3);
+    expect(out.docs).toBe(5);
   });
 
   it("calls the search tool", async () => {

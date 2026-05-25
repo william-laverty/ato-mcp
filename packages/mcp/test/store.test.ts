@@ -19,7 +19,7 @@ describe("SqliteStore", () => {
   it("stats() reports docs and chunks", async () => {
     const s = await store.stats();
     expect(s.installed).toBe(true);
-    expect(s.docs).toBe(3);
+    expect(s.docs).toBe(5);
     expect(s.chunks).toBe(4);
     expect(s.schema_version).toBe("0.1.0");
   });
@@ -52,5 +52,27 @@ describe("SqliteStore", () => {
     const ids = chunks.map((c) => c.chunk_id);
     expect(ids).toContain("ato:test/deductions#0");
     expect(ids).toContain("ato:test/deductions#1");
+  });
+
+  it("getDoc returns doc + anchors", async () => {
+    const out = await store.getDoc("ato:test/deductions");
+    expect(out?.doc.title).toBe("Deductions you can claim");
+    expect(out?.anchors.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("getDocAnchors returns inbound/outbound", async () => {
+    const out = await store.getDocAnchors("legis:itaa1997/8-1");
+    expect(out.inbound.length).toBe(1);
+  });
+
+  it("getDefinition returns the statutory match", async () => {
+    const out = await store.getDefinition("trading stock", null);
+    expect(out.length).toBe(1);
+    expect(out[0]?.doc_id).toBe("legis:itaa1997/70-10");
+  });
+
+  it("getThreshold returns the named threshold", async () => {
+    const out = await store.getThreshold("gst_registration_threshold", "2025-06-30");
+    expect(out?.value).toBe(75000);
   });
 });
