@@ -85,3 +85,16 @@ def test_build_sqlite_records_schema_version(tmp_path: Path, sample_corpus):
     conn = sqlite3.connect(db_path)
     row = conn.execute("SELECT value FROM meta WHERE key='schema_version'").fetchone()
     assert row[0] == "0.1.0"
+
+
+def test_build_sqlite_creates_v02_tables(tmp_path, sample_corpus):
+    docs, chunks, embeddings = sample_corpus
+    db_path = tmp_path / "out.sqlite"
+    build_sqlite(db_path, docs=docs, chunks=chunks, embeddings=embeddings, schema_version="0.2.0")
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    assert "anchors" in tables
+    assert "citations" in tables
+    assert "definitions" in tables
+    assert "thresholds" in tables
