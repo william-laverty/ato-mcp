@@ -14,8 +14,8 @@ import {
 } from "@ato-pro/shared";
 import type { Store, Embedder, UserFacts } from "@ato-pro/shared";
 import { SqliteStore } from "./store/sqlite.js";
-import { RemoteStore } from "./store/remote.js";
 import { OnnxEmbedder } from "./embed/onnx.js";
+import { RemoteToolForwarder } from "./lib/remote-tools.js";
 import { stats } from "@ato-pro/shared/tools/stats";
 import { search } from "@ato-pro/shared/tools/search";
 import { getChunks } from "@ato-pro/shared/tools/get_chunks";
@@ -174,50 +174,68 @@ function readFactsFromConfig(cfg: Config): UserFacts | null {
 
 export async function runMcp(): Promise<void> {
   const cfg = readConfig();
-  let store: Store | null;
   const mode: "local" | "hosted" = cfg.mode === "hosted" ? "hosted" : "local";
 
-  if (cfg.mode === "hosted") {
-    if (!cfg.api_endpoint || !cfg.bearer_token) {
-      throw new Error("Hosted mode configured but api_endpoint/bearer_token missing in config");
-    }
-    store = new RemoteStore(cfg.api_endpoint, cfg.bearer_token);
-    // TODO(hosted): fetch facts from https://api.ato-mcp.com.au/v1/facts once at startup
-    // and cache for the session once the hosted backend exists.
-  } else {
-    const dbPath = corpusPath();
-    store = fs.existsSync(dbPath) ? new SqliteStore(dbPath) : null;
-  }
-
-  const facts = readFactsFromConfig(cfg);
-  const embedder = await OnnxEmbedder.load();
-
   const server = new Server(
-    { name: "ato-pro", version: "0.2.0" },
-    {
-      capabilities: { tools: {} },
-    },
+    { name: "ato-pro", version: "0.3.0" },
+    { capabilities: { tools: {} } },
   );
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: Object.entries(TOOLS).map(([name, def]) => ({ name, description: def.description, inputSchema: def.inputSchema })),
+    tools: Object.entries(TOOLS).map(([name, def]) => ({
+      name,
+      description: def.description,
+      inputSchema: def.inputSchema,
+    })),
   }));
 
-  server.setRequestHandler(CallToolRequestSchema, async (req) => {
-    const { name, arguments: args } = req.params;
-    try {
-      const result = await dispatch(name, args ?? {}, { store, embedder, facts, mode });
-      return {
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      };
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      return {
-        isError: true,
-        content: [{ type: "text", text: JSON.stringify({ kind: "error", message }, null, 2) }],
-      };
+  if (mode === "hosted") {
+    // Hosted mode: every tool call is forwarded over HTTPS. No local
+    // Store/Embedder/SQLite. The backend runs the shared tool code
+    // server-side against Supabase.
+    if (!cfg.api_endpoint || !cfg.bearer_token) {
+      throw new Error("Hosted mode configured but api_endpoint/bearer_token missing in config");
     }
-  });
+    const forwarder = new RemoteToolForwarder(cfg.api_endpoint, cfg.bearer_token);
+
+    server.setRequestHandler(CallToolRequestSchema, async (req) => {
+      const { name, arguments: args } = req.params;
+      try {
+        const result = await forwarder.call(name, args ?? {});
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return {
+          isError: true,
+          content: [{ type: "text", text: JSON.stringify({ kind: "error", message }, null, 2) }],
+        };
+      }
+    });
+  } else {
+    // Local mode: open SQLite + ONNX, dispatch tools locally.
+    const dbPath = corpusPath();
+    const store: Store | null = fs.existsSync(dbPath) ? new SqliteStore(dbPath) : null;
+    const facts = readFactsFromConfig(cfg);
+    const embedder = await OnnxEmbedder.load();
+
+    server.setRequestHandler(CallToolRequestSchema, async (req) => {
+      const { name, arguments: args } = req.params;
+      try {
+        const result = await dispatch(name, args ?? {}, { store, embedder, facts, mode });
+        return {
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return {
+          isError: true,
+          content: [{ type: "text", text: JSON.stringify({ kind: "error", message }, null, 2) }],
+        };
+      }
+    });
+  }
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
