@@ -223,11 +223,11 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 - State revenue offices (8 jurisdictions)
 - WordNet ordinary-meaning fallback for `get_definition`
 - Real RLS verification test in CI
+- **Better embedding model than MiniLM-L6-v2**. Granite r2 small (ModernBERT) was attempted and reverted — the only transformers.js release with ModernBERT support (`@huggingface/transformers` v3+) bundles onnxruntime-node with too many platform binaries to fit under Vercel's 250MB function size limit. Architectural options to explore: (a) external embedding API (Together AI / Cohere) so the function bundle stays small, (b) bundle slimming via tight excludeFiles + only the linux/x64 onnxruntime binary, (c) move inference off Vercel functions to a Cloudflare Worker / Fly.io / etc. with a larger size budget.
 
 ### Done since v0.3 ship
 
 - Citation graph populated: 23,267 outbound refs (13,388 ITAA 1997 sections + 9,879 ATO rulings) extracted by `packages/pipeline/src/ato_pipeline/extractors/citations.py`. Pipeline emits them inline now; one-shot `scripts/populate_citations.py` filled the in-flight Supabase corpus.
-- Embedding model swapped from MiniLM-L6-v2 to **Granite r2 small** (`ibm-granite/granite-embedding-small-english-r2` / ONNX: `onnx-community/granite-embedding-small-english-r2-ONNX`). Same 384 dim so no schema migration. ModernBERT-based, ~5 MTEB points higher on average, supports longer context. Re-embed of the live Supabase corpus is via `scripts/reembed_corpus.py` (drops ivfflat before, rebuilds after, for ~3× throughput).
 
 ## Gotchas
 
