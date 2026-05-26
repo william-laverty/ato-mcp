@@ -233,6 +233,16 @@ def main() -> int:
                 encode_buf = []
         flush_encoded(encode_buf)
 
+    # Record the new model in the local SQLite meta table so subsequent
+    # CLI invocations can tell what model the corpus was embedded with.
+    if not args.skip_local:
+        conn.execute(
+            "INSERT INTO meta(key, value) VALUES ('embedding_model', ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (args.model,),
+        )
+        conn.commit()
+
     print(f"\nDone in {time.time() - t0:.1f}s. Updated {processed} chunks.")
     conn.close()
     return 0

@@ -219,12 +219,15 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 
 - Hero workflow tools: `deduction_discovery`, `bas_prep_checklist`, `audit_risk_check`, `depreciation_helper` (the product differentiator from `gunba/ato-mcp`)
 - Edited PBR ingest (~120k more docs from law.ato.gov.au — would 5× the corpus)
-- Granite embedding swap (still on MiniLM-L6-v2; quality is acceptable but Granite likely better for legal-domain queries)
 - AAT/Federal Court case summaries
 - State revenue offices (8 jurisdictions)
-- Citation graph extraction (`citations` table is created but unpopulated)
 - WordNet ordinary-meaning fallback for `get_definition`
 - Real RLS verification test in CI
+
+### Done since v0.3 ship
+
+- Citation graph populated: 23,267 outbound refs (13,388 ITAA 1997 sections + 9,879 ATO rulings) extracted by `packages/pipeline/src/ato_pipeline/extractors/citations.py`. Pipeline emits them inline now; one-shot `scripts/populate_citations.py` filled the in-flight Supabase corpus.
+- Embedding model swapped from MiniLM-L6-v2 to **Granite r2 small** (`ibm-granite/granite-embedding-small-english-r2` / ONNX: `onnx-community/granite-embedding-small-english-r2-ONNX`). Same 384 dim so no schema migration. ModernBERT-based, ~5 MTEB points higher on average, supports longer context. Re-embed of the live Supabase corpus is via `scripts/reembed_corpus.py` (drops ivfflat before, rebuilds after, for ~3× throughput).
 
 ## Gotchas
 
