@@ -32,7 +32,7 @@ function fakeManifest(corpusBytes: Uint8Array) {
   return {
     schema_version: "0.2.0",
     generated_at: "2026-05-01T03:00:00Z",
-    embedding_model: "sentence-transformers/all-MiniLM-L6-v2",
+    embedding_model: "ibm-granite/granite-embedding-small-english-r2",
     embedding_dim: 384,
     corpus_sha256: crypto.createHash("sha256").update(corpusBytes).digest("hex"),
     uncompressed_size: corpusBytes.length,
@@ -91,7 +91,7 @@ describe("fetchLatestRelease", () => {
 
     const result = await fetchLatestRelease("williaml/ato-mcp");
     expect(result.corpus_url).toContain("ato-corpus-v2026.05.sqlite.zst");
-    expect(result.manifest.embedding_model).toBe("sentence-transformers/all-MiniLM-L6-v2");
+    expect(result.manifest.embedding_model).toBe("ibm-granite/granite-embedding-small-english-r2");
   });
 
   it("throws on 403 with rate-limit message", async () => {
@@ -195,7 +195,7 @@ describe("runUpdateFromGitHub", () => {
     const manifest = {
       schema_version: "0.2.0",
       generated_at: "2026-05-01T03:00:00Z",
-      embedding_model: "sentence-transformers/all-MiniLM-L6-v2",
+      embedding_model: "ibm-granite/granite-embedding-small-english-r2",
       embedding_dim: 384,
       corpus_sha256: sha256,
       uncompressed_size: corpusContent.length,
@@ -250,7 +250,7 @@ describe("runUpdateFromGitHub", () => {
     const manifest = {
       schema_version: "0.2.0",
       generated_at: "2026-05-01T03:00:00Z",
-      embedding_model: "sentence-transformers/all-MiniLM-L6-v2",
+      embedding_model: "ibm-granite/granite-embedding-small-english-r2",
       embedding_dim: 384,
       corpus_sha256: "0000000000000000000000000000000000000000000000000000000000000000",
       uncompressed_size: corpusContent.length,

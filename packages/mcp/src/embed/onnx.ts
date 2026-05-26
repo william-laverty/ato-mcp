@@ -11,7 +11,12 @@ export class OnnxEmbedder {
     this.modelName = modelName;
   }
 
-  static async load(modelName = "Xenova/all-MiniLM-L6-v2"): Promise<OnnxEmbedder> {
+  // Granite r2 small (ModernBERT, 384-dim). ONNX port by the onnx-community
+  // org since Xenova/* doesn't ship Granite. Same dim as MiniLM so the
+  // downloaded corpus's vec_chunks need no schema migration.
+  static async load(
+    modelName = "onnx-community/granite-embedding-small-english-r2-ONNX",
+  ): Promise<OnnxEmbedder> {
     // @xenova/transformers is ESM-only; dynamic import to keep the rest sync-friendly.
     const mod = await import("@xenova/transformers");
     const pipelineFn = (mod as unknown as { pipeline: PipelineCtor }).pipeline;

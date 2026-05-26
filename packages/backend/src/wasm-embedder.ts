@@ -30,12 +30,12 @@ export class WasmEmbedder implements Embedder {
 
   // -------------------------------------------------------------------------
   // load — resolves immediately if already cached, otherwise downloads model.
-  // The default model is the same Xenova/all-MiniLM-L6-v2 used by the MCP.
-  // When the corpus is rebuilt with Granite Small R2 (v0.3 Phase B), change
-  // DEFAULT_MODEL to "Xenova/granite-embedding-small-english-r2".
+  // Granite r2 small (ModernBERT, 384-dim). ONNX port by onnx-community
+  // since Xenova/* doesn't ship Granite. Must match the model the Supabase
+  // corpus was embedded with; mismatch makes vector search return garbage.
   // -------------------------------------------------------------------------
   static async load(
-    modelName = "Xenova/all-MiniLM-L6-v2",
+    modelName = "onnx-community/granite-embedding-small-english-r2-ONNX",
   ): Promise<WasmEmbedder> {
     if (cached && cached.modelName === modelName) return cached;
 
