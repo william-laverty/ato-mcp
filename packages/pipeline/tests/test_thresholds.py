@@ -63,8 +63,8 @@ def test_cgt_discount_extracted() -> None:
 
 def test_super_concessional_cap_extracted() -> None:
     html = (
-        "<p>The concessional contributions cap for 2024–25 is $30,000 "
-        "per person per year.</p>"
+        "<p>From 1 July 2024 to 30 June 2025 the general concessional "
+        "contributions cap was $30,000.</p>"
     )
     ext = _get("super_concessional_cap")
     assert ext.extract(html) == 30_000.0
@@ -72,11 +72,38 @@ def test_super_concessional_cap_extracted() -> None:
 
 def test_instant_asset_write_off_extracted() -> None:
     html = (
-        "<p>You can claim an immediate deduction for a depreciating asset "
-        "that costs less than $20,000.</p>"
+        "<p>The asset cost must be under the relevant limit of $20,000 "
+        "for the small business instant asset write-off.</p>"
     )
     ext = _get("instant_asset_write_off")
     assert ext.extract(html) == 20_000.0
+
+
+def test_low_income_tax_offset_max_extracted() -> None:
+    html = (
+        "<p>If your taxable income is $37,500 or less, you will get the "
+        "maximum offset of $700.</p>"
+    )
+    ext = _get("low_income_tax_offset_max")
+    assert ext.extract(html) == 700.0
+
+
+def test_small_business_income_tax_offset_cap_extracted() -> None:
+    html = (
+        "<p>The small business income tax offset can reduce your tax "
+        "by up to $1,000 each year.</p>"
+    )
+    ext = _get("small_business_income_tax_offset_cap")
+    assert ext.extract(html) == 1_000.0
+
+
+def test_gst_nonprofit_threshold_extracted() -> None:
+    html = (
+        "<p>If your non-profit organisation has a GST turnover of $150,000 "
+        "per year or more, you must register for GST.</p>"
+    )
+    ext = _get("gst_registration_threshold_nonprofit")
+    assert ext.extract(html) == 150_000.0
 
 
 def test_all_extractors_have_required_fields() -> None:
@@ -112,7 +139,8 @@ async def test_extract_all_mocked() -> None:
             if ext.url == GST_URL:
                 html = (
                     "<p>GST turnover is $75,000 or more.</p>"
-                    "<p>not-for-profit organisations $150,000.</p>"
+                    "<p>If your non-profit organisation has a GST turnover "
+                    "of $150,000 per year or more.</p>"
                 )
             elif ext.url == TAX_RATES_URL:
                 html = "<td>$0 – $18,200</td><td>Nil</td>"

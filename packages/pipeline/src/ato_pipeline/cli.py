@@ -15,7 +15,7 @@ from .chunk import chunk_html
 from .clean import clean_html, extract_title
 from .config import PipelineConfig
 from .embed import Embedder
-from .package import build_sqlite
+from .package import CORPUS_SCHEMA_VERSION, build_sqlite
 from .schema import Chunk, Doc
 from .scrape import canonical_doc_id, crawl, crawl_from_sitemap
 from . import manifest as _manifest_mod
@@ -247,7 +247,7 @@ def build(
         docs=all_docs,
         chunks=all_chunks,
         embeddings=embeddings,
-        schema_version="0.1.0",
+        schema_version=CORPUS_SCHEMA_VERSION,
         anchors=all_anchors or None,
         citations=all_citations or None,
         definitions=all_definitions or None,

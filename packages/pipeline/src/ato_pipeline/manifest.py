@@ -17,6 +17,7 @@ import pyzstd
 import typer
 
 from .config import PipelineConfig
+from .package import CORPUS_SCHEMA_VERSION
 
 EMBEDDING_MODEL = PipelineConfig().embedding_model
 EMBEDDING_DIM = 384
@@ -39,7 +40,7 @@ def build_manifest(db_path: Path, embedding_model: str = EMBEDDING_MODEL) -> dic
             sha.update(chunk)
             size += len(chunk)
     return {
-        "schema_version": "0.2.0",
+        "schema_version": CORPUS_SCHEMA_VERSION,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "embedding_model": embedding_model,
         "embedding_dim": EMBEDDING_DIM,

@@ -129,4 +129,7 @@ def test_build_manifest_on_real_sqlite(real_sqlite_db):
     expected_sha = hashlib.sha256(raw).hexdigest()
     assert manifest["corpus_sha256"] == expected_sha
     assert manifest["uncompressed_size"] == len(raw)
-    assert manifest["schema_version"] == "0.2.0"
+    # Manifest schema_version is sourced from CORPUS_SCHEMA_VERSION in
+    # package.py, independent of whatever the test fixture's meta table says.
+    from ato_pipeline.package import CORPUS_SCHEMA_VERSION
+    assert manifest["schema_version"] == CORPUS_SCHEMA_VERSION

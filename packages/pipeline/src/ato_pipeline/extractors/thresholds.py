@@ -68,8 +68,8 @@ EXTRACTORS: list[ThresholdExtractor] = [
             "https://www.ato.gov.au/businesses-and-organisations/"
             "gst-excise-and-indirect-taxes/gst/registering-for-gst"
         ),
-        # Look for non-profit/not-for-profit context then dollar amount.
-        pattern=r"not[- ]for[- ]profit[^.]{0,200}\$\s*([\d,]+)",
+        # ATO copy uses "non-profit organisation" (not "not-for-profit").
+        pattern=r"non[- ]profit[^.]{0,200}\$\s*([\d,]+)",
         unit="AUD",
         effective_from="2007-07-01",
         description="GST registration threshold for not-for-profit organisations",
@@ -79,13 +79,14 @@ EXTRACTORS: list[ThresholdExtractor] = [
         name="instant_asset_write_off",
         url=(
             "https://www.ato.gov.au/businesses-and-organisations/"
-            "income-deductions-and-concessions/income-and-deductions-for-business/"
-            "deductions/depreciation-of-assets/"
+            "income-deductions-and-concessions/"
+            "depreciation-and-capital-expenses-and-allowances/"
             "simpler-depreciation-for-small-business/"
             "instant-asset-write-off"
         ),
-        # Match "less than $X,000" or "$X,000 threshold".
-        pattern=r"less\s+than\s+\$\s*([\d,]+)",
+        # "limit of $X" is the dollar amount the asset must be under.
+        # "less than $X" alone matches the unrelated turnover threshold.
+        pattern=r"limit\s+of\s+\$\s*([\d,]+)",
         unit="AUD",
         effective_from="2023-07-01",
         description="Instant asset write-off threshold for small business",
@@ -104,16 +105,18 @@ EXTRACTORS: list[ThresholdExtractor] = [
         effective_from="1999-09-21",
         description="CGT 50% discount for individuals holding asset > 12 months",
     ),
-    # 5. Superannuation concessional cap (2024-25: $30,000).
+    # 5. Superannuation concessional cap (2024-25 / 2025-26: $30,000).
+    # ATO publishes both the historical and FY2026-27 ($32,500) caps on the
+    # same page; we anchor on the historical value to keep the extractor
+    # tied to a known effective_from. Bump the literal when the catalogue
+    # is rolled forward.
     ThresholdExtractor(
         name="super_concessional_cap",
         url=(
-            "https://www.ato.gov.au/individuals-and-families/"
-            "super/growing-and-keeping-track-of-your-super/"
-            "caps-on-super-contributions/concessional-contributions-cap"
+            "https://www.ato.gov.au/tax-rates-and-codes/"
+            "key-superannuation-rates-and-thresholds/contributions-caps"
         ),
-        # Match "$30,000" in a concessional contribution context.
-        pattern=r"concessional\s+contributions\s+cap[^$]{0,200}\$\s*([\d,]+)",
+        pattern=r"general\s+concessional\s+contributions\s+cap\s+was\s+\$\s*([\d,]+)",
         unit="AUD",
         effective_from="2024-07-01",
         description="Annual concessional (pre-tax) super contributions cap",
@@ -135,10 +138,14 @@ EXTRACTORS: list[ThresholdExtractor] = [
     ThresholdExtractor(
         name="low_income_tax_offset_max",
         url=(
-            "https://www.ato.gov.au/tax-rates-and-codes/"
-            "tax-offsets"
+            "https://www.ato.gov.au/individuals-and-families/"
+            "income-deductions-offsets-and-records/"
+            "tax-offsets/low-income-tax-offset"
         ),
-        pattern=r"low\s+income\s+tax\s+offset[^$]{0,200}\$\s*([\d,]+)",
+        # Anchor on "maximum offset of $X" or "maximum LITO of $X" — the
+        # plain "low income tax offset … $X" pattern catches the unrelated
+        # income-band cutoff ($66,667).
+        pattern=r"maximum\s+(?:LITO|offset)\s+of\s+\$\s*([\d,]+)",
         unit="AUD",
         effective_from="2022-07-01",
         description="Maximum low income tax offset (LITO)",
@@ -147,11 +154,14 @@ EXTRACTORS: list[ThresholdExtractor] = [
     ThresholdExtractor(
         name="small_business_income_tax_offset_cap",
         url=(
-            "https://www.ato.gov.au/individuals-and-families/"
-            "income-deductions-offsets-and-records/"
-            "offsets-and-rebates/small-business-income-tax-offset"
+            "https://www.ato.gov.au/businesses-and-organisations/"
+            "income-deductions-and-concessions/"
+            "income-and-deductions-for-business/"
+            "concessions-offsets-and-rebates/"
+            "small-business-income-tax-offset"
         ),
-        pattern=r"\$\s*(1[,.]?000)\s+(?:maximum|cap|limit)",
+        # Page phrasing: "reduce your tax on … by up to $1,000 each year".
+        pattern=r"up\s+to\s+\$\s*([\d,]+)\s+each\s+year",
         unit="AUD",
         effective_from="2021-07-01",
         description="Maximum small business income tax offset",

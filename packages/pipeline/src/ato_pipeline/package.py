@@ -11,6 +11,12 @@ import sqlite_vec
 from .schema import Chunk, Doc
 
 
+# Bumped when the SQLite corpus schema changes shape. Must match the
+# Supabase backend's meta.schema_version (set in migration 0001) so the
+# stats RPC and local CLI report the same version string.
+CORPUS_SCHEMA_VERSION = "0.3.0"
+
+
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS meta (
   key   TEXT PRIMARY KEY,

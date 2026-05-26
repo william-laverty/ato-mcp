@@ -35,7 +35,10 @@ def test_build_pipeline_with_mocked_pages(tmp_path: Path, monkeypatch):
     from typer.testing import CliRunner
 
     runner = CliRunner()
-    result = runner.invoke(cli_module.app, ["--out-dir", str(out_dir), "--max-total-pages", "10"])
+    result = runner.invoke(
+        cli_module.app,
+        ["build", "--out-dir", str(out_dir), "--max-total-pages", "10", "--mode", "bfs"],
+    )
     assert result.exit_code == 0, result.output
 
     db_path = out_dir / "ato.sqlite"

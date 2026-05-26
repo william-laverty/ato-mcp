@@ -206,14 +206,14 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 - v0.3 Phase D: Vercel functions (12 handlers), SupabaseStore, 4 SQL migrations (corpus, users, RPC functions, RLS), Web→Node adapter
 - Live deployment: web + backend on Vercel, Supabase project with corpus + RLS, real bearer-token auth works end-to-end (verified via `curl /stats`)
 
-### Known issues — fix these before claiming v0.3 done
+### Known issues — all v0.3 issues resolved
 
 1. ~~RemoteStore endpoint name mismatch~~ — fixed. `packages/mcp/src/lib/remote-tools.ts` (RemoteToolForwarder) now forwards tool calls (not Store calls) to backend endpoints. Verified end-to-end.
 2. ~~Vector / hybrid search on the backend is untested~~ — fixed. WasmEmbedder writes to `/tmp/transformers-cache` (Vercel's only writable dir) so the model download succeeds, and the silent `!SUPABASE_URL` mock fallback was removed (only `MOCK_SUPABASE=1` triggers the stub now). Pure-vector mode returns ~0.99 cosine matches in production.
 3. ~~Definitions reference non-existent dictionary doc~~ — fixed. `_extract_definitions` in the legislation pipeline now emits a synthetic parent Doc for `legis:{series}/dictionary`, and a regression test asserts every definition references an emitted doc. A one-off SQL insert handled the in-flight Supabase corpus.
 4. ~~Backend handler unit tests reference old `api/v1/` paths~~ — fixed. URL paths stripped of `/v1/` prefix in `packages/backend/test/handlers.test.ts`; 40/40 tests pass.
-5. **Schema-version label in Supabase `meta` table is `0.3.0`; local SQLite says `0.1.0`.** Cosmetic; the migration sets it on Supabase but the pipeline CLI hard-codes the old value when packaging.
-6. **3 of 8 threshold extractors fail against live ATO pages.** Pattern adjustments needed; deferred.
+5. ~~Schema-version label drift between pipeline / manifest / Supabase~~ — fixed. Single `CORPUS_SCHEMA_VERSION = "0.3.0"` constant in `packages/pipeline/src/ato_pipeline/package.py`, consumed by both `cli.py` and `manifest.py`. The existing local SQLite's `meta.schema_version` was patched in place.
+6. ~~3 of 8 threshold extractors fail against live ATO pages~~ — fixed. All 8 now extract correctly (8/8 verified against live ATO 2026-05-26). Three URLs migrated (`instant_asset_write_off`, `super_concessional_cap`, `low_income_tax_offset_max`, `small_business_income_tax_offset_cap`) and patterns tightened for `gst_registration_threshold_nonprofit`, LITO max (was matching the $66,667 income cutoff instead of the $700 offset), and SBITO cap. Bump the literal in `super_concessional_cap` when rolling the catalogue forward each FY.
 
 ### Not yet implemented (v0.4 and beyond)
 
