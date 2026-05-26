@@ -8,6 +8,7 @@ function main() {
 
 Usage:
   ato-pro-mcp mcp       # start the MCP stdio server (used by Claude Code)
+  ato-pro-mcp onboard   # set up your account and get a config snippet
   ato-pro-mcp update    # download/update the local corpus
   ato-pro-mcp stats     # print corpus stats and exit
   ato-pro-mcp help      # this message
@@ -27,6 +28,9 @@ Data directory: ${dataDir()}
       const out = await m.statsCli();
       process.stdout.write(JSON.stringify(out, null, 2) + "\n");
     });
+  }
+  if (cmd === "onboard") {
+    return import("./lib/onboard.js").then((m) => m.runOnboard());
   }
   process.stderr.write(`Unknown command: ${cmd}\n`);
   process.exit(2);
