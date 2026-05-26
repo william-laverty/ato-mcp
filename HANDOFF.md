@@ -1,225 +1,260 @@
-# v0.2 handoff (final)
+# v0.3 handoff
 
-v0.2 spec, plan, and implementation are all shipped. The corpus has been rebuilt with all four sources end-to-end and verified working via the MCP stdio protocol against Claude Code.
+Phases A, B, C, D shipped as code. Phase E (analytics polish + RLS verification) and **deployment** are explicit follow-ups that need real Supabase + Vercel credentials. The Granite embedding swap was deferred (still on MiniLM); the v0.2 corpus is what's installed.
 
 ## Status snapshot
 
-- **53 commits on `main`** since the start of v0.1 (run `git log --oneline | head -55`)
-- **151 tests passing** across the monorepo (9 shared + 59 mcp + 83 pipeline)
-- **v0.2 corpus installed**: **29,180 docs, 224,585 chunks, 1.1 GB**
-  - 22,415 ATO_GUIDE (ato.gov.au site)
-  - 4,638 LEGISLATION_ITAA1997 (every section of Income Tax Assessment Act 1997)
-  - 2,127 ATO public rulings across **all 10 ruling types** (TR/TD/GSTR/GSTD/PR/CR/LCR/PCG/MT/FTR)
-  - 1,929 statutory definitions (ITAA 1997 dictionary)
-  - 4,638 anchors
-  - 3 time-keyed tax thresholds (GST registration, CGT discount, tax-free threshold)
-- **8 MCP tools live** (was 4 at v0.1): `search`, `get_chunks`, `fetch`, `stats` + new `get_definition`, `get_doc`, `get_doc_anchors`, `get_threshold`
-- **Server identifies as v0.2.0** via MCP `initialize`
+- **~70 commits on `main`** (run `git log --oneline | head -70`)
+- **254 tests passing** across 5 workspaces: 56 shared + 70 mcp + 40 backend + 3 web + 85 pipeline
+- Existing v0.2 corpus still installed: **29,180 docs / 224,585 chunks / 1.1 GB** — unchanged
+- Two new workspaces: `packages/web/` (Next.js 15 onboarding app) and `packages/backend/` (Vercel functions over Supabase)
+- One refactor: tool implementations moved from `packages/mcp/src/tools/` to `packages/shared/src/tools/` behind `Store` + `Embedder` interfaces
+- One new MCP tool: `get_user_facts` reads from `~/.ato-pro/config.json` (local) or from the hosted API (when implemented)
 
-## Test it in 30 seconds
+## What you can test right now (without any credentials)
 
 ```bash
-node /Users/williamlaverty/Projects/Websites/ato-pro/packages/mcp/bin/ato-pro-mcp.js stats
-```
+# 1. All tests still green
+pnpm -r test
+cd packages/pipeline && uv run pytest -k "not slow"
 
-Expected: `{"installed": true, "docs": 29180, "chunks": 224585, ...}`
-
-Then in Claude Code with the existing v0.1 MCP config (no change needed):
-
-```json
-{
-  "mcpServers": {
-    "ato-pro": {
-      "command": "node",
-      "args": [
-        "/Users/williamlaverty/Projects/Websites/ato-pro/packages/mcp/bin/ato-pro-mcp.js",
-        "mcp"
-      ]
-    }
-  }
-}
-```
-
-Try things like:
-
-- **Statutory definitions**: "Define 'trading stock' for tax purposes" → calls `get_definition`, returns the ITAA 1997 dictionary entry with citation
-- **Time-keyed thresholds**: "What's the GST registration threshold?" → calls `get_threshold`, returns 75000 AUD (effective from 2007-07-01); "What's the CGT discount?" → 50% (from 1999-09-21)
-- **Public rulings**: "What does TR 2024/5 say about loans?" → calls `search`, surfaces the actual Taxation Ruling
-- **Legislation**: "What does section 8-1 of ITAA 1997 say?" → returns the Section text
-- **General tax**: "Can a sole trader claim home office expenses?" → ATO guide on WFH deductions
-- **Specific topics**: Division 7A loans, super contribution caps, Product Rulings, fringe benefits, R&D incentive — all return relevant ATO content
-
-## Diverse query verification (just now)
-
-| Query | Top hit |
-|---|---|
-| GST registration threshold | `get_threshold` → 75000 AUD (eff 2007-07-01) |
-| "trading stock" definition | Statutory match from ITAA 1997 s 70-10 |
-| Work from home expenses sole trader | "Expenses, trips and working from home hours in myDeductions" |
-| Cryptocurrency capital gains tax | "Treatment of cryptocurrencies" guide |
-| Taxation ruling TR 2024 | Class Rulings landing page |
-| Section 8-1 deductions (filter LEGISLATION) | TR 2001/9 — agency development loans |
-| Product ruling investment | "Deductions for expenditure or contributions" |
-| Division 7A loan shareholder | "Division 7A - Loans" guide |
-| Superannuation contribution cap | "Superannuation consequences" |
-
-## What v0.2 shipped
-
-### Phase A — Framework (commits 4096c74 → 29e5641)
-
-- Schema: added `anchors`, `citations`, `definitions`, `thresholds` tables to SQLite
-- Pipeline `schema.py`: `DocType` typed Literal with 40+ doc-type values
-- Shared zod schemas for the 4 new tools, plus optional `pit` (point-in-time) on `search`/`get_chunks`
-- `SqliteStore` extended with `getDoc`, `getDocAnchors`, `getDefinition`, `getThreshold` + `pit` filter
-- 4 new MCP tool implementations wired into the server
-- `fetch` now accepts `legis:`, `ato-law:`, `staterev-*:` URI schemes
-- 21 new MCP tests, 4 new shared tests, 1 new pipeline test
-
-### Phase B — Legislation source (commits 8c09495 → 140dd31)
-
-- New `sources/` sub-package with abstract `Source` base
-- `sources/legislation.py` — Federal Register EPUB HTML parser. Pivot from XML to EPUB because legislation.gov.au only ships EPUB/PDF/DOCX, not XML compilations.
-- ITAA 1997 fully ingested: 4,638 sections + 4,638 anchors + 1,929 dictionary terms
-- `extractors/thresholds.py` — 8 regex extractors for key tax thresholds
-- CLI `--sources` flag for selective ingestion
-- 18 new pipeline tests
-
-### Phase C — law.ato.gov.au public rulings (commit 0bcf319)
-
-- Discovered the ATO's internal `/API/v1/law/lawservices/browse` browse API that backs the JS SPA (no headless browser needed)
-- `sources/law_ato.py` ingests all 10 public ruling types (TR/TD/GSTR/GSTD/PR/CR/LCR/PCG/MT/FTR)
-- Each ruling: title + body chunks + `effective_from` from `dc.Date.ValidFromF` meta + `effective_to` from `dc.Date.ValidToF`
-- 2,127 rulings ingested at max_per_type=500
-- 32 new pipeline tests against recorded fixtures
-
-### Phase E — Release flow (commits 2230462 → cc2d921)
-
-- `manifest.py` — manifest builder + zstd compression (pyzstd ZstdFile streaming, level 19)
-- `package` typer subcommand: produces `ato-corpus-v<YYYY>.<MM>.sqlite.zst` + `manifest.json`
-- `runUpdateFromGitHub` in `lib/download.ts`: fetches latest release, verifies sha256, decompresses (via `zstd -d`), atomic-renames into `<data_dir>/live/ato.sqlite`. `installFromLocalFile` still works for dev.
-- `.github/workflows/corpus-build.yml` — monthly cron + workflow_dispatch, builds, packages, creates GitHub release with the two artefacts
-
-## What v0.2 did NOT ship (deferred)
-
-These were in the v0.2 spec but consciously left for follow-up plans:
-
-- **Edited Private Binding Rulings (~120k docs)**. Phase C ingests public rulings only. PBRs would 5× the corpus but the page structure is similar to public rulings — should be a straightforward Phase C2 extension once we want to take on the volume.
-- **AAT/Federal Court case summaries**. Same `law.ato.gov.au` source, different content type. Listed but not implemented.
-- **8 state revenue jurisdictions**. Each one needs its own scraper module. A focused `v0.2.6` plan would knock them out in a day or two of work.
-- **Embedding model swap to Granite Small R2**. Kept MiniLM-L6-v2. The swap is a single-config-line change in `packages/pipeline/src/ato_pipeline/config.py` + a corpus rebuild.
-- **Citation graph extraction** (the `citations` table is empty). Regex pass over chunks to detect "TR 2024/5", "s 8-1 ITAA", "[2024] FCA 100" and resolve to `to_doc_id`.
-- **WordNet ordinary-meaning fallback** in `get_definition` — stubbed.
-- **Other tax Acts**. The `LegislationSource.ACT_CONFIG` registry has URLs for ITAA 1936, GST Act, FBT Act, TAA, SISA, ABN Act, but defaults to `["itaa1997"]` only. One-line change to enable.
-- **`search` `doc_type` filter parameter** is accepted by the zod schema but not passed through to the SqliteStore query. The filter is currently ignored. Quick fix in `tools/search.ts` + `store/sqlite.ts`.
-
-## Comparison vs `gunba/ato-mcp` (final)
-
-| Aspect | ato-pro v0.2 (today) | gunba/ato-mcp |
-|---|---|---|
-| **Docs** | 29,180 (22,415 ATO site + 4,638 ITAA 1997 + 2,127 rulings) | ~158,000 |
-| **Chunks** | 224,585 | ~467,000 |
-| **Statutory definitions** | 1,929 from ITAA 1997 dictionary | yes, similar |
-| **Time-keyed thresholds** | 3 working (GST, CGT, tax-free) — 8 extractors written but 5 need pattern adjustment | not present |
-| **ATO public rulings** | 2,127 across all 10 types (TR/TD/GSTR/GSTD/PR/CR/LCR/PCG/MT/FTR) | yes (similar coverage) |
-| **Edited PBRs** | not yet | yes (~120k) |
-| **Tools** | 8 (`search`, `get_chunks`, `fetch`, `stats`, `get_definition`, `get_doc`, `get_doc_anchors`, `get_threshold`) | similar set + `get_asset` |
-| **Sources covered** | ato.gov.au + ITAA 1997 (statute) + law.ato.gov.au public rulings | ato.gov.au + edited PBRs |
-| **Sources ato-mcp has, we don't** | edited PBRs (~120k docs) | — |
-| **Sources we have, ato-mcp doesn't** | Federal statute (ITAA 1997 with all 4,638 sections) + time-keyed thresholds | — |
-| **Point-in-time queries** | first-class — `pit` param on search/definition/threshold | basic |
-| **Update path** | `ato-pro-mcp update <path>` (local) OR `ato-pro-mcp update` (GitHub release, ready) | similar |
-| **Monthly cron** | `.github/workflows/corpus-build.yml` ready; needs repo path + secret | yes, running |
-| **Embedding model** | MiniLM-L6-v2 (Granite swap deferred) | Granite Small R2 |
-| **Runtime** | Node.js | Rust binary |
-
-**Honest assessment:** ato-mcp is still ahead on raw doc count (158k vs 29k) entirely because they ingest PBRs (~120k docs). For *substantive non-PBR tax content* we're actually slightly ahead — we have the full ITAA 1997 statute (4,638 sections) which they don't, plus parity-ish coverage of public rulings. Once we add PBRs in v0.2.5, we'd match or exceed.
-
-What we have that they don't:
-- **Federal statute as a primary source** with 1,929 statutory definitions queryable by exact term
-- **Time-keyed scalar tax facts** (`get_threshold`) — answer "what's the GST registration threshold at FY24?" deterministically
-- **Foundation for legislation + case law + state revenue** — none of which ato-mcp has
-
-What they have that we don't:
-- **PBRs ingested** — for the kinds of fact-pattern-specific tax questions where PBRs help
-- **Larger absolute corpus** for general retrieval
-- **Native Rust binary** that's smaller to ship
-- **Polished install story** via `claude plugin install`
-
-## Known issues
-
-1. **Schema version label says `0.1.0`** in the `meta` table. Cosmetic — the schema itself is the v0.2 superset. The CLI build call hard-codes `"0.1.0"`. One-line fix.
-2. **`citations` table is empty.** Citation extraction not wired into the build. `get_doc_anchors` returns empty inbound/outbound arrays.
-3. **`get_definition` ordinary-meaning fallback is a stub.** Returns "No statutory definition found for X" rather than a WordNet definition.
-4. **5 of 8 threshold extractors fail** against current live ATO pages. Pattern adjustments needed.
-5. **`search` `doc_type` filter not applied.** Accepted by zod but not used in the SqliteStore query.
-6. **Schema-version meta key still `0.1.0`.** v0.1 clients connecting to a v0.2 corpus see the old label.
-7. **Granite embedding model swap deferred.** MiniLM-L6-v2 retrieval is acceptable but Granite would likely improve citation-style and legal-domain queries.
-
-## Reproducing the build
-
-```bash
-cd packages/pipeline
-rm -rf corpus-v02-full
-uv run ato-pipeline build --out-dir corpus-v02-full --sources ato_website,legislation,thresholds,law_ato
-# ~30 min ato_website + ~5 min legislation + ~25 min law_ato + ~5 min embed + ~1 min package = ~65 min
-cd ../..
-node packages/mcp/bin/ato-pro-mcp.js update packages/pipeline/corpus-v02-full/ato.sqlite
+# 2. Stats still report the v0.2 corpus
 node packages/mcp/bin/ato-pro-mcp.js stats
+
+# 3. Web app builds (uses mock Supabase)
+pnpm --filter @ato-pro/web build
+
+# 4. Backend compiles (uses mock Supabase)
+pnpm --filter @ato-pro/backend build
+
+# 5. Web app runs locally with mocked auth
+cd packages/web && MOCK_SUPABASE=1 pnpm dev   # http://localhost:3001
 ```
 
-If you want all the tax Acts (not just ITAA 1997), edit `LegislationSource.__init__` in `sources/legislation.py` and change `acts=["itaa1997"]` to `acts=list(ACT_CONFIG.keys())`. Adds ~20–40k more sections from ITAA 1936, GST Act, FBT Act, TAA, SISA, ABN Act.
+Visit `http://localhost:3001/onboard` to walk through the 5-step flow against the mock client. Submissions go to in-memory mock; no database writes.
+
+## What shipped in v0.3
+
+### Phase A — Shared-core refactor (commits 4de05e2 → b363b48)
+
+- New `packages/shared/src/store/types.ts` (`Store` interface) and `embed/types.ts` (`Embedder` interface)
+- 8 tool implementations moved from `packages/mcp/src/tools/` → `packages/shared/src/tools/`. They now depend on interfaces, not concrete classes.
+- `rrfFuse` moved to `packages/shared/src/lib/rrf.ts`
+- `RemoteStore` adapter in `packages/mcp/src/store/remote.ts` — forwards every `Store` method to a configurable HTTP endpoint with Bearer auth
+- `runMcp()` reads `~/.ato-pro/config.json`. `mode=hosted` uses `RemoteStore`; `mode=local` (or unset) uses `SqliteStore`. The same MCP binary serves both modes.
+
+### Phase B — Facts schema + `get_user_facts` (commits 16af39e → 4bb6489)
+
+- Bundled ANZSIC 2006 class codes in `packages/shared/src/lib/anzsic.ts` (representative ~80-code subset across all 19 divisions)
+- `UserFactsSchema` in `packages/shared/src/facts.ts` — 25 fields, ABN modulus-89 checksum, ANZSIC code validation, cross-field rules (gst_period must match gst_registered, etc.)
+- `get_user_facts` MCP tool in `packages/shared/src/tools/get_user_facts.ts`
+- MCP `server.ts` reads `facts` from config on startup, passes them to the tool. Hosted-mode path has a `TODO(hosted)` stub — backend is built but not wired
+
+### Phase C — Web onboarding (commits 6272d70 → 0acd19e)
+
+- New `packages/web/` workspace: Next.js 15 (App Router), React 19, Tailwind 3, TypeScript, `@supabase/supabase-js` + `@supabase/ssr`, React Hook Form + zod
+- Mock Supabase fallback (`MOCK_SUPABASE=1` or missing env vars) — app builds and runs without any external credentials
+- 5-step onboarding flow at `/onboard` → `/onboard/verify` → `/onboard/facts` → `/onboard/mode` → `/onboard/install`
+- `FactsWizard` component — 6 sub-steps inside `/onboard/facts`, conditional fields, ANZSIC `<select>` autocomplete using the bundled codes, ABN checksum-validated client- and server-side
+- Account dashboard at `/account` with edit, mode-switch, and delete-account flows
+- Privacy page at `/privacy` — **schema-driven**: rendered from `UserFactsSchema.shape` at build time. The privacy contract test asserts every schema field is documented.
+- `/api/poll` and `/api/onboard/poll` route handlers
+- `ato-pro-mcp onboard` CLI command — opens the browser, polls for completion, writes `~/.ato-pro/config.json`
+
+### Phase D — Hosted backend (commits 151a0ba → bedf23f)
+
+- New `packages/backend/` workspace: Vercel function shape, `@supabase/supabase-js`, `@xenova/transformers`, zod
+- `SupabaseStore` in `src/supabase-store.ts` — implements the `Store` interface via Supabase RPC functions. Mock fallback when `MOCK_SUPABASE=1`.
+- `WasmEmbedder` in `src/wasm-embedder.ts` — same shape as `OnnxEmbedder` but loads via `@xenova/transformers` WASM (designed for Vercel cold-start)
+- 12 Vercel function handlers under `api/v1/`: `search`, `get_chunks`, `fetch`, `stats`, `get_definition`, `get_doc`, `get_doc_anchors`, `get_threshold`, `get_user_facts`, `facts` (PUT), `usage_event` (POST), `onboard/poll` (GET)
+- Auth middleware in `api/_middleware.ts` — Bearer-token sha256 lookup against `bearer_tokens` (real Supabase) or simple prefix check (mock). In-memory rate-limit (60 req/min) with a TODO to swap to Vercel KV
+- 4 SQL migration files committed at `packages/backend/migrations/`:
+  1. `0001_corpus_schema.sql` — `docs`, `chunks` (with `VECTOR(384)` + `TSVECTOR` generated), `anchors`, `citations`, `definitions`, `thresholds`, indexes
+  2. `0002_user_schema.sql` — `users`, `user_facts`, `bearer_tokens`, `usage_events`, `onboard_sessions`, `mcp_connections`
+  3. `0003_rpc_functions.sql` — `ato_keyword_search`, `ato_vector_search`, `ato_get_chunks`, `ato_get_doc`, `ato_get_doc_anchors`, `ato_get_definition`, `ato_get_threshold`
+  4. `0004_rls.sql` — RLS policies isolating each user's facts + events
+
+## What v0.3 did NOT ship (explicitly deferred)
+
+### Granite embedding swap (Phase B4-B6)
+
+Skipped to avoid autonomous risk. The MCP and pipeline still use `sentence-transformers/all-MiniLM-L6-v2`. Retrieval quality is acceptable but a Granite swap would help citation-style queries.
+
+To do later:
+1. `embedding_model` in `packages/pipeline/src/ato_pipeline/config.py` → `ibm-granite/granite-embedding-small-english-r2`
+2. Probe `Xenova/granite-embedding-small-english-r2` on HuggingFace. If present, just change the model name in `packages/mcp/src/embed/onnx.ts`. If absent, `optimum-cli export onnx ...` and bundle in npm.
+3. Rebuild corpus (~70 min).
+
+### Phase E — RLS verification + analytics polish
+
+Tests for RLS isolation (user A can't read user B's data) need a real Postgres + RLS to verify. The SQL is committed (`0004_rls.sql`) but untested.
+
+The schema↔privacy contract test exists (`packages/web/test/privacy-contract.test.tsx`) and asserts every `UserFactsSchema` field appears in the rendered privacy page.
+
+### Deployment
+
+Nothing is deployed. The user must:
+
+1. **Create Supabase project**. Get `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+2. **Apply migrations in order**:
+   ```bash
+   psql "$SUPABASE_DB_URL" < packages/backend/migrations/0001_corpus_schema.sql
+   psql "$SUPABASE_DB_URL" < packages/backend/migrations/0002_user_schema.sql
+   psql "$SUPABASE_DB_URL" < packages/backend/migrations/0003_rpc_functions.sql
+   psql "$SUPABASE_DB_URL" < packages/backend/migrations/0004_rls.sql
+   ```
+   Enable pgvector extension first: `CREATE EXTENSION IF NOT EXISTS vector;`
+3. **Import corpus to Supabase** — write a small script (`packages/backend/scripts/import-corpus.ts`, TBD) that reads `ato.sqlite` and batch-inserts into Postgres. Granite embedding swap happens around the same time so we don't have to import twice.
+4. **Configure Supabase Auth** — set magic-link sender domain to `auth.ato-mcp.com` (CNAME → Supabase) or use Supabase's default sender for dev.
+5. **Deploy `packages/web` to Vercel** — `ato-mcp.com` and `www.ato-mcp.com.au`. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel env.
+6. **Deploy `packages/backend` to Vercel** at `api.ato-mcp.com`. Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` in Vercel env.
+7. **Test the end-to-end onboarding flow** through a real magic-link email.
+8. **(Optional)** swap in-memory rate-limit for `@vercel/kv` in `packages/backend/api/_middleware.ts`.
+
+## Architecture diagram (current state)
+
+```
+                ┌────────────────────────────────────┐
+                │  packages/shared/                  │
+                │   ├─ corpus.ts, tools.ts, facts.ts │
+                │   ├─ store/types.ts (Store iface)  │
+                │   ├─ embed/types.ts (Embedder)     │
+                │   ├─ tools/ (8 tool impls)         │
+                │   └─ lib/ (rrf, anzsic)            │
+                └─────┬─────────┬──────────────┬─────┘
+                      │         │              │
+                ┌─────▼────┐ ┌──▼──────┐ ┌─────▼─────┐
+                │   mcp    │ │ backend │ │    web    │
+                │ (Node)   │ │ (Vercel)│ │ (Next.js) │
+                │          │ │         │ │           │
+                │ SqliteSt │ │ Supabase│ │  ── only  │
+                │ +OnnxEmb │ │ Store + │ │  imports  │
+                │  (local) │ │ WasmEmb │ │   types   │
+                │          │ │         │ │           │
+                │ Remote-  │ │ 12      │ │ 5-step    │
+                │  Store   │ │ Vercel  │ │ onboard   │
+                │ (hosted) │ │ funcs   │ │ + dash    │
+                └────┬─────┘ └────┬────┘ └─────┬─────┘
+                     │            │            │
+                     │            ▼            ▼
+                     │     ┌──────────────────────┐
+                     │     │  Supabase (NOT YET)  │
+                     │     │  Postgres + pgvector │
+                     │     │  Auth (magic link)   │
+                     │     │  4 migrations ready  │
+                     │     └──────────────────────┘
+                     │
+              ┌──────▼──────┐
+              │ SQLite +    │
+              │ sqlite-vec  │  ← v0.2 corpus (1.1 GB)
+              │ + FTS5      │
+              └─────────────┘
+
+  packages/pipeline (Python) — unchanged. Builds the SQLite corpus.
+```
+
+## Comparison vs `gunba/ato-mcp` (status check)
+
+| Aspect | ato-pro v0.3 (today) | gunba/ato-mcp |
+|---|---|---|
+| Docs / chunks | 29,180 / 224,585 (unchanged from v0.2) | ~158k / ~467k |
+| Tools | 9 (`stats`, `search`, `get_chunks`, `fetch`, `get_definition`, `get_doc`, `get_doc_anchors`, `get_threshold`, `get_user_facts`) | similar set + `get_asset` |
+| **Personal facts layer** | yes (new) | none |
+| **Web onboarding** | code-complete (Next.js 15) | none |
+| **Hosted-mode option** | code-complete (Vercel + Supabase), not deployed | local only |
+| **Shared tool core** | yes — same tools run on local MCP and hosted backend | n/a |
+| **Time-keyed thresholds** | 3 working | not present |
+| **Federal statute (ITAA 1997)** | yes — 4,638 sections + 1,929 definitions | not present |
+| ATO public rulings | 2,127 across 10 types | yes |
+| Edited PBRs | not yet | yes (~120k) |
+| Embedding model | MiniLM-L6-v2 (Granite deferred) | Granite Small R2 |
+
+**v0.3 differentiation is now real, not just promised.** Personal facts + hosted-mode capability are things ato-mcp deliberately doesn't have. Once deployed, the user experience diverges meaningfully.
+
+## Known issues / minor TODOs
+
+1. **Schema version label still `0.1.0`** in the `meta` table — cosmetic.
+2. **`citations` table empty** — extraction not wired in.
+3. **`search` `doc_type` filter** still ignored.
+4. **3 of 8 threshold extractors fail** against live ATO pages.
+5. **Hosted-mode facts fetch** in MCP is a `TODO(hosted)` stub — wire up once backend is deployed.
+6. **In-memory rate-limit** in backend — swap to Vercel KV for production.
+7. **Granite swap** — single-config-line change + rebuild.
+8. **`open` npm package** in mcp deps — bumps install size by ~50 KB.
+9. **Pages.jsonl scrape cache** from a previous build is gitignored but lingers locally.
 
 ## Quick health checks
 
 ```bash
-pnpm test                                     # 68 Node tests (9 shared + 59 mcp)
-cd packages/pipeline && uv run pytest -k "not slow"  # 83 Python tests
-node packages/mcp/bin/ato-pro-mcp.js stats    # corpus health
-bash scripts/smoke.sh                         # end-to-end smoke (no network)
+pnpm test                                     # 169 TS tests
+cd packages/pipeline && uv run pytest -k "not slow"   # 85 Python tests
+node packages/mcp/bin/ato-pro-mcp.js stats    # 29180 docs (v0.2 corpus)
+node packages/mcp/bin/ato-pro-mcp.js help     # mentions all subcommands incl. onboard
+pnpm --filter @ato-pro/web build              # Next.js builds
+pnpm --filter @ato-pro/backend build          # backend compiles
 ```
 
-## What I'd recommend for tomorrow
+## What I'd recommend for when you wake up
 
-1. **Test in Claude Code.** Specifically try `get_definition`, `get_threshold`, and ruling-specific queries. Feel out whether retrieval quality is good enough or if Granite is needed.
-2. **If retrieval quality concerns you**, swap embedding to Granite (single config line + rebuild = ~70 min). Likely fixes the citation-style query weakness ("section 8-1" not surfacing s 8-1).
-3. **If broader coverage matters more**, plan `v0.2.5` (PBR ingest — same `law.ato.gov.au` source, just different `docType` parameter, ingests ~120k more docs).
-4. **When ready to publish**: set repo path in `.github/workflows/corpus-build.yml`, push to GitHub, trigger workflow_dispatch. The release appears and `ato-pro-mcp update` (no args) starts working.
-5. **For v0.3**: brainstorm personal facts + web onboarding + hosted-mode — that's the genuine differentiator from ato-mcp and what makes this tool *yours* as a sole trader.
+1. **Test the web app locally** with `MOCK_SUPABASE=1 pnpm --filter @ato-pro/web dev`. Walk through the onboarding flow. Critique the UX before committing to a deployment.
+2. **Test the new `get_user_facts` tool**: manually edit `~/.ato-pro/config.json` to add a `facts` field per `UserFactsSchema`. Reconnect Claude Code. Ask the agent "what do you know about me?" — it should call `get_user_facts` and respond with your facts.
+3. **Decide whether to deploy** before v0.4 workflow tools, or skip ahead. Deploying gives you a real shareable URL; skipping ahead means more retrieval features.
+4. **Granite swap** is a low-risk, high-value 1-line change + 70-min rebuild. Worth doing whenever you have a free hour.
+5. **v0.4 workflow tools** (`deduction_discovery`, `bas_prep_checklist`, etc.) are the next phase of real differentiation. They need the personal facts layer (done) and benchmark/threshold extraction (partly done in v0.2).
 
-## File map of v0.2 additions
+## File map of v0.3 additions
 
 ```
-packages/pipeline/src/ato_pipeline/
-├── sources/
-│   ├── __init__.py
-│   ├── base.py                # Source ABC + SourceOutput dataclass
-│   ├── legislation.py         # Federal Register EPUB parser (ITAA 1997)
-│   └── law_ato.py             # browse-API + ruling-page parser (10 types)
-├── extractors/
-│   ├── __init__.py
-│   └── thresholds.py          # 8 regex extractors (3 working live)
-├── manifest.py                # release manifest builder + zstd compression
-└── (existing files updated)   # schema.py, cli.py, package.py
+packages/shared/src/
+├── store/types.ts            (NEW)  Store interface
+├── embed/types.ts            (NEW)  Embedder interface
+├── lib/
+│   ├── rrf.ts                (MOVED from mcp)
+│   └── anzsic.ts             (NEW)  ANZSIC class codes
+├── tools/                    (MOVED 8 files from mcp + 1 NEW)
+│   ├── search.ts             (MOVED)
+│   ├── get_chunks.ts         (MOVED)
+│   ├── fetch.ts              (MOVED)
+│   ├── stats.ts              (MOVED)
+│   ├── get_definition.ts     (MOVED)
+│   ├── get_doc.ts            (MOVED)
+│   ├── get_doc_anchors.ts    (MOVED)
+│   ├── get_threshold.ts      (MOVED)
+│   └── get_user_facts.ts     (NEW)
+└── facts.ts                  (NEW)  UserFactsSchema + isValidAbn
 
 packages/mcp/src/
-├── tools/
-│   ├── get_definition.ts      # statutory + ordinary fallback
-│   ├── get_doc.ts             # full document fetch
-│   ├── get_doc_anchors.ts     # anchor + citation graph
-│   └── get_threshold.ts       # time-keyed scalar lookup
-├── lib/
-│   └── download.ts            # extended with runUpdateFromGitHub
-└── (existing tools updated)   # search.ts (pit), get_chunks.ts (pit), fetch.ts (new schemes)
+├── store/remote.ts           (NEW)  RemoteStore (hosted-mode forwarder)
+├── lib/onboard.ts            (NEW)  CLI onboard command
+└── server.ts                 (UPDATED) mode-aware startup
 
-.github/workflows/
-└── corpus-build.yml           # monthly cron + workflow_dispatch
+packages/web/                 (NEW WORKSPACE)
+├── app/
+│   ├── onboard/{,verify/,facts/,mode/,install/}page.tsx
+│   ├── account/{,facts/edit/,delete/}page.tsx
+│   ├── privacy/page.tsx                       (schema-driven)
+│   ├── terms/page.tsx
+│   └── api/{poll,onboard/poll}/route.ts
+├── components/{FactsWizard,ModeCard,InstallSnippet,DeleteAccountClient}.tsx
+└── lib/supabase/{client,server,service}.ts    (with mock fallback)
+
+packages/backend/             (NEW WORKSPACE)
+├── api/
+│   ├── _middleware.ts                         (auth + rate-limit)
+│   └── v1/{12 handlers}.ts
+├── src/{supabase,supabase-store,wasm-embedder}.ts
+└── migrations/{0001_corpus,0002_user,0003_rpc,0004_rls}.sql
 ```
 
 ## Commit history summary
 
 - **v0.1**: 18 commits — monorepo, pipeline, MCP server, smoke + CI
-- **v0.2 Phase A** (framework): 5 commits — schema migration, new tools wired
-- **v0.2 Phase B** (legislation): 3 commits — Federal Register source, threshold extractors
-- **v0.2 Phase C** (rulings): 1 commit — law.ato.gov.au browse API + 10 ruling types
-- **v0.2 Phase E** (release): 3 commits — manifest, GitHub-release update, CI workflow
-- **Docs**: 2 HANDOFF updates + 1 final
+- **v0.2 Phase A** (framework): 5 commits
+- **v0.2 Phase B** (legislation + thresholds): 3 commits
+- **v0.2 Phase C** (law.ato.gov.au): 1 commit
+- **v0.2 Phase E** (release flow): 3 commits + HANDOFFs
+- **v0.3 Phase A** (shared refactor): 4 commits
+- **v0.3 Phase B** (facts schema + get_user_facts): 3 commits
+- **v0.3 Phase C** (web onboarding): 5 commits
+- **v0.3 Phase D** (backend): 3 commits
+- **v0.3 HANDOFF**: this commit
