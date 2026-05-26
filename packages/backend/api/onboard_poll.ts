@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+import { adapt } from "./_adapter.js";
 
 // GET /api/onboard/poll?code=<8-hex-char-code>
 //
@@ -21,7 +21,7 @@ interface OnboardSession {
   expires_at: string;
 }
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   if (req.method !== "GET") {
     return new Response(JSON.stringify({ kind: "error", message: "method_not_allowed" }), {
       status: 405,
@@ -78,3 +78,5 @@ export default async function handler(req: Request): Promise<Response> {
     },
   });
 }
+
+export default adapt(handler);

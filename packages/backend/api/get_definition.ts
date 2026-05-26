@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
 import { getDefinition } from "@ato-pro/shared/tools/get_definition";
@@ -7,7 +7,7 @@ import { SupabaseStore } from "../src/supabase-store.js";
 
 const store = new SupabaseStore();
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {
@@ -23,3 +23,5 @@ export default async function handler(req: Request): Promise<Response> {
     });
   }
 }
+
+export default adapt(handler);

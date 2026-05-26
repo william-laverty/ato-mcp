@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
 import { getUserFacts } from "@ato-pro/shared/tools/get_user_facts";
@@ -6,7 +6,7 @@ import { UserFactsSchema } from "@ato-pro/shared";
 import type { UserFacts } from "@ato-pro/shared";
 import { makeServiceClient } from "../src/supabase.js";
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {
@@ -47,3 +47,5 @@ export default async function handler(req: Request): Promise<Response> {
     });
   }
 }
+
+export default adapt(handler);

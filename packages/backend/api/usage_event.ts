@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+import { adapt } from "./_adapter.js";
 
 // POST /v1/usage_event — Privacy-safe analytics ingest.
 // Records one of the allowed event types; does NOT log query text or results.
@@ -18,7 +18,7 @@ const UsageEventSchema = z.object({
   mode: z.enum(["local", "hosted"]),
 });
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ kind: "error", message: "method_not_allowed" }), {
       status: 405,
@@ -60,3 +60,5 @@ export default async function handler(req: Request): Promise<Response> {
     });
   }
 }
+
+export default adapt(handler);

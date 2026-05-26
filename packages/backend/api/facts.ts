@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+import { adapt } from "./_adapter.js";
 
 // PUT /v1/facts — Web app endpoint for saving/updating user facts.
 // Called from the Next.js onboarding flow (packages/web) after the user
@@ -8,7 +8,7 @@ import { authMiddleware } from "./_middleware.js";
 import { UserFactsSchema } from "@ato-pro/shared";
 import { makeServiceClient } from "../src/supabase.js";
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   if (req.method !== "PUT" && req.method !== "POST") {
     return new Response(JSON.stringify({ kind: "error", message: "method_not_allowed" }), {
       status: 405,
@@ -49,3 +49,5 @@ export default async function handler(req: Request): Promise<Response> {
     });
   }
 }
+
+export default adapt(handler);

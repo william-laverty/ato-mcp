@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
 import { search } from "@ato-pro/shared/tools/search";
@@ -9,7 +9,7 @@ import { WasmEmbedder } from "../src/wasm-embedder.js";
 const store = new SupabaseStore();
 let embedder: WasmEmbedder | null = null;
 
-export default async function handler(req: Request): Promise<Response> {
+async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {
@@ -26,3 +26,5 @@ export default async function handler(req: Request): Promise<Response> {
     });
   }
 }
+
+export default adapt(handler);
