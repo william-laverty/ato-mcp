@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const config = { runtime: 'edge' };
 
 import { authMiddleware } from "./_middleware.js";
 import { getDocAnchors } from "@ato-pro/shared/tools/get_doc_anchors";

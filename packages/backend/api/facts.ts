@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const config = { runtime: 'edge' };
 
 // PUT /v1/facts — Web app endpoint for saving/updating user facts.
 // Called from the Next.js onboarding flow (packages/web) after the user

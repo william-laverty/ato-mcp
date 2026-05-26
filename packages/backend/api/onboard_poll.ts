@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const config = { runtime: 'edge' };
 
 // GET /api/onboard/poll?code=<8-hex-char-code>
 //

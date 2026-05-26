@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const config = { runtime: 'edge' };
 
 import { authMiddleware } from "./_middleware.js";
 import { fetchUri } from "@ato-pro/shared/tools/fetch";

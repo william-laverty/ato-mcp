@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+export const config = { runtime: 'edge' };
 
 // POST /v1/usage_event — Privacy-safe analytics ingest.
 // Records one of the allowed event types; does NOT log query text or results.
