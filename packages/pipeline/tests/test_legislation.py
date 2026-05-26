@@ -49,7 +49,10 @@ def test_legislation_source_parses_sections() -> None:
     out = src.parse_fixture(html, "itaa1997")
 
     assert len(out.docs) >= 10, f"Expected at least 10 sections; got {len(out.docs)}"
-    assert len(out.chunks) == len(out.docs), "Each doc must have exactly one chunk"
+    # Each section doc has exactly one chunk; the synthetic dictionary parent
+    # doc emitted for definitions has no chunk, so chunks == sections == docs - 1.
+    section_docs = [d for d in out.docs if not d.metadata.get("synthetic")]
+    assert len(out.chunks) == len(section_docs), "Each section doc must have exactly one chunk"
     assert all(d.doc_type == "LEGISLATION_ITAA1997" for d in out.docs)
     assert all(d.source == "legislation" for d in out.docs)
     assert all(d.jurisdiction == "AU" for d in out.docs)
@@ -96,7 +99,9 @@ def test_legislation_anchors() -> None:
     src = LegislationSource(PipelineConfig(), acts=["itaa1997"])
     out = src.parse_fixture(html, "itaa1997")
 
-    assert len(out.anchors) == len(out.docs), "One anchor per section"
+    # Anchors are one per section; synthetic dictionary doc has no anchor.
+    section_docs = [d for d in out.docs if not d.metadata.get("synthetic")]
+    assert len(out.anchors) == len(section_docs), "One anchor per section"
     # Spot-check anchor for 8-1
     anchor = next((a for a in out.anchors if "8-1" in a["anchor_id"]), None)
     assert anchor is not None
@@ -131,6 +136,23 @@ def test_legislation_definition_100_subsidiary() -> None:
     assert "100% subsidiary" in terms, f"Expected '100% subsidiary'; got keys: {list(terms.keys())[:10]}"
     body = terms["100% subsidiary"]["body"]
     assert "975" in body, "Body should reference s 975 (where term is defined)"
+
+
+def test_legislation_dictionary_doc_emitted() -> None:
+    """The dictionary parent doc must be emitted so definitions' FK is satisfied."""
+    html = _load_fixture()
+    src = LegislationSource(PipelineConfig(), acts=["itaa1997"])
+    out = src.parse_fixture(html, "itaa1997")
+
+    dict_doc = next(
+        (d for d in out.docs if d.doc_id == "legis:c2004a05138/dictionary"), None
+    )
+    assert dict_doc is not None, "Dictionary parent doc missing — definitions would orphan"
+    assert dict_doc.metadata.get("synthetic") is True
+    # Every definition row must reference an emitted doc.
+    doc_ids = {d.doc_id for d in out.docs}
+    for defn in out.definitions:
+        assert defn["doc_id"] in doc_ids, f"Definition references missing doc: {defn['doc_id']}"
 
 
 def test_legislation_doc_ids_are_unique() -> None:

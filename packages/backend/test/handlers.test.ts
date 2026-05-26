@@ -10,7 +10,7 @@ const MOCK_TOKEN = "atompro_v1_testtoken";
 const AUTH_HEADER = `Bearer ${MOCK_TOKEN}`;
 
 function makePostRequest(body: unknown): Request {
-  return new Request("https://api.ato-mcp.com.au/v1/test", {
+  return new Request("https://api.ato-mcp.com.au/test", {
     method: "POST",
     headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
     body: JSON.stringify(body),
@@ -35,7 +35,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 // stats handler
 // ---------------------------------------------------------------------------
-describe("GET /v1/stats", () => {
+describe("GET /stats", () => {
   it("returns stats with installed=true", async () => {
     const { handler } = await import("../api/stats.js");
     const resp = await handler(makePostRequest({}));
@@ -47,7 +47,7 @@ describe("GET /v1/stats", () => {
 
   it("returns 401 without auth", async () => {
     const { handler } = await import("../api/stats.js");
-    const req = new Request("https://api.ato-mcp.com.au/v1/stats", { method: "POST", body: "{}" });
+    const req = new Request("https://api.ato-mcp.com.au/stats", { method: "POST", body: "{}" });
     const resp = await handler(req);
     expect(resp.status).toBe(401);
   });
@@ -56,7 +56,7 @@ describe("GET /v1/stats", () => {
 // ---------------------------------------------------------------------------
 // search handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/search", () => {
+describe("POST /search", () => {
   it("returns search result with hits array", async () => {
     const { handler } = await import("../api/search.js");
     const resp = await handler(makePostRequest({ query: "small business deduction", k: 5, mode: "keyword", include_old: false }));
@@ -77,7 +77,7 @@ describe("POST /v1/search", () => {
 // ---------------------------------------------------------------------------
 // get_chunks handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/get_chunks", () => {
+describe("POST /get_chunks", () => {
   it("returns chunks object", async () => {
     const { handler } = await import("../api/get_chunks.js");
     const resp = await handler(makePostRequest({ chunk_ids: ["ato:test#0"], neighbours: 0 }));
@@ -96,7 +96,7 @@ describe("POST /v1/get_chunks", () => {
 // ---------------------------------------------------------------------------
 // get_definition handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/get_definition", () => {
+describe("POST /get_definition", () => {
   it("returns ordinary definition when no statutory match", async () => {
     const { handler } = await import("../api/get_definition.js");
     const resp = await handler(makePostRequest({ term: "resident", jurisdiction: "AU" }));
@@ -111,7 +111,7 @@ describe("POST /v1/get_definition", () => {
 // ---------------------------------------------------------------------------
 // get_threshold handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/get_threshold", () => {
+describe("POST /get_threshold", () => {
   it("returns 400 when threshold not found (mock returns null)", async () => {
     const { handler } = await import("../api/get_threshold.js");
     const resp = await handler(makePostRequest({ name: "hecs_repayment_threshold" }));
@@ -123,7 +123,7 @@ describe("POST /v1/get_threshold", () => {
 // ---------------------------------------------------------------------------
 // get_doc handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/get_doc", () => {
+describe("POST /get_doc", () => {
   it("returns 400 when doc not found (mock returns null)", async () => {
     const { handler } = await import("../api/get_doc.js");
     const resp = await handler(makePostRequest({ doc_id: "ato:some-doc" }));
@@ -135,7 +135,7 @@ describe("POST /v1/get_doc", () => {
 // ---------------------------------------------------------------------------
 // get_doc_anchors handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/get_doc_anchors", () => {
+describe("POST /get_doc_anchors", () => {
   it("returns empty anchor graph from mock store", async () => {
     const { handler } = await import("../api/get_doc_anchors.js");
     const resp = await handler(makePostRequest({ doc_id: "ato:some-doc" }));
@@ -150,7 +150,7 @@ describe("POST /v1/get_doc_anchors", () => {
 // ---------------------------------------------------------------------------
 // usage_event handler
 // ---------------------------------------------------------------------------
-describe("POST /v1/usage_event", () => {
+describe("POST /usage_event", () => {
   it("returns 204 for valid event", async () => {
     const { handler } = await import("../api/usage_event.js");
     const resp = await handler(makePostRequest({ event_type: "mcp_started", mode: "hosted" }));
@@ -165,7 +165,7 @@ describe("POST /v1/usage_event", () => {
 
   it("returns 405 for GET method", async () => {
     const { handler } = await import("../api/usage_event.js");
-    const resp = await handler(makeGetRequest("/v1/usage_event"));
+    const resp = await handler(makeGetRequest("/usage_event"));
     expect(resp.status).toBe(405);
   });
 });
@@ -173,7 +173,7 @@ describe("POST /v1/usage_event", () => {
 // ---------------------------------------------------------------------------
 // facts handler (PUT)
 // ---------------------------------------------------------------------------
-describe("PUT /v1/facts", () => {
+describe("PUT /facts", () => {
   it("returns 204 for a valid facts payload", async () => {
     const { handler } = await import("../api/facts.js");
     const validFacts = {
@@ -200,7 +200,7 @@ describe("PUT /v1/facts", () => {
       facts_updated_at: "2026-01-01T00:00:00Z",
       schema_version: 1,
     };
-    const req = new Request("https://api.ato-mcp.com.au/v1/facts", {
+    const req = new Request("https://api.ato-mcp.com.au/facts", {
       method: "PUT",
       headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
       body: JSON.stringify(validFacts),
@@ -211,7 +211,7 @@ describe("PUT /v1/facts", () => {
 
   it("returns 422 for invalid facts payload", async () => {
     const { handler } = await import("../api/facts.js");
-    const req = new Request("https://api.ato-mcp.com.au/v1/facts", {
+    const req = new Request("https://api.ato-mcp.com.au/facts", {
       method: "PUT",
       headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
       body: JSON.stringify({ given_name: "" }), // fails min(1)

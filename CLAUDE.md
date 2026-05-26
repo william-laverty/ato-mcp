@@ -208,10 +208,10 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 
 ### Known issues — fix these before claiming v0.3 done
 
-1. **RemoteStore doesn't match backend endpoint names.** `packages/mcp/src/store/remote.ts` forwards to `/stats`, `/keyword_search`, `/get_chunks_raw`, `/get_doc_raw`, etc. — but backend exposes `/stats`, `/search`, `/get_chunks`, `/get_doc`, `/get_definition`, `/get_threshold`. The MCP can't actually use hosted mode until this is refactored to forward **tool calls** instead of **Store calls**. The right design is to skip dispatch in `server.ts` when `mode === "hosted"` and HTTP-POST to the matching backend tool endpoint with the args.
-2. **Vector / hybrid search on the backend is untested.** `WasmEmbedder.load()` tries to fetch the ONNX model from Xenova; if the Vercel function can't reach HuggingFace or the model is missing, vector search will throw. Keyword mode works (verified). Either bundle the model or fall back gracefully.
-3. **Definitions + thresholds reference non-existent docs.** Import inserts rows with `doc_id = "legis:c2004a05138/dictionary"` but no matching docs row exists. The FK is `ON DELETE CASCADE`; inserts succeeded because we used service-role which bypasses some checks, but cleanups will leave dangling refs. Either insert the dictionary doc or drop the FK.
-4. **Backend handler unit tests reference old `api/v1/` paths.** They'll fail until updated. The handlers themselves are fine — just the tests need import-path fixes.
+1. ~~RemoteStore endpoint name mismatch~~ — fixed. `packages/mcp/src/lib/remote-tools.ts` (RemoteToolForwarder) now forwards tool calls (not Store calls) to backend endpoints. Verified end-to-end.
+2. ~~Vector / hybrid search on the backend is untested~~ — fixed. WasmEmbedder writes to `/tmp/transformers-cache` (Vercel's only writable dir) so the model download succeeds, and the silent `!SUPABASE_URL` mock fallback was removed (only `MOCK_SUPABASE=1` triggers the stub now). Pure-vector mode returns ~0.99 cosine matches in production.
+3. ~~Definitions reference non-existent dictionary doc~~ — fixed. `_extract_definitions` in the legislation pipeline now emits a synthetic parent Doc for `legis:{series}/dictionary`, and a regression test asserts every definition references an emitted doc. A one-off SQL insert handled the in-flight Supabase corpus.
+4. ~~Backend handler unit tests reference old `api/v1/` paths~~ — fixed. URL paths stripped of `/v1/` prefix in `packages/backend/test/handlers.test.ts`; 40/40 tests pass.
 5. **Schema-version label in Supabase `meta` table is `0.3.0`; local SQLite says `0.1.0`.** Cosmetic; the migration sets it on Supabase but the pipeline CLI hard-codes the old value when packaging.
 6. **3 of 8 threshold extractors fail against live ATO pages.** Pattern adjustments needed; deferred.
 

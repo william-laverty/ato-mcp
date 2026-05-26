@@ -39,11 +39,10 @@ export class WasmEmbedder implements Embedder {
   ): Promise<WasmEmbedder> {
     if (cached && cached.modelName === modelName) return cached;
 
-    // Mock mode: skip the network download and return a zero-vector stub.
-    // Production handlers still call .embed() which yields a 384-dim zero
-    // vector — Supabase's vector search will return nothing, the keyword
-    // path takes over via RRF. Acceptable for the test smoke path.
-    if (process.env["MOCK_SUPABASE"] === "1" || !process.env["SUPABASE_URL"]) {
+    // Tests set MOCK_SUPABASE=1 to skip the ~25MB model download.
+    // Returns a zero-vector stub — vector search returns nothing useful, but
+    // keyword + RRF still produces a sensible response shape for unit tests.
+    if (process.env["MOCK_SUPABASE"] === "1") {
       const stubPipeline: PipelineFn = async () => ({
         data: new Float32Array(384),
         dims: [1, 384],

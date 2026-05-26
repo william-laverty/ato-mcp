@@ -363,7 +363,14 @@ class LegislationSource(Source):
 
             # Dictionary extraction for the designated dictionary section.
             if cfg.get("has_dictionary") and section_num == cfg.get("dictionary_section"):
-                _extract_definitions(section_html, title_id.lower(), out)
+                _extract_definitions(
+                    section_html,
+                    title_id.lower(),
+                    out,
+                    act_title=act_title,
+                    doc_type=doc_type,
+                    now=now,
+                )
 
     # ------------------------------------------------------------------
     # Class-based fixture parsing (for tests)
@@ -477,9 +484,36 @@ def _section_heading(heading: str, section_num: str) -> str:
 # Dictionary definitions extraction
 # ---------------------------------------------------------------------------
 
-def _extract_definitions(section_html: str, series_id_lower: str, out: SourceOutput) -> None:
-    """Extract defined terms from the Dictionary section HTML."""
+def _extract_definitions(
+    section_html: str,
+    series_id_lower: str,
+    out: SourceOutput,
+    *,
+    act_title: str | None = None,
+    doc_type: str | None = None,
+    now: str | None = None,
+) -> None:
+    """Extract defined terms from the Dictionary section HTML.
+
+    Emits a synthetic parent Doc row for the dictionary so foreign-key
+    constraints in downstream stores (Supabase) are satisfied: every
+    definition row references `legis:{series}/dictionary` as its source.
+    """
     dict_doc_id = f"legis:{series_id_lower}/dictionary"
+
+    if act_title and doc_type and now and not any(d.doc_id == dict_doc_id for d in out.docs):
+        out.docs.append(
+            Doc(
+                doc_id=dict_doc_id,
+                source="legislation",
+                url=f"https://www.legislation.gov.au/{series_id_lower.upper()}/latest/text",  # type: ignore[arg-type]
+                title=f"{act_title} — Dictionary",
+                jurisdiction="AU",
+                doc_type=doc_type,  # type: ignore[arg-type]
+                retrieved_at=now,
+                metadata={"synthetic": True, "kind": "dictionary"},
+            )
+        )
 
     # Each definition is a <p class="Definition"> element.
     # The term is in a bold-italic span; the body follows.
