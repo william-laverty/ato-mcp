@@ -1,0 +1,23 @@
+{
+  "name": "@ato-pro/backend",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "vercel dev",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ato-pro/shared": "workspace:*",
+    "@supabase/supabase-js": "^2.45",
+    "@xenova/transformers": "2.17.2",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.9.0",
+    "typescript": "5.6.3",
+    "vitest": "2.1.5"
+  }
+}
