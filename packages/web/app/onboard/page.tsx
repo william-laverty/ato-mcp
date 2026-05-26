@@ -71,7 +71,7 @@ export default function OnboardPage() {
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
             <h2 className="font-semibold text-amber-900 text-sm">Disclaimer</h2>
             <p className="text-sm text-amber-800">
-              ato-mcp.com is an independent tool that retrieves publicly
+              ato-mcp.com.au is an independent tool that retrieves publicly
               available ATO information. It is{" "}
               <strong>not affiliated with the Australian Taxation Office</strong>
               . Information provided is for general guidance only and does not

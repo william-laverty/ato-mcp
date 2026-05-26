@@ -85,14 +85,13 @@ Vercel will now auto-deploy both projects on every push to `main`. Pushes that o
 
 ### 6. Connect your domains (≈3 min)
 
-You own `ato-mcp.com` and `ato-mcp.com.au`.
+You own `ato-mcp.com.au` (canonical) and `ato-mcp.com` (alias). The canonical site lives at `ato-mcp.com.au`; `.com` 301-redirects to `.com.au`.
 
 In Vercel:
 
-1. `ato-mcp-web` project → **Settings → Domains** → add `ato-mcp.com` and `www.ato-mcp.com`. Vercel will show DNS records to add at your registrar.
-2. `ato-mcp-backend` project → **Settings → Domains** → add `api.ato-mcp.com`.
-3. At your domain registrar (wherever you bought ato-mcp.com), point the records as Vercel instructs. Apex A record + www CNAME for the main site; CNAME for api.
-4. For ato-mcp.com.au — set up a 301 redirect to ato-mcp.com from your registrar's DNS (or skip for now if your registrar doesn't support redirects; we can add a redirect inside the Next.js app later).
+1. `ato-mcp-web` project → **Settings → Domains** → add `ato-mcp.com.au` and `www.ato-mcp.com.au` as the primary. Add `ato-mcp.com` and `www.ato-mcp.com` as **redirect domains** pointing to `https://ato-mcp.com.au`. Vercel will show DNS records to add at each registrar.
+2. `ato-mcp-backend` project → **Settings → Domains** → add `api.ato-mcp.com.au`.
+3. At your domain registrar(s), point the records as Vercel instructs. Apex A record + www CNAME for both main sites; CNAME for api.
 
 DNS propagation takes 5–60 minutes. Don't wait — proceed to step 7 in parallel.
 
@@ -121,7 +120,7 @@ Don't read this section while you're doing Part 1 — it'll be in the next conve
 5. Trigger a fresh deploy after the env vars are in place.
 6. Run the RLS verification tests against the real Postgres.
 7. Wire the hosted-mode `get_user_facts` fetch (currently a stub).
-8. Smoke-test end-to-end: visit `ato-mcp.com/onboard` in the browser, complete the magic-link flow, get the bearer token, configure Claude Code in hosted mode, verify the MCP works.
+8. Smoke-test end-to-end: visit `ato-mcp.com.au/onboard` in the browser, complete the magic-link flow, get the bearer token, configure Claude Code in hosted mode, verify the MCP works.
 9. Update HANDOFF.md with the actual deployed state.
 
 Total time for me: probably 1–2 hours of mostly automated work.

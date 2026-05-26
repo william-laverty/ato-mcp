@@ -5,7 +5,7 @@ import { authMiddleware } from "../api/_middleware.js";
 // Helper to create a minimal Request with an Authorization header
 // ---------------------------------------------------------------------------
 function makeRequest(authorization?: string): Request {
-  return new Request("https://api.ato-mcp.com/v1/stats", {
+  return new Request("https://api.ato-mcp.com.au/v1/stats", {
     method: "POST",
     headers: authorization ? { authorization } : {},
     body: "{}",

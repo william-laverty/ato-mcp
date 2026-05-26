@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && pnpm install --filter '@ato-pro/backend...'",
+  "installCommand": "cd ../.. && pnpm install --filter \"@ato-pro/backend...\" --frozen-lockfile --config.confirmModulesPurge=false",
   "buildCommand": "cd ../.. && pnpm --filter @ato-pro/shared build && pnpm --filter @ato-pro/backend build",
   "functions": {
     "api/v1/*.ts": { "memory": 1024, "maxDuration": 30 },

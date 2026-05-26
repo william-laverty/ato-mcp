@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-const BASE_URL = process.env.ATO_MCP_WEB_URL ?? "https://ato-mcp.com";
+const BASE_URL = process.env.ATO_MCP_WEB_URL ?? "https://ato-mcp.com.au";
 const POLL_INTERVAL_MS = 3_000;
 const POLL_TIMEOUT_MS = 5 * 60 * 1_000; // 5 minutes
 

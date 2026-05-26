@@ -182,7 +182,7 @@ export async function runMcp(): Promise<void> {
       throw new Error("Hosted mode configured but api_endpoint/bearer_token missing in config");
     }
     store = new RemoteStore(cfg.api_endpoint, cfg.bearer_token);
-    // TODO(hosted): fetch facts from https://api.ato-mcp.com/v1/facts once at startup
+    // TODO(hosted): fetch facts from https://api.ato-mcp.com.au/v1/facts once at startup
     // and cache for the session once the hosted backend exists.
   } else {
     const dbPath = corpusPath();

@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && pnpm install --filter '@ato-pro/web...'",
+  "version": 2,
+  "installCommand": "cd ../.. && pnpm install --filter \"@ato-pro/web...\" --frozen-lockfile --config.confirmModulesPurge=false",
   "buildCommand": "cd ../.. && pnpm --filter @ato-pro/shared build && pnpm --filter @ato-pro/web build",
-  "outputDirectory": ".next",
-  "framework": "nextjs"
+  "outputDirectory": ".next"
 }

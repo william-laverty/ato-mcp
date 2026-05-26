@@ -15,7 +15,7 @@ export default function TermsPage() {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-900">1. Acceptance</h2>
           <p className="text-gray-700">
-            By using ato-mcp.com (&quot;the Service&quot;), you agree to these Terms of
+            By using ato-mcp.com.au (&quot;the Service&quot;), you agree to these Terms of
             Service. If you do not agree, do not use the Service.
           </p>
         </section>

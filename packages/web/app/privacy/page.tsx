@@ -67,7 +67,7 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-900">1. Overview</h2>
           <p className="text-gray-700">
-            ato-mcp.com (&quot;we&quot;, &quot;our&quot;, &quot;the service&quot;) is an independent tool that
+            ato-mcp.com.au (&quot;we&quot;, &quot;our&quot;, &quot;the service&quot;) is an independent tool that
             provides access to publicly available Australian Taxation Office
             information via the Model Context Protocol. We collect minimal
             personal information to deliver a personalised experience.
@@ -162,10 +162,10 @@ export default function PrivacyPage() {
           <p className="text-gray-700">
             For privacy enquiries, contact us at{" "}
             <a
-              href="mailto:privacy@ato-mcp.com"
+              href="mailto:privacy@ato-mcp.com.au"
               className="text-blue-600 hover:underline"
             >
-              privacy@ato-mcp.com
+              privacy@ato-mcp.com.au
             </a>
             .
           </p>

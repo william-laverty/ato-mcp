@@ -10,7 +10,7 @@ const MOCK_TOKEN = "atompro_v1_testtoken";
 const AUTH_HEADER = `Bearer ${MOCK_TOKEN}`;
 
 function makePostRequest(body: unknown): Request {
-  return new Request("https://api.ato-mcp.com/v1/test", {
+  return new Request("https://api.ato-mcp.com.au/v1/test", {
     method: "POST",
     headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
     body: JSON.stringify(body),
@@ -18,7 +18,7 @@ function makePostRequest(body: unknown): Request {
 }
 
 function makeGetRequest(path: string): Request {
-  return new Request(`https://api.ato-mcp.com${path}`, {
+  return new Request(`https://api.ato-mcp.com.au${path}`, {
     method: "GET",
     headers: { authorization: AUTH_HEADER },
   });
@@ -47,7 +47,7 @@ describe("GET /v1/stats", () => {
 
   it("returns 401 without auth", async () => {
     const { default: handler } = await import("../api/v1/stats.js");
-    const req = new Request("https://api.ato-mcp.com/v1/stats", { method: "POST", body: "{}" });
+    const req = new Request("https://api.ato-mcp.com.au/v1/stats", { method: "POST", body: "{}" });
     const resp = await handler(req);
     expect(resp.status).toBe(401);
   });
@@ -200,7 +200,7 @@ describe("PUT /v1/facts", () => {
       facts_updated_at: "2026-01-01T00:00:00Z",
       schema_version: 1,
     };
-    const req = new Request("https://api.ato-mcp.com/v1/facts", {
+    const req = new Request("https://api.ato-mcp.com.au/v1/facts", {
       method: "PUT",
       headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
       body: JSON.stringify(validFacts),
@@ -211,7 +211,7 @@ describe("PUT /v1/facts", () => {
 
   it("returns 422 for invalid facts payload", async () => {
     const { default: handler } = await import("../api/v1/facts.js");
-    const req = new Request("https://api.ato-mcp.com/v1/facts", {
+    const req = new Request("https://api.ato-mcp.com.au/v1/facts", {
       method: "PUT",
       headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
       body: JSON.stringify({ given_name: "" }), // fails min(1)
@@ -227,7 +227,7 @@ describe("PUT /v1/facts", () => {
 describe("GET /api/onboard/poll", () => {
   it("returns ready=false for unknown code", async () => {
     const { default: handler } = await import("../api/onboard/poll.js");
-    const req = new Request("https://api.ato-mcp.com/api/onboard/poll?code=abcd1234", {
+    const req = new Request("https://api.ato-mcp.com.au/api/onboard/poll?code=abcd1234", {
       method: "GET",
       headers: { authorization: AUTH_HEADER },
     });
@@ -239,7 +239,7 @@ describe("GET /api/onboard/poll", () => {
 
   it("returns 400 for missing code", async () => {
     const { default: handler } = await import("../api/onboard/poll.js");
-    const req = new Request("https://api.ato-mcp.com/api/onboard/poll", {
+    const req = new Request("https://api.ato-mcp.com.au/api/onboard/poll", {
       method: "GET",
       headers: { authorization: AUTH_HEADER },
     });
@@ -249,7 +249,7 @@ describe("GET /api/onboard/poll", () => {
 
   it("returns 400 for invalid code format", async () => {
     const { default: handler } = await import("../api/onboard/poll.js");
-    const req = new Request("https://api.ato-mcp.com/api/onboard/poll?code=toolong12345", {
+    const req = new Request("https://api.ato-mcp.com.au/api/onboard/poll?code=toolong12345", {
       method: "GET",
       headers: { authorization: AUTH_HEADER },
     });

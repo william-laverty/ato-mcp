@@ -64,7 +64,7 @@ export default async function handler(req: Request): Promise<Response> {
   await svc.from("onboard_sessions").delete().eq("code", code);
 
   const apiEndpoint =
-    process.env["ATO_PRO_API_ENDPOINT"] ?? "https://api.ato-mcp.com";
+    process.env["ATO_PRO_API_ENDPOINT"] ?? "https://api.ato-mcp.com.au";
 
   return Response.json({
     ready: true,
