@@ -1,7 +1,9 @@
-import { authMiddleware } from "../_middleware.js";
-import { getDocAnchors } from "@ato-pro/shared/tools/get_doc_anchors";
-import { GetDocAnchorsInputSchema } from "@ato-pro/shared";
-import { SupabaseStore } from "../../src/supabase-store.js";
+export const runtime = 'edge';
+
+import { authMiddleware } from "./_middleware.js";
+import { getDoc } from "@ato-pro/shared/tools/get_doc";
+import { GetDocInputSchema } from "@ato-pro/shared";
+import { SupabaseStore } from "../src/supabase-store.js";
 
 const store = new SupabaseStore();
 
@@ -10,8 +12,8 @@ export default async function handler(req: Request): Promise<Response> {
   if (auth instanceof Response) return auth;
   try {
     const body = await req.json() as unknown;
-    const args = GetDocAnchorsInputSchema.parse(body);
-    const result = await getDocAnchors({ store }, args);
+    const args = GetDocInputSchema.parse(body);
+    const result = await getDoc({ store }, args);
     return Response.json(result);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);

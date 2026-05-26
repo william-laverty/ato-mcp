@@ -1,9 +1,11 @@
+export const runtime = 'edge';
+
 // POST /v1/usage_event — Privacy-safe analytics ingest.
 // Records one of the allowed event types; does NOT log query text or results.
 
 import { z } from "zod";
-import { authMiddleware } from "../_middleware.js";
-import { makeServiceClient } from "../../src/supabase.js";
+import { authMiddleware } from "./_middleware.js";
+import { makeServiceClient } from "../src/supabase.js";
 
 const UsageEventSchema = z.object({
   event_type: z.enum([

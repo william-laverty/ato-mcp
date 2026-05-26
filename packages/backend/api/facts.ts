@@ -1,10 +1,12 @@
+export const runtime = 'edge';
+
 // PUT /v1/facts — Web app endpoint for saving/updating user facts.
 // Called from the Next.js onboarding flow (packages/web) after the user
 // completes the FactsWizard. Uses Bearer token auth (same as all other endpoints).
 
-import { authMiddleware } from "../_middleware.js";
+import { authMiddleware } from "./_middleware.js";
 import { UserFactsSchema } from "@ato-pro/shared";
-import { makeServiceClient } from "../../src/supabase.js";
+import { makeServiceClient } from "../src/supabase.js";
 
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== "PUT" && req.method !== "POST") {

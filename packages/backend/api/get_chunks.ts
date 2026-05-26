@@ -1,7 +1,9 @@
-import { authMiddleware } from "../_middleware.js";
+export const runtime = 'edge';
+
+import { authMiddleware } from "./_middleware.js";
 import { getChunks } from "@ato-pro/shared/tools/get_chunks";
 import { GetChunksInputSchema } from "@ato-pro/shared";
-import { SupabaseStore } from "../../src/supabase-store.js";
+import { SupabaseStore } from "../src/supabase-store.js";
 
 const store = new SupabaseStore();
 

@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 // GET /api/onboard/poll?code=<8-hex-char-code>
 //
 // Polled by the CLI onboard command after opening the browser. Returns
@@ -7,7 +9,7 @@
 // Short-lived sessions are stored in the onboard_sessions table and expire
 // after 15 minutes (enforced by the expires_at column + DB constraint).
 
-import { makeServiceClient } from "../../src/supabase.js";
+import { makeServiceClient } from "../src/supabase.js";
 
 interface OnboardSession {
   code: string;

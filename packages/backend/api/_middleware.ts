@@ -8,8 +8,18 @@
 // windows. TODO: swap for Vercel KV once credentials are available so the limit
 // persists across function instances.
 
-import { createHash } from "node:crypto";
 import { makeServiceClient } from "../src/supabase.js";
+
+// Web Crypto sha256 → hex (Edge-runtime safe; no node:crypto import)
+async function sha256Hex(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  const bytes = new Uint8Array(buf);
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) {
+    out += bytes[i]!.toString(16).padStart(2, "0");
+  }
+  return out;
+}
 
 // ---------------------------------------------------------------------------
 // In-memory rate limit (dev/test fallback; replace with KV in production)
@@ -73,7 +83,7 @@ export async function authMiddleware(
   }
 
   // Production: sha256 hash lookup
-  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const tokenHash = await sha256Hex(token);
   const svc = makeServiceClient();
   const { data, error } = await svc
     .from("bearer_tokens")
