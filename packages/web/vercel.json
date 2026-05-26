@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && pnpm install --filter '@ato-pro/web...' && pnpm --filter @ato-pro/shared build && pnpm --filter @ato-pro/web build",
-  "installCommand": "echo 'install handled by buildCommand'",
+  "installCommand": "cd ../.. && pnpm install --filter '@ato-pro/web...'",
+  "buildCommand": "cd ../.. && pnpm --filter @ato-pro/shared build && pnpm --filter @ato-pro/web build",
   "outputDirectory": ".next",
   "framework": "nextjs"
 }
