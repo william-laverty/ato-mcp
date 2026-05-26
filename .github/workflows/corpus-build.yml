@@ -42,7 +42,7 @@ jobs:
         run: |
           uv run ato-pipeline build \
             --out-dir corpus-out \
-            --sources ato_website,legislation,thresholds
+            --sources ato_website,legislation,thresholds,law_ato
 
       - name: Package corpus (manifest + zstd compression)
         working-directory: packages/pipeline
