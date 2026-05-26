@@ -66,7 +66,7 @@ pnpm --filter @ato-pro/backend build
 3. Import the corpus (run the pipeline and import script)
 4. Set environment variables in Vercel:
    - `SUPABASE_URL` — your project URL (e.g. `https://xxxx.supabase.co`)
-   - `SUPABASE_SERVICE_ROLE_KEY` — service role key (never expose to client)
+   - `SUPABASE_SECRET_KEY` — Supabase secret key (`sb_secret_...`, replaces legacy service_role; never expose to client)
    - `ATO_PRO_API_ENDPOINT` — this function's own URL (e.g. `https://api.ato-mcp.com`)
 5. Deploy: `vercel --cwd packages/backend`
 

@@ -27,13 +27,13 @@ export function makeServiceClient(): SupabaseClient {
   if (
     process.env.MOCK_SUPABASE === "1" ||
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.SUPABASE_SERVICE_ROLE_KEY
+    !process.env.SUPABASE_SECRET_KEY
   ) {
     return mockServiceClient();
   }
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    process.env.SUPABASE_SECRET_KEY,
     {
       auth: {
         autoRefreshToken: false,

@@ -25,17 +25,17 @@ CI should already be running on the most recent push — check the **Actions** t
 
 ### 3. Capture the Supabase credentials
 
-Once the project is provisioned, go to **Project Settings → API**:
+Supabase has moved off the legacy `anon` / `service_role` JWT keys to a new key system. We use the **new** keys:
 
-- **Project URL** — looks like `https://abcdefgh.supabase.co`
-- **anon public key** — long string starting with `eyJ...`
-- **service_role secret** — long string starting with `eyJ...` (treat this like a password — it bypasses RLS)
+Once the project is provisioned, go to **Project Settings → API Keys**:
 
-And **Project Settings → Database → Connection string → URI** for the migration step:
+- **Project URL** — `https://<ref>.supabase.co` (Settings → Data API)
+- **Publishable key** — starts with `sb_publishable_...`. Safe to expose to the browser; replaces the legacy `anon` key.
+- **Secret key** — starts with `sb_secret_...`. Server-side only; bypasses RLS; replaces the legacy `service_role` key. Treat like a password.
 
-- Format: `postgresql://postgres.<ref>:<password>@<host>:5432/postgres`
+Save all three somewhere temporary. You'll paste them into Vercel env vars in step 5.
 
-Save all four somewhere temporary (e.g. a scratch text file). You'll paste them into Vercel env vars in step 5.
+(Optional — only if you'd rather run migrations locally: **Project Settings → Database → Connection string → URI**. We don't need this; I'll run migrations via the Supabase MCP from this Claude session.)
 
 ### 4. Connect the Supabase MCP to this session
 
@@ -50,36 +50,38 @@ Once connected, **I can run the SQL migrations for you** in the next phase. You 
 
 ### 5. Create the two Vercel projects
 
-You said the Vercel MCP is connected but no project yet. The cleanest path:
+**Both projects import the same GitHub repo** (`william-laverty/ato-mcp`). Vercel supports this monorepo pattern natively — what makes them different is the **Root Directory** setting. Do NOT create blank projects.
 
 1. Go to https://vercel.com/new
 2. Click **Import Git Repository** and pick `william-laverty/ato-mcp`
 3. **First project — the web app**:
    - **Project name**: `ato-mcp-web`
-   - **Root directory**: `packages/web`
-   - **Framework preset**: Next.js (auto-detected)
+   - **Root directory**: `packages/web` (this is the key setting — Vercel will only watch this subtree)
+   - **Framework preset**: Next.js (auto-detected once root dir is set)
    - **Build command**: `cd ../.. && pnpm install && pnpm --filter @ato-pro/web build`
    - **Output directory**: `.next` (default)
    - **Install command**: leave blank (the build command handles it)
    - **Environment variables** — add these from step 3:
      - `NEXT_PUBLIC_SUPABASE_URL` = your Project URL
-     - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = your anon public key
-     - `SUPABASE_URL` = your Project URL (same as above)
-     - `SUPABASE_SERVICE_ROLE_KEY` = your service_role secret
-     - `NEXT_PUBLIC_WEB_URL` = (leave blank for now, we'll set after the domain is wired)
-     - `NEXT_PUBLIC_API_URL` = (leave blank for now)
+     - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` = your publishable key (starts with `sb_publishable_`)
+     - `SUPABASE_URL` = same as `NEXT_PUBLIC_SUPABASE_URL`
+     - `SUPABASE_SECRET_KEY` = your secret key (starts with `sb_secret_`)
+     - `NEXT_PUBLIC_WEB_URL` = leave blank for now; we'll set after domain wiring
+     - `NEXT_PUBLIC_API_URL` = leave blank for now
    - Click **Deploy**. First deploy will succeed using mocked data; we'll switch over to real Supabase after migrations.
 
 4. **Second project — the backend**:
-   - Go to https://vercel.com/new again, pick the same repo
+   - Go to https://vercel.com/new again and import the **same** repo (`william-laverty/ato-mcp`)
    - **Project name**: `ato-mcp-backend`
    - **Root directory**: `packages/backend`
    - **Framework preset**: Other (no framework — just functions)
    - **Build command**: `cd ../.. && pnpm install && pnpm --filter @ato-pro/backend build`
    - **Environment variables** (same as above except no `NEXT_PUBLIC_*`):
      - `SUPABASE_URL` = your Project URL
-     - `SUPABASE_SERVICE_ROLE_KEY` = your service_role secret
+     - `SUPABASE_SECRET_KEY` = your secret key
    - Click **Deploy**.
+
+Vercel will now auto-deploy both projects on every push to `main`. Pushes that only touch `packages/web/` won't redeploy the backend (and vice versa) — Vercel's Ignored Build Step detects per-root changes.
 
 ### 6. Connect your domains (≈3 min)
 

@@ -95,7 +95,7 @@ The schema↔privacy contract test exists (`packages/web/test/privacy-contract.t
 
 Nothing is deployed. The user must:
 
-1. **Create Supabase project**. Get `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+1. **Create Supabase project**. Get the project URL, publishable key (`sb_publishable_...`), and secret key (`sb_secret_...`).
 2. **Apply migrations in order**:
    ```bash
    psql "$SUPABASE_DB_URL" < packages/backend/migrations/0001_corpus_schema.sql
@@ -106,8 +106,8 @@ Nothing is deployed. The user must:
    Enable pgvector extension first: `CREATE EXTENSION IF NOT EXISTS vector;`
 3. **Import corpus to Supabase** — write a small script (`packages/backend/scripts/import-corpus.ts`, TBD) that reads `ato.sqlite` and batch-inserts into Postgres. Granite embedding swap happens around the same time so we don't have to import twice.
 4. **Configure Supabase Auth** — set magic-link sender domain to `auth.ato-mcp.com` (CNAME → Supabase) or use Supabase's default sender for dev.
-5. **Deploy `packages/web` to Vercel** — `ato-mcp.com` and `www.ato-mcp.com.au`. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel env.
-6. **Deploy `packages/backend` to Vercel** at `api.ato-mcp.com`. Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` in Vercel env.
+5. **Deploy `packages/web` to Vercel** — `ato-mcp.com` and `www.ato-mcp.com.au`. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY` in Vercel env.
+6. **Deploy `packages/backend` to Vercel** at `api.ato-mcp.com`. Set `SUPABASE_URL`, `SUPABASE_SECRET_KEY` in Vercel env.
 7. **Test the end-to-end onboarding flow** through a real magic-link email.
 8. **(Optional)** swap in-memory rate-limit for `@vercel/kv` in `packages/backend/api/_middleware.ts`.
 

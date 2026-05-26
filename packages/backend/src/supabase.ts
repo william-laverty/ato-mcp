@@ -68,13 +68,13 @@ export function makeServiceClient(): SupabaseClient {
   if (
     process.env["MOCK_SUPABASE"] === "1" ||
     !process.env["SUPABASE_URL"] ||
-    !process.env["SUPABASE_SERVICE_ROLE_KEY"]
+    !process.env["SUPABASE_SECRET_KEY"]
   ) {
     return mockSupabaseClient();
   }
   return createClient(
     process.env["SUPABASE_URL"],
-    process.env["SUPABASE_SERVICE_ROLE_KEY"],
+    process.env["SUPABASE_SECRET_KEY"],
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
 }
