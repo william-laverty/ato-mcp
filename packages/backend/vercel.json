@@ -1,5 +1,7 @@
 {
-  "version": 2,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ../.. && pnpm install --filter '@ato-pro/backend...' && pnpm --filter @ato-pro/shared build && pnpm --filter @ato-pro/backend build",
+  "installCommand": "echo 'install handled by buildCommand'",
   "functions": {
     "api/v1/*.ts": { "memory": 1024, "maxDuration": 30 },
     "api/onboard/*.ts": { "memory": 256, "maxDuration": 10 }
