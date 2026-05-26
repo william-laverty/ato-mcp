@@ -5,7 +5,7 @@
     "rootDir": ".",
     "moduleResolution": "bundler",
     "module": "ESNext",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "noEmit": false
   },
   "include": ["src/**/*", "api/**/*"]
