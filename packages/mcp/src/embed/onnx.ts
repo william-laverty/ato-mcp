@@ -17,8 +17,8 @@ export class OnnxEmbedder {
   static async load(
     modelName = "onnx-community/granite-embedding-small-english-r2-ONNX",
   ): Promise<OnnxEmbedder> {
-    // @huggingface/transformers is ESM-only; dynamic import to keep the rest sync-friendly.
-    const mod = await import("@huggingface/transformers");
+    // @xenova/transformers is ESM-only; dynamic import to keep the rest sync-friendly.
+    const mod = await import("@xenova/transformers");
     const pipelineFn = (mod as unknown as { pipeline: PipelineCtor }).pipeline;
     const pipeline = await pipelineFn("feature-extraction", modelName);
     return new OnnxEmbedder(pipeline, modelName);

@@ -51,7 +51,7 @@ export class WasmEmbedder implements Embedder {
       return cached;
     }
 
-    const mod = await import("@huggingface/transformers");
+    const mod = await import("@xenova/transformers");
 
     // Vercel functions have a read-only filesystem except for /tmp.
     // Point the transformers cache there so model downloads don't fail

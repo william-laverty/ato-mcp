@@ -4,10 +4,5 @@
   "buildCommand": "cd ../.. && pnpm --filter @ato-mcp/shared build && pnpm --filter @ato-mcp/backend build",
   "rewrites": [
     { "source": "/:path((?!api|public).*)", "destination": "/api/:path" }
-  ],
-  "functions": {
-    "api/**/*.ts": {
-      "excludeFiles": "**/onnxruntime-node*/bin/napi-v*/{darwin,win32}/**"
-    }
-  }
+  ]
 }

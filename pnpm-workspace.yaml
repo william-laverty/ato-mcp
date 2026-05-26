@@ -1,7 +1,5 @@
 packages:
   - packages/*
 
-# sharp@0.32.6 was patched for Node 23+ ABI when @xenova/transformers
-# pulled in that older sharp release. @huggingface/transformers v4 no
-# longer depends on sharp 0.32, so the patch is no longer needed.
-# patchedDependencies: {}
+patchedDependencies:
+  sharp@0.32.6: patches/sharp@0.32.6.patch

@@ -33,9 +33,6 @@ class PipelineConfig:
     )
     max_pages_per_seed: int = 80
     max_total_pages: int = 0  # 0 = no cap; take whatever the sitemap yields after filtering
-    # Granite r2 small (ModernBERT, 384-dim). Same dim as MiniLM so the
-    # vector(384) column needs no migration; quality is ~5 MTEB points
-    # higher on average and tends to do better on legal/technical text.
-    embedding_model: str = "ibm-granite/granite-embedding-small-english-r2"
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     chunk_max_chars: int = 1800  # ~450 tokens at ~4 chars/token
     chunk_overlap_chars: int = 200

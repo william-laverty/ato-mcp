@@ -8,7 +8,7 @@ import { dataDir as defaultDataDir } from "./paths.js";
 // Constants
 // ---------------------------------------------------------------------------
 
-const EXPECTED_EMBEDDING_MODEL = "ibm-granite/granite-embedding-small-english-r2";
+const EXPECTED_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2";
 const DEFAULT_RELEASE_REPO = "williaml/ato-mcp";
 const CORPUS_ASSET_RE = /^ato-corpus-v.*\.sqlite\.zst$/;
 
