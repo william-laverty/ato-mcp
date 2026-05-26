@@ -235,6 +235,19 @@ def build(
             deduped_chunks.append(c)
     all_chunks = deduped_chunks
 
+    # ------------------------------------------------------------------
+    # Citations: scan every chunk's text for outbound legislation +
+    # ruling references and resolve to existing doc_ids.
+    # ------------------------------------------------------------------
+    from .extractors.citations import extract_for_chunks
+
+    valid_doc_ids: set[str] = {d.doc_id for d in all_docs}
+    typer.echo(f"Extracting citations from {len(all_chunks)} chunks...")
+    all_citations.extend(
+        extract_for_chunks(((c.chunk_id, c.text) for c in all_chunks), valid_doc_ids)
+    )
+    typer.echo(f"      {len(all_citations)} resolved citation rows")
+
     typer.echo(f"[3/4] Embedding {len(all_chunks)} chunks with {cfg.embedding_model}...")
     embedder = Embedder(cfg.embedding_model)
     texts = [c.text for c in all_chunks]
