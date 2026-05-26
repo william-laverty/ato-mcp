@@ -39,7 +39,32 @@ export class WasmEmbedder implements Embedder {
   ): Promise<WasmEmbedder> {
     if (cached && cached.modelName === modelName) return cached;
 
+    // Mock mode: skip the network download and return a zero-vector stub.
+    // Production handlers still call .embed() which yields a 384-dim zero
+    // vector — Supabase's vector search will return nothing, the keyword
+    // path takes over via RRF. Acceptable for the test smoke path.
+    if (process.env["MOCK_SUPABASE"] === "1" || !process.env["SUPABASE_URL"]) {
+      const stubPipeline: PipelineFn = async () => ({
+        data: new Float32Array(384),
+        dims: [1, 384],
+      });
+      cached = new WasmEmbedder(stubPipeline, `${modelName}#mock`);
+      return cached;
+    }
+
     const mod = await import("@xenova/transformers");
+
+    // Vercel functions have a read-only filesystem except for /tmp.
+    // Point the transformers cache there so model downloads don't fail
+    // silently with "An error occurred while writing to ..." warnings.
+    const env = (mod as unknown as { env: Record<string, unknown> }).env;
+    if (env) {
+      env.cacheDir = "/tmp/transformers-cache";
+      env.useFSCache = true;
+      env.allowLocalModels = false;
+      env.allowRemoteModels = true;
+    }
+
     const pipelineFn = (
       mod as unknown as { pipeline: PipelineCtor }
     ).pipeline;
