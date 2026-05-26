@@ -9,7 +9,7 @@ export interface GetDocOutput {
 }
 
 export async function getDoc(deps: GetDocDeps, args: GetDocInput): Promise<GetDocOutput> {
-  if (!deps.store) throw new Error("Corpus not installed. Run `ato-pro-mcp update`.");
+  if (!deps.store) throw new Error("Corpus not installed. Run `ato-mcp update`.");
   const out = await deps.store.getDoc(args.doc_id);
   if (!out) throw new Error(`Document not found: ${args.doc_id}`);
   return out;

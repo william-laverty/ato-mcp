@@ -1,4 +1,4 @@
-# ato-pro
+# ato-mcp
 
 Local-first MCP server for the Australian Taxation Office corpus. v0.1 scaffolding release.
 
@@ -22,10 +22,10 @@ pnpm test
 cd packages/pipeline && uv run ato-pipeline --out-dir corpus-out && cd ../..
 
 # Install corpus
-node packages/mcp/bin/ato-pro-mcp.js update ./packages/pipeline/corpus-out/ato.sqlite
+node packages/mcp/bin/ato-mcp.js update ./packages/pipeline/corpus-out/ato.sqlite
 
 # Verify
-node packages/mcp/bin/ato-pro-mcp.js stats
+node packages/mcp/bin/ato-mcp.js stats
 
 # Smoke test (no network)
 bash scripts/smoke.sh
@@ -38,9 +38,9 @@ In `~/.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "ato-pro": {
+    "ato-mcp": {
       "command": "node",
-      "args": ["/absolute/path/to/ato-pro/packages/mcp/bin/ato-pro-mcp.js", "mcp"]
+      "args": ["/absolute/path/to/ato-mcp/packages/mcp/bin/ato-mcp.js", "mcp"]
     }
   }
 }

@@ -5,7 +5,7 @@
 // The model is cached in-module after the first WasmEmbedder.load() call so
 // that subsequent requests in the same Vercel function instance are fast.
 
-import type { Embedder } from "@ato-pro/shared";
+import type { Embedder } from "@ato-mcp/shared";
 
 type PipelineCtor = (task: string, model: string) => Promise<PipelineFn>;
 type PipelineFn = (

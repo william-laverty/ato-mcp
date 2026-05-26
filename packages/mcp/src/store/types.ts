@@ -1,5 +1,5 @@
-// Re-export Store interface and related types from @ato-pro/shared
-// Kept for backwards compatibility; prefer importing directly from @ato-pro/shared.
+// Re-export Store interface and related types from @ato-mcp/shared
+// Kept for backwards compatibility; prefer importing directly from @ato-mcp/shared.
 export type {
   Store,
   StatsResult,
@@ -9,4 +9,4 @@ export type {
   CitationRow,
   DocResult,
   AnchorGraph,
-} from "@ato-pro/shared";
+} from "@ato-mcp/shared";

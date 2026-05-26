@@ -1,10 +1,10 @@
 import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
-import { fetchUri } from "@ato-pro/shared/tools/fetch";
-import { FetchInputSchema } from "@ato-pro/shared";
+import { fetchUri } from "@ato-mcp/shared/tools/fetch";
+import { FetchInputSchema } from "@ato-mcp/shared";
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {

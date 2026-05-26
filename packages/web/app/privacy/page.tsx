@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UserFactsSchema } from "@ato-pro/shared";
+import { UserFactsSchema } from "@ato-mcp/shared";
 import { z } from "zod";
 
 // UserFactsSchema uses .superRefine() which wraps it in ZodEffects.

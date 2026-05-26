@@ -7,7 +7,7 @@ from pathlib import Path
 @dataclass(frozen=True)
 class PipelineConfig:
     out_dir: Path = field(default_factory=lambda: Path("corpus-out"))
-    user_agent: str = "ato-pro/0.1 (+https://github.com/williaml/ato-pro)"
+    user_agent: str = "ato-mcp/0.1 (+https://github.com/williaml/ato-mcp)"
     request_timeout_s: float = 30.0
     request_concurrency: int = 6
     request_per_host_delay_s: float = 0.3

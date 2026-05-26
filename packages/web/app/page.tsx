@@ -25,7 +25,7 @@ export default function HomePage() {
             Get started
           </Link>
           <a
-            href="https://github.com/ato-pro"
+            href="https://github.com/ato-mcp"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-6 py-3 text-base font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"

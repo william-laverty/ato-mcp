@@ -21,7 +21,7 @@ from .scrape import canonical_doc_id, crawl, crawl_from_sitemap
 from . import manifest as _manifest_mod
 
 
-app = typer.Typer(help="ato-pro corpus pipeline")
+app = typer.Typer(help="ato-mcp corpus pipeline")
 
 
 @app.command()

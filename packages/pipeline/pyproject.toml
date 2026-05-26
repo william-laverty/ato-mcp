@@ -1,7 +1,7 @@
 [project]
 name = "ato-pipeline"
 version = "0.1.0"
-description = "ato-pro corpus pipeline"
+description = "ato-mcp corpus pipeline"
 requires-python = ">=3.12"
 dependencies = [
   "httpx[http2]>=0.27",

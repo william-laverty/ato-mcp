@@ -3,7 +3,7 @@ import Link from "next/link";
 import { makeServerClient } from "@/lib/supabase/server";
 import { makeServiceClient } from "@/lib/supabase/service";
 import FactsWizard from "@/components/FactsWizard";
-import type { UserFacts } from "@ato-pro/shared";
+import type { UserFacts } from "@ato-mcp/shared";
 
 export default async function EditFactsPage() {
   const client = await makeServerClient();

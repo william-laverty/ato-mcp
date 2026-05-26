@@ -1,12 +1,12 @@
 import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
-import { getUserFacts } from "@ato-pro/shared/tools/get_user_facts";
-import { UserFactsSchema } from "@ato-pro/shared";
-import type { UserFacts } from "@ato-pro/shared";
+import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
+import { UserFactsSchema } from "@ato-mcp/shared";
+import type { UserFacts } from "@ato-mcp/shared";
 import { makeServiceClient } from "../src/supabase.js";
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {

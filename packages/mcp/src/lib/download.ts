@@ -9,7 +9,7 @@ import { dataDir as defaultDataDir } from "./paths.js";
 // ---------------------------------------------------------------------------
 
 const EXPECTED_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2";
-const DEFAULT_RELEASE_REPO = "williaml/ato-pro";
+const DEFAULT_RELEASE_REPO = "williaml/ato-mcp";
 const CORPUS_ASSET_RE = /^ato-corpus-v.*\.sqlite\.zst$/;
 
 // ---------------------------------------------------------------------------
@@ -42,7 +42,7 @@ export interface ReleaseAssets {
 export async function fetchLatestRelease(repo: string): Promise<ReleaseAssets> {
   const apiUrl = `https://api.github.com/repos/${repo}/releases/latest`;
   const headers: Record<string, string> = {
-    "User-Agent": "ato-pro-mcp",
+    "User-Agent": "ato-mcp",
     Accept: "application/vnd.github+json",
   };
   if (process.env.GH_TOKEN) headers["Authorization"] = `Bearer ${process.env.GH_TOKEN}`;
@@ -157,7 +157,7 @@ function decompressZst(zstPath: string, outPath: string): void {
  * Writes `<dataDir>/installed_manifest.json` on success.
  */
 export async function runUpdateFromGitHub(dataDir?: string): Promise<void> {
-  const repo = process.env.ATO_PRO_RELEASE_REPO ?? DEFAULT_RELEASE_REPO;
+  const repo = process.env.ATO_MCP_RELEASE_REPO ?? DEFAULT_RELEASE_REPO;
   const dir = dataDir ?? defaultDataDir();
 
   process.stdout.write(`Fetching latest release from github.com/${repo} ...\n`);
@@ -243,7 +243,7 @@ export async function runUpdate(): Promise<void> {
       await runUpdateFromGitHub();
       return;
     }
-    process.stdout.write(`Usage: ato-pro-mcp update [path-to-local-corpus.sqlite]
+    process.stdout.write(`Usage: ato-mcp update [path-to-local-corpus.sqlite]
 
 Without a path argument, downloads the latest corpus release from GitHub.
 With a path argument, installs directly from a locally-built corpus file.
@@ -254,13 +254,13 @@ The Python pipeline at packages/pipeline produces a local corpus file:
 
 Then:
 
-  ato-pro-mcp update ./packages/pipeline/corpus-out/ato.sqlite
+  ato-mcp update ./packages/pipeline/corpus-out/ato.sqlite
 
 Or to download latest from GitHub:
 
-  ato-pro-mcp update
+  ato-mcp update
 
-Set ATO_PRO_RELEASE_REPO=owner/repo to use a custom release repository.
+Set ATO_MCP_RELEASE_REPO=owner/repo to use a custom release repository.
 Set GH_TOKEN to avoid GitHub API rate-limits.
 `);
   }

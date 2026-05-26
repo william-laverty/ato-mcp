@@ -11,20 +11,20 @@ import {
   GetDocAnchorsInputSchema,
   GetThresholdInputSchema,
   UserFactsSchema,
-} from "@ato-pro/shared";
-import type { Store, Embedder, UserFacts } from "@ato-pro/shared";
+} from "@ato-mcp/shared";
+import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
 import { SqliteStore } from "./store/sqlite.js";
 import { OnnxEmbedder } from "./embed/onnx.js";
 import { RemoteToolForwarder } from "./lib/remote-tools.js";
-import { stats } from "@ato-pro/shared/tools/stats";
-import { search } from "@ato-pro/shared/tools/search";
-import { getChunks } from "@ato-pro/shared/tools/get_chunks";
-import { fetchUri } from "@ato-pro/shared/tools/fetch";
-import { getDefinition } from "@ato-pro/shared/tools/get_definition";
-import { getDoc } from "@ato-pro/shared/tools/get_doc";
-import { getDocAnchors } from "@ato-pro/shared/tools/get_doc_anchors";
-import { getThreshold } from "@ato-pro/shared/tools/get_threshold";
-import { getUserFacts } from "@ato-pro/shared/tools/get_user_facts";
+import { stats } from "@ato-mcp/shared/tools/stats";
+import { search } from "@ato-mcp/shared/tools/search";
+import { getChunks } from "@ato-mcp/shared/tools/get_chunks";
+import { fetchUri } from "@ato-mcp/shared/tools/fetch";
+import { getDefinition } from "@ato-mcp/shared/tools/get_definition";
+import { getDoc } from "@ato-mcp/shared/tools/get_doc";
+import { getDocAnchors } from "@ato-mcp/shared/tools/get_doc_anchors";
+import { getThreshold } from "@ato-mcp/shared/tools/get_threshold";
+import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
@@ -165,7 +165,7 @@ function readFactsFromConfig(cfg: Config): UserFacts | null {
   const parsed = UserFactsSchema.safeParse(cfg.facts);
   if (!parsed.success) {
     process.stderr.write(
-      `[ato-pro] Warning: facts in config.json failed validation: ${parsed.error.message}\n`,
+      `[ato-mcp] Warning: facts in config.json failed validation: ${parsed.error.message}\n`,
     );
     return null;
   }
@@ -177,7 +177,7 @@ export async function runMcp(): Promise<void> {
   const mode: "local" | "hosted" = cfg.mode === "hosted" ? "hosted" : "local";
 
   const server = new Server(
-    { name: "ato-pro", version: "0.3.0" },
+    { name: "ato-mcp", version: "0.3.0" },
     { capabilities: { tools: {} } },
   );
 

@@ -39,7 +39,7 @@ export default async function ModePage() {
             userId={session.user.id}
             mode="local"
             title="Local (Self-hosted)"
-            description="Run ato-pro-mcp on your own machine. Install once and it works offline."
+            description="Run ato-mcp on your own machine. Install once and it works offline."
             features={[
               "Full data privacy",
               "Works offline",

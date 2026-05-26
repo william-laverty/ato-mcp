@@ -1,1 +1,1 @@
-"""Source modules for the ato-pro corpus pipeline."""
+"""Source modules for the ato-mcp corpus pipeline."""

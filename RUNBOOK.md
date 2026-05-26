@@ -58,7 +58,7 @@ Once connected, **I can run the SQL migrations for you** in the next phase. You 
    - **Project name**: `ato-mcp-web`
    - **Root directory**: `packages/web` (this is the key setting — Vercel will only watch this subtree)
    - **Framework preset**: Next.js (auto-detected once root dir is set)
-   - **Build command**: `cd ../.. && pnpm install && pnpm --filter @ato-pro/web build`
+   - **Build command**: `cd ../.. && pnpm install && pnpm --filter @ato-mcp/web build`
    - **Output directory**: `.next` (default)
    - **Install command**: leave blank (the build command handles it)
    - **Environment variables** — add these from step 3:
@@ -75,7 +75,7 @@ Once connected, **I can run the SQL migrations for you** in the next phase. You 
    - **Project name**: `ato-mcp-backend`
    - **Root directory**: `packages/backend`
    - **Framework preset**: Other (no framework — just functions)
-   - **Build command**: `cd ../.. && pnpm install && pnpm --filter @ato-pro/backend build`
+   - **Build command**: `cd ../.. && pnpm install && pnpm --filter @ato-mcp/backend build`
    - **Environment variables** (same as above except no `NEXT_PUBLIC_*`):
      - `SUPABASE_URL` = your Project URL
      - `SUPABASE_SECRET_KEY` = your secret key
@@ -135,15 +135,15 @@ Total time for me: probably 1–2 hours of mostly automated work.
 | CI status | https://github.com/william-laverty/ato-mcp/actions |
 | Supabase dashboard | https://supabase.com/dashboard |
 | Vercel dashboard | https://vercel.com/dashboard |
-| Local repo | `/Users/williamlaverty/Projects/Websites/ato-pro` |
-| Current corpus | `~/Library/Application Support/ato-pro/live/ato.sqlite` (29,180 docs) |
+| Local repo | `/Users/williamlaverty/Projects/Websites/ato-mcp` |
+| Current corpus | `~/Library/Application Support/ato-mcp/live/ato.sqlite` (29,180 docs) |
 | Spec | `docs/superpowers/specs/2026-05-26-v0.3-personal-context-design.md` |
 | Plan | `docs/superpowers/plans/2026-05-26-v0.3-personal-context.md` |
 | HANDOFF | `HANDOFF.md` |
 
 ## Common gotchas
 
-- **Vercel build fails because pnpm can't find the workspace** — make sure the build command in each project is `cd ../.. && pnpm install && pnpm --filter @ato-pro/<package> build`. Vercel must install from the repo root to wire workspaces correctly.
+- **Vercel build fails because pnpm can't find the workspace** — make sure the build command in each project is `cd ../.. && pnpm install && pnpm --filter @ato-mcp/<package> build`. Vercel must install from the repo root to wire workspaces correctly.
 - **Magic-link email doesn't arrive** — Supabase Auth uses a default sender in dev; check the spam folder. For production, add a custom sender domain in Supabase Auth → URL Configuration.
 - **`pgvector` extension missing** — I'll handle this via the Supabase MCP, but if you want to do it manually: `CREATE EXTENSION IF NOT EXISTS vector;` in the SQL editor.
 - **DNS doesn't propagate** — give it an hour. Vercel will show a green checkmark when it's ready.

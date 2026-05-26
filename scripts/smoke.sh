@@ -44,11 +44,11 @@ test -f "$CORPUS_PATH" || { echo "[smoke] ERROR: corpus not built"; exit 1; }
 
 echo "[smoke] Installing corpus into a temp data dir..."
 DATA_DIR="$(mktemp -d)"
-export ATO_PRO_DATA_DIR="$DATA_DIR"
-node packages/mcp/bin/ato-pro-mcp.js update "$CORPUS_PATH"
+export ATO_MCP_DATA_DIR="$DATA_DIR"
+node packages/mcp/bin/ato-mcp.js update "$CORPUS_PATH"
 
 echo "[smoke] Verifying stats..."
-node packages/mcp/bin/ato-pro-mcp.js stats
+node packages/mcp/bin/ato-mcp.js stats
 
 echo "[smoke] OK"
 rm -rf "$DATA_DIR"

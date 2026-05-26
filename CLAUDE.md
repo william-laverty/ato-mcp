@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-`ato-pro` is a local-first MCP server for the Australian Taxation Office corpus. It scrapes ATO website + ITAA 1997 legislation + ATO public rulings, embeds + indexes them, and exposes search/retrieval tools to AI agents over the MCP stdio protocol. The hosted variant runs the same tool code on Vercel functions against Supabase Postgres + pgvector.
+`ato-mcp` is a local-first MCP server for the Australian Taxation Office corpus. It scrapes ATO website + ITAA 1997 legislation + ATO public rulings, embeds + indexes them, and exposes search/retrieval tools to AI agents over the MCP stdio protocol. The hosted variant runs the same tool code on Vercel functions against Supabase Postgres + pgvector.
 
-Working name in the repo is `@ato-pro/*` for npm package scopes. Public-facing domain is **ato-mcp.com.au** (canonical) / **ato-mcp.com** (301 redirect). The two are wired up in the Vercel `ato-mcp-web` project.
+Working name in the repo is `@ato-mcp/*` for npm package scopes. Public-facing domain is **ato-mcp.com.au** (canonical) / **ato-mcp.com** (301 redirect). The two are wired up in the Vercel `ato-mcp-web` project.
 
 Always read these before making structural decisions:
 
@@ -26,7 +26,7 @@ packages/
 │                Consumed by mcp, backend, and web.
 ├── mcp/         Local MCP server (Node 22+). SqliteStore + OnnxEmbedder for
 │                local mode, RemoteStore for hosted mode. CLI dispatcher
-│                (`ato-pro-mcp <subcommand>`). Hosts the import-corpus script
+│                (`ato-mcp <subcommand>`). Hosts the import-corpus script
 │                under scripts/import-corpus.ts.
 ├── pipeline/    Python (uv-managed) corpus builder. Sources: ato.gov.au
 │                sitemap, legislation.gov.au EPUB compilations, law.ato.gov.au
@@ -62,10 +62,10 @@ pnpm -r test                                     # all TS tests
 pnpm test:smoke                                  # end-to-end smoke (scripts/smoke.sh)
 
 # Per-workspace
-pnpm --filter @ato-pro/shared test               # shared tests only
-pnpm --filter @ato-pro/web dev                   # Next.js dev on :3001
-pnpm --filter @ato-pro/backend build             # backend tsc
-pnpm --filter @ato-pro/mcp build                 # mcp tsc + emit dist/
+pnpm --filter @ato-mcp/shared test               # shared tests only
+pnpm --filter @ato-mcp/web dev                   # Next.js dev on :3001
+pnpm --filter @ato-mcp/backend build             # backend tsc
+pnpm --filter @ato-mcp/mcp build                 # mcp tsc + emit dist/
 
 # Python pipeline
 cd packages/pipeline
@@ -74,14 +74,14 @@ uv run pytest -k "not slow"                      # fast tests
 uv run ato-pipeline build --out-dir corpus-out --sources ato_website,legislation,thresholds,law_ato
 
 # MCP local CLI (after building mcp)
-node packages/mcp/bin/ato-pro-mcp.js stats       # current installed corpus
-node packages/mcp/bin/ato-pro-mcp.js update <path-to-ato.sqlite>
-node packages/mcp/bin/ato-pro-mcp.js mcp         # start stdio server (Claude Code uses this)
+node packages/mcp/bin/ato-mcp.js stats       # current installed corpus
+node packages/mcp/bin/ato-mcp.js update <path-to-ato.sqlite>
+node packages/mcp/bin/ato-mcp.js mcp         # start stdio server (Claude Code uses this)
 
 # One-shot corpus import to Supabase (requires env vars)
 SUPABASE_URL='https://<ref>.supabase.co' \
 SUPABASE_SECRET_KEY='sb_secret_...' \
-  pnpm --filter @ato-pro/mcp exec tsx scripts/import-corpus.ts
+  pnpm --filter @ato-mcp/mcp exec tsx scripts/import-corpus.ts
 ```
 
 ## Current deployment state
@@ -92,7 +92,7 @@ SUPABASE_SECRET_KEY='sb_secret_...' \
 | Supabase | project `ato-mcp` (`pznbngklxhkyigmlvruk`), ap-southeast-2 | live; 4 migrations applied; pgvector enabled |
 | Vercel `ato-mcp-web` | Next.js app, root `packages/web` | live at `ato-mcp.com.au` (canonical) |
 | Vercel `ato-mcp-backend` | Functions, root `packages/backend` | live at `api.ato-mcp.com.au` |
-| Local corpus | `~/Library/Application Support/ato-pro/live/ato.sqlite` | 29,180 docs / 224k chunks |
+| Local corpus | `~/Library/Application Support/ato-mcp/live/ato.sqlite` | 29,180 docs / 224k chunks |
 | Supabase corpus | `docs` + `chunks` + `anchors` + `definitions` + `thresholds` tables | 29k docs / chunks ongoing (import script) |
 
 The Supabase team ID for the Vercel MCP is `team_UWCodSopgUHNhnJCAGNsJ1uA`. Project IDs: `prj_xREEymkcKg1VwkgvoTXbQjYJIjHt` (web), `prj_ok6AxQ6e1iH8NtV33zpgGoNiYh1t` (backend).
@@ -113,14 +113,14 @@ Both Supabase and Vercel MCPs are connected to this Claude Code session. Use the
              │ stdio MCP protocol
              ▼
 ┌────────────────────────────────────────────────────────────────┐
-│  packages/mcp (Node CLI: ato-pro-mcp)                          │
+│  packages/mcp (Node CLI: ato-mcp)                          │
 │                                                                │
-│  reads ~/.ato-pro/config.json → { mode, ... }                  │
+│  reads ~/.ato-mcp/config.json → { mode, ... }                  │
 │                                                                │
 │  if mode === "local":                                          │
-│    SqliteStore(~/.ato-pro/live/ato.sqlite)                     │
+│    SqliteStore(~/.ato-mcp/live/ato.sqlite)                     │
 │    + OnnxEmbedder (Granite/MiniLM via @xenova/transformers)    │
-│    + tools from @ato-pro/shared/tools                          │
+│    + tools from @ato-mcp/shared/tools                          │
 │                                                                │
 │  if mode === "hosted":                                         │
 │    RemoteStore(api.ato-mcp.com.au, bearer_token)               │
@@ -160,7 +160,7 @@ Every `packages/backend/api/*.ts` follows this shape:
 ```ts
 import { adapt } from "./_adapter.js";
 import { authMiddleware } from "./_middleware.js";
-import { someTool } from "@ato-pro/shared/tools/some_tool";
+import { someTool } from "@ato-mcp/shared/tools/some_tool";
 import { SupabaseStore } from "../src/supabase-store.js";
 
 const store = new SupabaseStore();
@@ -202,7 +202,7 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 - v0.2 wider corpus: ITAA 1997 EPUB ingest (4638 sections + 1929 statutory definitions), 8 threshold extractors, law.ato.gov.au public rulings (2127 docs across 10 ruling types), GitHub release flow scaffolding
 - v0.3 Phase A: shared-core refactor (tools moved out of mcp into shared, Store/Embedder interfaces)
 - v0.3 Phase B: UserFactsSchema (25 fields, ABN checksum, ANZSIC validation), `get_user_facts` tool, bundled ANZSIC list
-- v0.3 Phase C: Next.js web app, 5-step onboarding flow, schema-driven privacy page, `ato-pro-mcp onboard` CLI
+- v0.3 Phase C: Next.js web app, 5-step onboarding flow, schema-driven privacy page, `ato-mcp onboard` CLI
 - v0.3 Phase D: Vercel functions (12 handlers), SupabaseStore, 4 SQL migrations (corpus, users, RPC functions, RLS), Web→Node adapter
 - Live deployment: web + backend on Vercel, Supabase project with corpus + RLS, real bearer-token auth works end-to-end (verified via `curl /stats`)
 
@@ -230,7 +230,7 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 
 - **Sharp native binary** is patched via `pnpm.patchedDependencies` in `pnpm-workspace.yaml`. Don't `pnpm install --force` without the patch applied — the @xenova/transformers import chain fails when sharp's native binding can't load on Node 23+. The patch is `patches/sharp@0.32.6.patch`.
 - **Vercel Node runtime ≠ Web Standard handlers.** Vercel auto-dispatches `(req, res)` Node-legacy. To write `(req: Request) => Response`, you MUST go through `api/_adapter.ts`. Edge runtime would allow native Web Standard but transitively breaks on sharp/onnxruntime-node.
-- **pnpm filter on Vercel build.** Both `vercel.json` files use `pnpm install --filter "@ato-pro/<x>..."` so deploys don't compile better-sqlite3 (it lives in @ato-pro/mcp's deps, isn't needed by web/backend). Don't drop the filter.
+- **pnpm filter on Vercel build.** Both `vercel.json` files use `pnpm install --filter "@ato-mcp/<x>..."` so deploys don't compile better-sqlite3 (it lives in @ato-mcp/mcp's deps, isn't needed by web/backend). Don't drop the filter.
 - **Typer CLI quirk in the Python pipeline.** A single-command Typer app accepts options directly: `uv run ato-pipeline build --out-dir ...` works, but multi-command apps (after Phase E added `package` subcommand) require the subcommand name. The current CLI requires `build` as the first arg.
 - **The corpus is large.** Building locally takes ~45 min (scrape + embed + package) and produces a ~1 GB SQLite. Don't try to commit it; `*.sqlite` and `*.jsonl` are gitignored.
 - **Tests must run with native bindings built.** If `pnpm install` skipped postinstalls (e.g. dry-run mode), tests that use `SqliteStore` will fail with "Could not locate the bindings file". Run `pnpm rebuild better-sqlite3` once or use the `onlyBuiltDependencies` whitelist (already configured).

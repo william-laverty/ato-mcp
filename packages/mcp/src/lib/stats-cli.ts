@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { stats } from "@ato-pro/shared/tools/stats";
+import { stats } from "@ato-mcp/shared/tools/stats";
 import { corpusPath, dataDir } from "./paths.js";
 
 export async function statsCli() {

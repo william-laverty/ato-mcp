@@ -10,7 +10,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { UserFactsSchema } from "@ato-pro/shared";
+import { UserFactsSchema } from "@ato-mcp/shared";
 import { z } from "zod";
 
 // Mirror the same derivation used in app/privacy/page.tsx

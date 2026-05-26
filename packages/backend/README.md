@@ -1,4 +1,4 @@
-# @ato-pro/backend
+# @ato-mcp/backend
 
 Vercel serverless functions for the ATO-Pro hosted backend (`api.ato-mcp.com.au`).
 
@@ -44,13 +44,13 @@ packages/backend/
 pnpm install
 
 # Run tests (uses MOCK_SUPABASE=1 automatically — no real DB needed)
-pnpm --filter @ato-pro/backend test
+pnpm --filter @ato-mcp/backend test
 
 # Type-check
-pnpm --filter @ato-pro/backend typecheck
+pnpm --filter @ato-mcp/backend typecheck
 
 # Build
-pnpm --filter @ato-pro/backend build
+pnpm --filter @ato-mcp/backend build
 ```
 
 ## Deploying to Vercel
@@ -67,7 +67,7 @@ pnpm --filter @ato-pro/backend build
 4. Set environment variables in Vercel:
    - `SUPABASE_URL` — your project URL (e.g. `https://xxxx.supabase.co`)
    - `SUPABASE_SECRET_KEY` — Supabase secret key (`sb_secret_...`, replaces legacy service_role; never expose to client)
-   - `ATO_PRO_API_ENDPOINT` — this function's own URL (e.g. `https://api.ato-mcp.com.au`)
+   - `ATO_MCP_API_ENDPOINT` — this function's own URL (e.g. `https://api.ato-mcp.com.au`)
 5. Deploy: `vercel --cwd packages/backend`
 
 ## Mock mode

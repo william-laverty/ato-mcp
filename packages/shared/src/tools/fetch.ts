@@ -51,7 +51,7 @@ function stateRevenueHost(juris: string): string | null {
 }
 
 async function fetchHttp(uri: string, url: string): Promise<FetchOutput> {
-  const resp = await fetch(url, { headers: { "user-agent": "ato-pro/0.2" } });
+  const resp = await fetch(url, { headers: { "user-agent": "ato-mcp/0.2" } });
   const text = resp.status === 200 ? await resp.text() : "";
   return {
     uri,

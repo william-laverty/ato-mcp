@@ -18,7 +18,7 @@ export async function getUserFacts(
 ): Promise<GetUserFactsOutput> {
   if (!deps.facts) {
     throw new Error(
-      "Personal facts not set. Run `ato-pro-mcp onboard` to complete the web onboarding flow.",
+      "Personal facts not set. Run `ato-mcp onboard` to complete the web onboarding flow.",
     );
   }
   return { facts: deps.facts, mode: deps.mode, fetched_from: deps.fetchedFrom };

@@ -4,8 +4,8 @@
  * Usage:
  *   SUPABASE_URL=https://<ref>.supabase.co \
  *   SUPABASE_SECRET_KEY=sb_secret_... \
- *   pnpm --filter @ato-pro/mcp exec tsx scripts/import-corpus.ts \
- *     [--sqlite ~/Library/Application\ Support/ato-pro/live/ato.sqlite] \
+ *   pnpm --filter @ato-mcp/mcp exec tsx scripts/import-corpus.ts \
+ *     [--sqlite ~/Library/Application\ Support/ato-mcp/live/ato.sqlite] \
  *     [--skip docs|chunks|anchors|definitions|thresholds] \
  *     [--batch 500]
  *
@@ -29,7 +29,7 @@ function arg(name: string, fallback?: string): string | undefined {
 
 const DEFAULT_SQLITE = path.join(
   os.homedir(),
-  "Library/Application Support/ato-pro/live/ato.sqlite",
+  "Library/Application Support/ato-mcp/live/ato.sqlite",
 );
 const SQLITE = arg("sqlite", DEFAULT_SQLITE)!;
 const BATCH = Number(arg("batch", "500"));

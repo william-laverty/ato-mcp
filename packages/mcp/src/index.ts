@@ -4,14 +4,14 @@ import { dataDir } from "./lib/paths.js";
 function main() {
   const cmd = process.argv[2] ?? "help";
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {
-    process.stdout.write(`ato-pro-mcp - MCP server for the Australian Taxation Office corpus
+    process.stdout.write(`ato-mcp - MCP server for the Australian Taxation Office corpus
 
 Usage:
-  ato-pro-mcp mcp       # start the MCP stdio server (used by Claude Code)
-  ato-pro-mcp onboard   # set up your account and get a config snippet
-  ato-pro-mcp update    # download/update the local corpus
-  ato-pro-mcp stats     # print corpus stats and exit
-  ato-pro-mcp help      # this message
+  ato-mcp mcp       # start the MCP stdio server (used by Claude Code)
+  ato-mcp onboard   # set up your account and get a config snippet
+  ato-mcp update    # download/update the local corpus
+  ato-mcp stats     # print corpus stats and exit
+  ato-mcp help      # this message
 
 Data directory: ${dataDir()}
 `);

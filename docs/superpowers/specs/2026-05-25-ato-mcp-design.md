@@ -1,9 +1,9 @@
-# ato-pro MCP — design spec
+# ato-mcp MCP — design spec
 
 **Date:** 2026-05-25
 **Status:** Approved for implementation planning
 **Owner:** William Laverty
-**Working name:** `ato-pro` (rename TBD before public release)
+**Working name:** `ato-mcp` (rename TBD before public release)
 
 ## 1. Goals and non-goals
 
@@ -42,7 +42,7 @@ The user picks **Local** or **Hosted** at onboarding. The MCP server is the same
 │                      USER'S MACHINE                          │
 │                                                              │
 │  ┌────────────────┐         ┌──────────────────────────┐    │
-│  │  Claude Code   │  stdio  │  ato-pro-mcp (Node.js)   │    │
+│  │  Claude Code   │  stdio  │  ato-mcp (Node.js)   │    │
 │  │  / other host  │ ───MCP──▶  - protocol handler       │    │
 │  └────────────────┘         │  - tool router            │    │
 │                             │  - per-user config        │    │
@@ -101,8 +101,8 @@ The user picks **Local** or **Hosted** at onboarding. The MCP server is the same
 
 ### Components
 
-1. **`ato-pro-mcp`** — Node.js MCP server, distributed as an npm package. Speaks stdio MCP protocol. Reads `~/.ato-pro/config.json` to know the user's mode, token, and personal facts. Routes each tool call to the local backend or the hosted backend.
-2. **Local backend** — in-process within `ato-pro-mcp` when in local mode. SQLite with the `sqlite-vec` extension for vector search; FTS5 for BM25. `onnxruntime-node` runs the Granite Embedding Small R2 model (~50 MB) for query embedding. Workflow tools execute as TypeScript functions over the same SQLite.
+1. **`ato-mcp`** — Node.js MCP server, distributed as an npm package. Speaks stdio MCP protocol. Reads `~/.ato-mcp/config.json` to know the user's mode, token, and personal facts. Routes each tool call to the local backend or the hosted backend.
+2. **Local backend** — in-process within `ato-mcp` when in local mode. SQLite with the `sqlite-vec` extension for vector search; FTS5 for BM25. `onnxruntime-node` runs the Granite Embedding Small R2 model (~50 MB) for query embedding. Workflow tools execute as TypeScript functions over the same SQLite.
 3. **Hosted backend** — Vercel functions (TypeScript). Each tool is a `/api/mcp/<tool>` endpoint. Authenticates with a per-user bearer token issued at onboarding. Reads from Supabase via the same tool functions as local.
 4. **Supabase** — Postgres + pgvector (corpus chunks), Postgres FTS (BM25), `users` and `user_facts` tables, anonymous-aggregate `usage_events`. Supabase Auth handles magic-link sign-in. RLS isolates users.
 5. **Web onboarding** — Next.js app on Vercel. Open-source so users can verify what data is collected. Generates the install snippet for the chosen mode.
@@ -111,7 +111,7 @@ The user picks **Local** or **Hosted** at onboarding. The MCP server is the same
 ### Monorepo layout (Approach A — lean monorepo)
 
 ```
-ato-pro/
+ato-mcp/
 ├── packages/
 │   ├── mcp/              # TypeScript MCP server (local-mode bundle)
 │   ├── backend/          # Vercel functions (hosted-mode tool handlers)
@@ -277,14 +277,14 @@ Next.js app on Vercel. Steps:
 2. **Magic-link sign-in** via Supabase Auth. Email + verify. No password.
 3. **Facts form**. Multi-step wizard with conditional fields; ABN validated against ABR checksum; occupation / industry picker uses ANZSIC autocomplete.
 4. **Deployment choice**. Two cards with plain-English tradeoffs:
-   - **Local** — ~3–5 GB one-time download, queries never leave the device, monthly updates via `ato-pro-mcp update`, free forever.
+   - **Local** — ~3–5 GB one-time download, queries never leave the device, monthly updates via `ato-mcp update`, free forever.
    - **Hosted** — no download, always-fresh corpus, queries sent to the server over TLS but never logged or retained, server code is open source so the user can verify.
 5. **Install instructions**. Single command for the chosen mode (claude plugin install or pasteable MCP config snippet).
 6. **Verify**. Page polls for the first `stats` call from the user's MCP. When it arrives, onboarding is marked complete.
 
 ### Auth and tokens
 
-- **Hosted mode**: per-user bearer token issued at onboarding. Stored in `~/.ato-pro/config.json` chmod 600. Sent as `Authorization: Bearer <token>` to the Vercel backend. Tokens are revocable from the web app.
+- **Hosted mode**: per-user bearer token issued at onboarding. Stored in `~/.ato-mcp/config.json` chmod 600. Sent as `Authorization: Bearer <token>` to the Vercel backend. Tokens are revocable from the web app.
 - **Local mode**: no token needed for tool calls. A separate token is issued only for the `usage_events` ping (see §6) and the update-check call.
 
 ### Analytics — what is collected, what is not
@@ -317,10 +317,10 @@ A "delete my data" button in the web app deletes the user row, cascading via for
 ```
 agent: "Can a sole trader graphic designer claim Adobe Creative Cloud?"
   ↓
-Claude Code → stdio → ato-pro-mcp
+Claude Code → stdio → ato-mcp
   1. Resolve tool → search
-  2. Read ~/.ato-pro/config.json → mode = "local"
-  3. Open SQLite at ~/.ato-pro/corpus/ato.db (lazy, cached process-wide)
+  2. Read ~/.ato-mcp/config.json → mode = "local"
+  3. Open SQLite at ~/.ato-mcp/corpus/ato.db (lazy, cached process-wide)
   4. Load Granite ONNX model (lazy, cached)
   5. Embed query → 384-dim vector
   6. Hybrid search: vec_distance_cosine + chunks_fts MATCH, fused by RRF
@@ -330,15 +330,15 @@ Claude Code → stdio → ato-pro-mcp
 
 No network. Only outbound calls in local mode:
 
-- `ato-pro-mcp update` (manual) → GitHub releases for the latest corpus zst.
+- `ato-mcp update` (manual) → GitHub releases for the latest corpus zst.
 - `usage_events` ping → Supabase, payload limited to `{user_id, event_type, timestamp, mode}`.
 
 ### Request lifecycle — hosted mode
 
 ```
-ato-pro-mcp (Node, user's machine):
-  1. Read ~/.ato-pro/config.json → mode = "hosted", token = "..."
-  2. POST https://api.ato-pro.dev/mcp/<tool>
+ato-mcp (Node, user's machine):
+  1. Read ~/.ato-mcp/config.json → mode = "hosted", token = "..."
+  2. POST https://api.ato-mcp.dev/mcp/<tool>
      Authorization: Bearer <token>
      Body: { args: {...} }
   ↓
@@ -366,12 +366,12 @@ A different embedding model (e.g. Voyage AI) is **disqualifying** unless the cor
 
 | Surface | Threat | Control |
 |---------|--------|---------|
-| Local config (`~/.ato-pro/config.json`) | Other local processes read the bearer token | File mode `0600` on write; documented in privacy policy; tokens revocable |
+| Local config (`~/.ato-mcp/config.json`) | Other local processes read the bearer token | File mode `0600` on write; documented in privacy policy; tokens revocable |
 | Onboarding (Next.js) | Account takeover via magic-link replay | Supabase default magic-link TTL (1 hour), one-time use, IP recorded for the auth event (audit only) |
 | MCP → hosted API | Token theft from logs / Vercel deployment | Token never logged; bearer comparison constant-time; rate-limit by user_id via Vercel KV |
 | Hosted DB | Vendor outage or breach | Row-Level Security: users can only read their own facts and events; corpus tables public-read by role; RLS verified by integration test on every CI |
 | Hosted DB | Internal access by maintainer | Production access via least-privileged service role; query logs disabled at the Postgres level for the user tables; "delete my data" enforced by cascading FKs |
-| Corpus releases | Tampered SQLite from a hijacked release | Each release manifest carries SHA-256; `ato-pro-mcp update` verifies before atomic-rename; signed manifests deferred to v1.1 |
+| Corpus releases | Tampered SQLite from a hijacked release | Each release manifest carries SHA-256; `ato-mcp update` verifies before atomic-rename; signed manifests deferred to v1.1 |
 | Web onboarding | XSS via uncontrolled facts input | React default escaping + strict CSP; ABN / industry / occupation use server-validated enums or checksum validation |
 | Personal facts at rest | Operator reads PII | Sensitive columns (`given_name`, `abn`) encrypted at column level with a server-held key separate from the Supabase project key (envelope encryption via Vercel env + KMS). The maintainer logically *can* decrypt; the system is designed so they don't. Documented honestly. |
 
@@ -381,7 +381,7 @@ Honest framing: this is "no-log policy" privacy, not cryptographic privacy. The 
 
 | Failure | What the user sees | What the MCP does |
 |---------|--------------------|-------------------|
-| Corpus missing (first run, local) | "Corpus not found. Run `ato-pro-mcp update`." | `stats` returns `{installed: false}`; `initialize` includes a setup instruction the agent surfaces |
+| Corpus missing (first run, local) | "Corpus not found. Run `ato-mcp update`." | `stats` returns `{installed: false}`; `initialize` includes a setup instruction the agent surfaces |
 | Embedding model missing | Distinct, actionable message | Auto-download on first run if user opted in; otherwise instruct |
 | Hosted backend down | "Hosted backend unreachable. Try again or switch to local mode." | Retry once with backoff; surface a single clear error; no silent fallback to keyword-only |
 | Hosted token revoked / expired | "Authentication failed. Re-run onboarding to reissue your token." | One actionable message, no retry loop |
@@ -401,7 +401,7 @@ Hard rule: **no silent failures.** Errors propagate as structured tool results w
 
 ### Integration
 
-- **Local mode**: launch `ato-pro-mcp` against a 100-doc seeded SQLite, send MCP protocol messages over a stdio harness, assert tool round-trips. Mirrors the reference's `scripts/smoke.sh`.
+- **Local mode**: launch `ato-mcp` against a 100-doc seeded SQLite, send MCP protocol messages over a stdio harness, assert tool round-trips. Mirrors the reference's `scripts/smoke.sh`.
 - **Hosted mode**: Vitest hits a `pnpm dev` Vercel function on a local Postgres seeded with the same 100-doc fixture. Same assertions as the local-mode suite (`testToolBehaviour(adapter)` shared spec, run twice).
 - **RLS verification**: dedicated test that, as user A, attempts to read user B's facts via every endpoint. Must fail. This is the test that protects the privacy promise — runs on every CI.
 - **Onboarding end-to-end**: Playwright happy path through the wizard, magic-link mocked, asserts the final config snippet matches schema.
@@ -423,7 +423,7 @@ Hard rule: **no silent failures.** Errors propagate as structured tool results w
 1. **Hosted embedding parity** — confirm whether Granite Small R2 ONNX runs acceptably in a Vercel edge function (~300 ms warm tolerable; cold start could be 1–2 s and unacceptable). If not, fall back to a dedicated embedding worker on Cloudflare Workers AI or Modal. Smoke-test in week 1 of implementation.
 2. **AustLII scraping terms** — re-read AustLII's policy on bulk download. Acquiring metadata + body for non-commercial open-source use is likely fine; record the exact URL patterns and cadence used and surface them in the corpus manifest. Fallback: Federal Court direct + Jade (also free).
 3. **Industry-code source** — ANZSIC 2006 is the AU standard; the ATO uses its own derived codes for benchmarks. Map ANZSIC → ATO industry code in the pipeline. ATO publishes the mapping as a CSV; one-time ingest task.
-4. **Web onboarding domain and plugin name** — placeholders `app.ato-pro.dev` and `@williaml/ato-pro-mcp`. Final naming during implementation planning.
+4. **Web onboarding domain and plugin name** — placeholders `app.ato-mcp.dev` and `@williaml/ato-mcp`. Final naming during implementation planning.
 5. **Disclaimer wording sign-off** — draft text exists in §1, but a tax-aware lawyer should review before public open-source launch. Not a v1 blocker; required before broad release.
 6. **Residency mid-FY changes** — facts model assumes residency is stable for the FY. If status changes mid-year, the agent needs to know. Probably surface in the facts UI as "if your residency changed during the FY, tell the agent." Out of scope for v1 schema.
 
@@ -433,7 +433,7 @@ The detailed implementation plan replaces this. Sketch only:
 
 - **v0.1 — scaffolding**: monorepo + shared schema + Python pipeline scraping ATO website only + SQLite output + minimal MCP server with `search` / `get_chunks` / `stats` working locally. Goal: parity with the reference's core.
 - **v0.2 — wider corpus**: legislation, AAT / FCA, ATO rulings re-indexed by type, state revenue offices. Point-in-time queries first-class. Add `get_definition`, `get_doc_anchors`, `fetch`, `get_threshold`.
-- **v0.3 — personal**: web onboarding, Supabase, magic-link, facts schema, `get_user_facts`. Local mode reads facts from `~/.ato-pro/`; hosted mode introduced; both modes share tool code.
+- **v0.3 — personal**: web onboarding, Supabase, magic-link, facts schema, `get_user_facts`. Local mode reads facts from `~/.ato-mcp/`; hosted mode introduced; both modes share tool code.
 - **v0.4 — workflows**: `deduction_discovery`, `bas_prep_checklist`, `audit_risk_check`, `depreciation_helper`. Benchmark and threshold extraction wired into the pipeline.
 - **v1.0 — open source**: docs, privacy policy, license, GitHub Actions, plugin marketplace listing, public launch.
 

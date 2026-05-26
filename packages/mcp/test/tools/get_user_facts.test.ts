@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildServerForTesting } from "../../src/server.js";
-import type { UserFacts } from "@ato-pro/shared";
+import type { UserFacts } from "@ato-mcp/shared";
 
 const stubEmbedder = { embed: async () => new Float32Array(384), name: "stub" };
 

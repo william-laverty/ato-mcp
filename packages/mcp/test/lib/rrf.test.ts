@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rrfFuse } from "@ato-pro/shared/lib/rrf";
+import { rrfFuse } from "@ato-mcp/shared/lib/rrf";
 
 describe("rrfFuse", () => {
   it("favours items that appear in both rankings", () => {

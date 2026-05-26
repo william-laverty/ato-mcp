@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import * as sqliteVec from "sqlite-vec";
-import type { SearchHit, Doc, Store, AnchorRow, CitationRow, DefinitionRow, ThresholdRow } from "@ato-pro/shared";
+import type { SearchHit, Doc, Store, AnchorRow, CitationRow, DefinitionRow, ThresholdRow } from "@ato-mcp/shared";
 
 interface ChunkRow {
   chunk_id: string;

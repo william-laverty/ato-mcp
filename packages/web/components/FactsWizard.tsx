@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ANZSIC_CODES } from "@ato-pro/shared";
+import { ANZSIC_CODES } from "@ato-mcp/shared";
 import { saveFacts } from "@/app/onboard/_actions";
-import type { UserFacts } from "@ato-pro/shared";
+import type { UserFacts } from "@ato-mcp/shared";
 
 // Partial schemas per step for step-level validation
 const step1Schema = z.object({

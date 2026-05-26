@@ -8,7 +8,7 @@ import type {
   ThresholdRow,
   AnchorRow,
   CitationRow,
-} from "@ato-pro/shared";
+} from "@ato-mcp/shared";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { makeServiceClient } from "./supabase.js";
 

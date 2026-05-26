@@ -15,7 +15,7 @@ function buildConfig(mode: "hosted" | "local", token: string | null): string {
         mcpServers: {
           "ato-mcp": {
             command: "npx",
-            args: ["-y", "ato-pro-mcp-hosted"],
+            args: ["-y", "ato-mcp-hosted"],
             env: {
               ATO_MCP_TOKEN: token ?? "<your-token>",
               ATO_MCP_USER_ID: "<your-user-id>",
@@ -30,14 +30,14 @@ function buildConfig(mode: "hosted" | "local", token: string | null): string {
 
   return [
     "# 1. Install globally",
-    "npm install -g ato-pro-mcp",
+    "npm install -g ato-mcp",
     "",
     "# 2. Add to your AI client config (e.g. claude_desktop_config.json):",
     JSON.stringify(
       {
         mcpServers: {
           "ato-mcp": {
-            command: "ato-pro-mcp",
+            command: "ato-mcp",
             args: ["mcp"],
           },
         },
@@ -86,7 +86,7 @@ export default function InstallSnippet({ mode, token, userId }: InstallSnippetPr
         <div className="space-y-2">
           <h3 className="font-medium text-gray-900">1. Install the package</h3>
           <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm text-green-400">
-            npm install -g ato-pro-mcp
+            npm install -g ato-mcp
           </div>
         </div>
       )}

@@ -18,7 +18,7 @@ const UsageEventSchema = z.object({
   mode: z.enum(["local", "hosted"]),
 });
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ kind: "error", message: "method_not_allowed" }), {
       status: 405,

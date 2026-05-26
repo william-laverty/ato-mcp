@@ -21,7 +21,7 @@ interface OnboardSession {
   expires_at: string;
 }
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   if (req.method !== "GET") {
     return new Response(JSON.stringify({ kind: "error", message: "method_not_allowed" }), {
       status: 405,
@@ -66,7 +66,7 @@ async function handler(req: Request): Promise<Response> {
   await svc.from("onboard_sessions").delete().eq("code", code);
 
   const apiEndpoint =
-    process.env["ATO_PRO_API_ENDPOINT"] ?? "https://api.ato-mcp.com.au";
+    process.env["ATO_MCP_API_ENDPOINT"] ?? "https://api.ato-mcp.com.au";
 
   return Response.json({
     ready: true,

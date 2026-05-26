@@ -37,7 +37,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 describe("GET /v1/stats", () => {
   it("returns stats with installed=true", async () => {
-    const { default: handler } = await import("../api/v1/stats.js");
+    const { handler } = await import("../api/stats.js");
     const resp = await handler(makePostRequest({}));
     expect(resp.status).toBe(200);
     const body = await resp.json() as { installed: boolean; docs: number };
@@ -46,7 +46,7 @@ describe("GET /v1/stats", () => {
   });
 
   it("returns 401 without auth", async () => {
-    const { default: handler } = await import("../api/v1/stats.js");
+    const { handler } = await import("../api/stats.js");
     const req = new Request("https://api.ato-mcp.com.au/v1/stats", { method: "POST", body: "{}" });
     const resp = await handler(req);
     expect(resp.status).toBe(401);
@@ -58,7 +58,7 @@ describe("GET /v1/stats", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/search", () => {
   it("returns search result with hits array", async () => {
-    const { default: handler } = await import("../api/v1/search.js");
+    const { handler } = await import("../api/search.js");
     const resp = await handler(makePostRequest({ query: "small business deduction", k: 5, mode: "keyword", include_old: false }));
     // Mock keyword search returns [] → fused = []
     expect(resp.status).toBe(200);
@@ -68,7 +68,7 @@ describe("POST /v1/search", () => {
   });
 
   it("returns 400 on invalid input", async () => {
-    const { default: handler } = await import("../api/v1/search.js");
+    const { handler } = await import("../api/search.js");
     const resp = await handler(makePostRequest({ query: "" })); // query too short
     expect(resp.status).toBe(400);
   });
@@ -79,7 +79,7 @@ describe("POST /v1/search", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/get_chunks", () => {
   it("returns chunks object", async () => {
-    const { default: handler } = await import("../api/v1/get_chunks.js");
+    const { handler } = await import("../api/get_chunks.js");
     const resp = await handler(makePostRequest({ chunk_ids: ["ato:test#0"], neighbours: 0 }));
     expect(resp.status).toBe(200);
     const body = await resp.json() as { chunks: unknown[] };
@@ -87,7 +87,7 @@ describe("POST /v1/get_chunks", () => {
   });
 
   it("returns 400 when chunk_ids is empty", async () => {
-    const { default: handler } = await import("../api/v1/get_chunks.js");
+    const { handler } = await import("../api/get_chunks.js");
     const resp = await handler(makePostRequest({ chunk_ids: [] }));
     expect(resp.status).toBe(400);
   });
@@ -98,7 +98,7 @@ describe("POST /v1/get_chunks", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/get_definition", () => {
   it("returns ordinary definition when no statutory match", async () => {
-    const { default: handler } = await import("../api/v1/get_definition.js");
+    const { handler } = await import("../api/get_definition.js");
     const resp = await handler(makePostRequest({ term: "resident", jurisdiction: "AU" }));
     expect(resp.status).toBe(200);
     const body = await resp.json() as { term: string; kind: string };
@@ -113,7 +113,7 @@ describe("POST /v1/get_definition", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/get_threshold", () => {
   it("returns 400 when threshold not found (mock returns null)", async () => {
-    const { default: handler } = await import("../api/v1/get_threshold.js");
+    const { handler } = await import("../api/get_threshold.js");
     const resp = await handler(makePostRequest({ name: "hecs_repayment_threshold" }));
     // Mock store returns null → getThreshold throws
     expect(resp.status).toBe(400);
@@ -125,7 +125,7 @@ describe("POST /v1/get_threshold", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/get_doc", () => {
   it("returns 400 when doc not found (mock returns null)", async () => {
-    const { default: handler } = await import("../api/v1/get_doc.js");
+    const { handler } = await import("../api/get_doc.js");
     const resp = await handler(makePostRequest({ doc_id: "ato:some-doc" }));
     // Mock getDoc returns null → getDoc tool throws
     expect(resp.status).toBe(400);
@@ -137,7 +137,7 @@ describe("POST /v1/get_doc", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/get_doc_anchors", () => {
   it("returns empty anchor graph from mock store", async () => {
-    const { default: handler } = await import("../api/v1/get_doc_anchors.js");
+    const { handler } = await import("../api/get_doc_anchors.js");
     const resp = await handler(makePostRequest({ doc_id: "ato:some-doc" }));
     expect(resp.status).toBe(200);
     const body = await resp.json() as { anchors: unknown[]; inbound: unknown[]; outbound: unknown[] };
@@ -152,19 +152,19 @@ describe("POST /v1/get_doc_anchors", () => {
 // ---------------------------------------------------------------------------
 describe("POST /v1/usage_event", () => {
   it("returns 204 for valid event", async () => {
-    const { default: handler } = await import("../api/v1/usage_event.js");
+    const { handler } = await import("../api/usage_event.js");
     const resp = await handler(makePostRequest({ event_type: "mcp_started", mode: "hosted" }));
     expect(resp.status).toBe(204);
   });
 
   it("returns 400 for unknown event_type", async () => {
-    const { default: handler } = await import("../api/v1/usage_event.js");
+    const { handler } = await import("../api/usage_event.js");
     const resp = await handler(makePostRequest({ event_type: "unknown_event", mode: "hosted" }));
     expect(resp.status).toBe(400);
   });
 
   it("returns 405 for GET method", async () => {
-    const { default: handler } = await import("../api/v1/usage_event.js");
+    const { handler } = await import("../api/usage_event.js");
     const resp = await handler(makeGetRequest("/v1/usage_event"));
     expect(resp.status).toBe(405);
   });
@@ -175,7 +175,7 @@ describe("POST /v1/usage_event", () => {
 // ---------------------------------------------------------------------------
 describe("PUT /v1/facts", () => {
   it("returns 204 for a valid facts payload", async () => {
-    const { default: handler } = await import("../api/v1/facts.js");
+    const { handler } = await import("../api/facts.js");
     const validFacts = {
       given_name: "Alice",
       state: "NSW",
@@ -210,7 +210,7 @@ describe("PUT /v1/facts", () => {
   });
 
   it("returns 422 for invalid facts payload", async () => {
-    const { default: handler } = await import("../api/v1/facts.js");
+    const { handler } = await import("../api/facts.js");
     const req = new Request("https://api.ato-mcp.com.au/v1/facts", {
       method: "PUT",
       headers: { authorization: AUTH_HEADER, "content-type": "application/json" },
@@ -224,10 +224,10 @@ describe("PUT /v1/facts", () => {
 // ---------------------------------------------------------------------------
 // onboard/poll handler
 // ---------------------------------------------------------------------------
-describe("GET /api/onboard/poll", () => {
+describe("GET /api/onboard_poll", () => {
   it("returns ready=false for unknown code", async () => {
-    const { default: handler } = await import("../api/onboard/poll.js");
-    const req = new Request("https://api.ato-mcp.com.au/api/onboard/poll?code=abcd1234", {
+    const { handler } = await import("../api/onboard_poll.js");
+    const req = new Request("https://api.ato-mcp.com.au/api/onboard_poll?code=abcd1234", {
       method: "GET",
       headers: { authorization: AUTH_HEADER },
     });
@@ -238,8 +238,8 @@ describe("GET /api/onboard/poll", () => {
   });
 
   it("returns 400 for missing code", async () => {
-    const { default: handler } = await import("../api/onboard/poll.js");
-    const req = new Request("https://api.ato-mcp.com.au/api/onboard/poll", {
+    const { handler } = await import("../api/onboard_poll.js");
+    const req = new Request("https://api.ato-mcp.com.au/api/onboard_poll", {
       method: "GET",
       headers: { authorization: AUTH_HEADER },
     });
@@ -248,8 +248,8 @@ describe("GET /api/onboard/poll", () => {
   });
 
   it("returns 400 for invalid code format", async () => {
-    const { default: handler } = await import("../api/onboard/poll.js");
-    const req = new Request("https://api.ato-mcp.com.au/api/onboard/poll?code=toolong12345", {
+    const { handler } = await import("../api/onboard_poll.js");
+    const req = new Request("https://api.ato-mcp.com.au/api/onboard_poll?code=toolong12345", {
       method: "GET",
       headers: { authorization: AUTH_HEADER },
     });

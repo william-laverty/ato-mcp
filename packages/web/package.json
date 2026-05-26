@@ -1,5 +1,5 @@
 {
-  "name": "@ato-pro/web",
+  "name": "@ato-mcp/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@ato-pro/shared": "workspace:*",
+    "@ato-mcp/shared": "workspace:*",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "next": "^15.0.0",

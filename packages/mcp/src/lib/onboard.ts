@@ -16,7 +16,7 @@ export async function runOnboard(): Promise<void> {
   const code = crypto.randomBytes(16).toString("hex");
   const url = `${BASE_URL}/onboard?cli_code=${encodeURIComponent(code)}`;
 
-  process.stdout.write(`\nato-pro-mcp onboard\n`);
+  process.stdout.write(`\nato-mcp onboard\n`);
   process.stdout.write(`─────────────────────────────────────────\n`);
   process.stdout.write(`Opening browser to:\n  ${url}\n\n`);
   process.stdout.write(

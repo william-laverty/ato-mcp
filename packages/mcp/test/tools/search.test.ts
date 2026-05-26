@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { search } from "@ato-pro/shared/tools/search";
+import { search } from "@ato-mcp/shared/tools/search";
 import { makeStore } from "../helpers/make-store.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

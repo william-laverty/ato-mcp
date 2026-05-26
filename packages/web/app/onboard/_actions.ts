@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import crypto from "crypto";
-import { UserFactsSchema } from "@ato-pro/shared";
+import { UserFactsSchema } from "@ato-mcp/shared";
 import { makeServiceClient } from "@/lib/supabase/service";
 import { makeServerClient } from "@/lib/supabase/server";
 

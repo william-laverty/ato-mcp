@@ -4,14 +4,14 @@ import path from "node:path";
 import { dataDir, corpusPath, configPath } from "../../src/lib/paths.js";
 
 describe("paths", () => {
-  const ORIG_ENV = process.env.ATO_PRO_DATA_DIR;
+  const ORIG_ENV = process.env.ATO_MCP_DATA_DIR;
 
   beforeEach(() => {
-    delete process.env.ATO_PRO_DATA_DIR;
+    delete process.env.ATO_MCP_DATA_DIR;
   });
 
   afterEach(() => {
-    if (ORIG_ENV) process.env.ATO_PRO_DATA_DIR = ORIG_ENV;
+    if (ORIG_ENV) process.env.ATO_MCP_DATA_DIR = ORIG_ENV;
   });
 
   it("returns the platform-default data dir on linux/macOS/windows", () => {
@@ -20,8 +20,8 @@ describe("paths", () => {
     expect(got.length).toBeGreaterThan(0);
   });
 
-  it("honours ATO_PRO_DATA_DIR env override", () => {
-    process.env.ATO_PRO_DATA_DIR = "/tmp/atotest";
+  it("honours ATO_MCP_DATA_DIR env override", () => {
+    process.env.ATO_MCP_DATA_DIR = "/tmp/atotest";
     expect(dataDir()).toBe("/tmp/atotest");
     expect(corpusPath()).toBe(path.join("/tmp/atotest", "live", "ato.sqlite"));
     expect(configPath()).toBe(path.join("/tmp/atotest", "config.json"));

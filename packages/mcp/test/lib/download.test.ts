@@ -89,7 +89,7 @@ describe("fetchLatestRelease", () => {
         new Response(JSON.stringify(manifest), { status: 200, headers: { "content-type": "application/json" } }),
       ) as unknown as typeof fetch;
 
-    const result = await fetchLatestRelease("williaml/ato-pro");
+    const result = await fetchLatestRelease("williaml/ato-mcp");
     expect(result.corpus_url).toContain("ato-corpus-v2026.05.sqlite.zst");
     expect(result.manifest.embedding_model).toBe("sentence-transformers/all-MiniLM-L6-v2");
   });
@@ -99,7 +99,7 @@ describe("fetchLatestRelease", () => {
       new Response("rate limited", { status: 403 }),
     ) as unknown as typeof fetch;
 
-    await expect(fetchLatestRelease("williaml/ato-pro")).rejects.toThrow(/rate.limit/i);
+    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/rate.limit/i);
   });
 
   it("throws when corpus asset is missing", async () => {
@@ -122,7 +122,7 @@ describe("fetchLatestRelease", () => {
         new Response(JSON.stringify(manifest), { status: 200 }),
       ) as unknown as typeof fetch;
 
-    await expect(fetchLatestRelease("williaml/ato-pro")).rejects.toThrow(/missing a corpus asset/i);
+    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/missing a corpus asset/i);
   });
 
   it("throws when manifest.json asset is missing", async () => {
@@ -140,7 +140,7 @@ describe("fetchLatestRelease", () => {
       new Response(JSON.stringify(releaseNoManifest), { status: 200 }),
     ) as unknown as typeof fetch;
 
-    await expect(fetchLatestRelease("williaml/ato-pro")).rejects.toThrow(/missing manifest/i);
+    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/missing manifest/i);
   });
 
   it("throws on non-200 GitHub API response", async () => {
@@ -148,7 +148,7 @@ describe("fetchLatestRelease", () => {
       new Response("Not Found", { status: 404 }),
     ) as unknown as typeof fetch;
 
-    await expect(fetchLatestRelease("williaml/ato-pro")).rejects.toThrow(/404/);
+    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/404/);
   });
 });
 
@@ -218,13 +218,13 @@ describe("runUpdateFromGitHub", () => {
         new Response(zstBytes, { status: 200, headers: { "content-type": "application/octet-stream" } }),
       ) as unknown as typeof fetch;
 
-    const origRepo = process.env.ATO_PRO_RELEASE_REPO;
-    process.env.ATO_PRO_RELEASE_REPO = "williaml/ato-pro";
+    const origRepo = process.env.ATO_MCP_RELEASE_REPO;
+    process.env.ATO_MCP_RELEASE_REPO = "williaml/ato-mcp";
     try {
       await runUpdateFromGitHub(dataDir);
     } finally {
-      if (origRepo === undefined) delete process.env.ATO_PRO_RELEASE_REPO;
-      else process.env.ATO_PRO_RELEASE_REPO = origRepo;
+      if (origRepo === undefined) delete process.env.ATO_MCP_RELEASE_REPO;
+      else process.env.ATO_MCP_RELEASE_REPO = origRepo;
     }
 
     const livePath = path.join(dataDir, "live", "ato.sqlite");
@@ -266,9 +266,9 @@ describe("runUpdateFromGitHub", () => {
         new Response(zstBytes, { status: 200 }),
       ) as unknown as typeof fetch;
 
-    process.env.ATO_PRO_RELEASE_REPO = "williaml/ato-pro";
+    process.env.ATO_MCP_RELEASE_REPO = "williaml/ato-mcp";
     await expect(runUpdateFromGitHub(dataDir)).rejects.toThrow(/sha256 mismatch/i);
-    delete process.env.ATO_PRO_RELEASE_REPO;
+    delete process.env.ATO_MCP_RELEASE_REPO;
   });
 
   it("throws when embedding model does not match", async () => {
@@ -297,8 +297,8 @@ describe("runUpdateFromGitHub", () => {
       .mockResolvedValueOnce(new Response(JSON.stringify(release), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify(manifest), { status: 200 })) as unknown as typeof fetch;
 
-    process.env.ATO_PRO_RELEASE_REPO = "williaml/ato-pro";
+    process.env.ATO_MCP_RELEASE_REPO = "williaml/ato-mcp";
     await expect(runUpdateFromGitHub(dataDir)).rejects.toThrow(/embedding model mismatch/i);
-    delete process.env.ATO_PRO_RELEASE_REPO;
+    delete process.env.ATO_MCP_RELEASE_REPO;
   });
 });

@@ -37,12 +37,12 @@ export default async function InstallPage() {
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-gray-900">
-            {mode === "hosted" ? "Connect your AI client" : "Install ato-pro-mcp"}
+            {mode === "hosted" ? "Connect your AI client" : "Install ato-mcp"}
           </h1>
           <p className="text-gray-600">
             {mode === "hosted"
               ? "Add this config to your AI client to start using ato-mcp."
-              : "Run this command to install ato-pro-mcp locally, then add the config below."}
+              : "Run this command to install ato-mcp locally, then add the config below."}
           </p>
         </div>
 

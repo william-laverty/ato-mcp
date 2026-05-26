@@ -19,7 +19,7 @@ importers:
 
   packages/backend:
     dependencies:
-      '@ato-pro/shared':
+      '@ato-mcp/shared':
         specifier: workspace:*
         version: link:../shared
       '@supabase/supabase-js':
@@ -59,7 +59,7 @@ importers:
 
   packages/mcp:
     dependencies:
-      '@ato-pro/shared':
+      '@ato-mcp/shared':
         specifier: workspace:*
         version: link:../shared
       '@modelcontextprotocol/sdk':
@@ -118,7 +118,7 @@ importers:
 
   packages/web:
     dependencies:
-      '@ato-pro/shared':
+      '@ato-mcp/shared':
         specifier: workspace:*
         version: link:../shared
       '@hookform/resolvers':

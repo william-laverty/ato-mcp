@@ -1,13 +1,13 @@
 import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
-import { getDoc } from "@ato-pro/shared/tools/get_doc";
-import { GetDocInputSchema } from "@ato-pro/shared";
+import { getDoc } from "@ato-mcp/shared/tools/get_doc";
+import { GetDocInputSchema } from "@ato-mcp/shared";
 import { SupabaseStore } from "../src/supabase-store.js";
 
 const store = new SupabaseStore();
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {

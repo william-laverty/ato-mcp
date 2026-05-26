@@ -1,15 +1,15 @@
 import { adapt } from "./_adapter.js";
 
 import { authMiddleware } from "./_middleware.js";
-import { search } from "@ato-pro/shared/tools/search";
-import { SearchInputSchema } from "@ato-pro/shared";
+import { search } from "@ato-mcp/shared/tools/search";
+import { SearchInputSchema } from "@ato-mcp/shared";
 import { SupabaseStore } from "../src/supabase-store.js";
 import { WasmEmbedder } from "../src/wasm-embedder.js";
 
 const store = new SupabaseStore();
 let embedder: WasmEmbedder | null = null;
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   const auth = await authMiddleware(req);
   if (auth instanceof Response) return auth;
   try {

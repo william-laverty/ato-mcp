@@ -5,10 +5,10 @@ import { adapt } from "./_adapter.js";
 // completes the FactsWizard. Uses Bearer token auth (same as all other endpoints).
 
 import { authMiddleware } from "./_middleware.js";
-import { UserFactsSchema } from "@ato-pro/shared";
+import { UserFactsSchema } from "@ato-mcp/shared";
 import { makeServiceClient } from "../src/supabase.js";
 
-async function handler(req: Request): Promise<Response> {
+export async function handler(req: Request): Promise<Response> {
   if (req.method !== "PUT" && req.method !== "POST") {
     return new Response(JSON.stringify({ kind: "error", message: "method_not_allowed" }), {
       status: 405,

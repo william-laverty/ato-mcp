@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { makeServerClient } from "@/lib/supabase/server";
 import { makeServiceClient } from "@/lib/supabase/service";
-import type { UserFacts } from "@ato-pro/shared";
+import type { UserFacts } from "@ato-mcp/shared";
 
 export default async function AccountPage() {
   const client = await makeServerClient();

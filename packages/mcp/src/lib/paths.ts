@@ -4,13 +4,13 @@ import path from "node:path";
 function defaultDataDir(): string {
   const home = os.homedir();
   const platform = process.platform;
-  if (platform === "darwin") return path.join(home, "Library", "Application Support", "ato-pro");
-  if (platform === "win32") return path.join(process.env.APPDATA ?? path.join(home, "AppData", "Roaming"), "ato-pro");
-  return path.join(process.env.XDG_DATA_HOME ?? path.join(home, ".local", "share"), "ato-pro");
+  if (platform === "darwin") return path.join(home, "Library", "Application Support", "ato-mcp");
+  if (platform === "win32") return path.join(process.env.APPDATA ?? path.join(home, "AppData", "Roaming"), "ato-mcp");
+  return path.join(process.env.XDG_DATA_HOME ?? path.join(home, ".local", "share"), "ato-mcp");
 }
 
 export function dataDir(): string {
-  return process.env.ATO_PRO_DATA_DIR || defaultDataDir();
+  return process.env.ATO_MCP_DATA_DIR || defaultDataDir();
 }
 
 export function corpusPath(): string {

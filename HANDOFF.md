@@ -9,7 +9,7 @@ Phases A, B, C, D shipped as code. Phase E (analytics polish + RLS verification)
 - Existing v0.2 corpus still installed: **29,180 docs / 224,585 chunks / 1.1 GB** — unchanged
 - Two new workspaces: `packages/web/` (Next.js 15 onboarding app) and `packages/backend/` (Vercel functions over Supabase)
 - One refactor: tool implementations moved from `packages/mcp/src/tools/` to `packages/shared/src/tools/` behind `Store` + `Embedder` interfaces
-- One new MCP tool: `get_user_facts` reads from `~/.ato-pro/config.json` (local) or from the hosted API (when implemented)
+- One new MCP tool: `get_user_facts` reads from `~/.ato-mcp/config.json` (local) or from the hosted API (when implemented)
 
 ## What you can test right now (without any credentials)
 
@@ -19,13 +19,13 @@ pnpm -r test
 cd packages/pipeline && uv run pytest -k "not slow"
 
 # 2. Stats still report the v0.2 corpus
-node packages/mcp/bin/ato-pro-mcp.js stats
+node packages/mcp/bin/ato-mcp.js stats
 
 # 3. Web app builds (uses mock Supabase)
-pnpm --filter @ato-pro/web build
+pnpm --filter @ato-mcp/web build
 
 # 4. Backend compiles (uses mock Supabase)
-pnpm --filter @ato-pro/backend build
+pnpm --filter @ato-mcp/backend build
 
 # 5. Web app runs locally with mocked auth
 cd packages/web && MOCK_SUPABASE=1 pnpm dev   # http://localhost:3001
@@ -41,7 +41,7 @@ Visit `http://localhost:3001/onboard` to walk through the 5-step flow against th
 - 8 tool implementations moved from `packages/mcp/src/tools/` → `packages/shared/src/tools/`. They now depend on interfaces, not concrete classes.
 - `rrfFuse` moved to `packages/shared/src/lib/rrf.ts`
 - `RemoteStore` adapter in `packages/mcp/src/store/remote.ts` — forwards every `Store` method to a configurable HTTP endpoint with Bearer auth
-- `runMcp()` reads `~/.ato-pro/config.json`. `mode=hosted` uses `RemoteStore`; `mode=local` (or unset) uses `SqliteStore`. The same MCP binary serves both modes.
+- `runMcp()` reads `~/.ato-mcp/config.json`. `mode=hosted` uses `RemoteStore`; `mode=local` (or unset) uses `SqliteStore`. The same MCP binary serves both modes.
 
 ### Phase B — Facts schema + `get_user_facts` (commits 16af39e → 4bb6489)
 
@@ -59,7 +59,7 @@ Visit `http://localhost:3001/onboard` to walk through the 5-step flow against th
 - Account dashboard at `/account` with edit, mode-switch, and delete-account flows
 - Privacy page at `/privacy` — **schema-driven**: rendered from `UserFactsSchema.shape` at build time. The privacy contract test asserts every schema field is documented.
 - `/api/poll` and `/api/onboard/poll` route handlers
-- `ato-pro-mcp onboard` CLI command — opens the browser, polls for completion, writes `~/.ato-pro/config.json`
+- `ato-mcp onboard` CLI command — opens the browser, polls for completion, writes `~/.ato-mcp/config.json`
 
 ### Phase D — Hosted backend (commits 151a0ba → bedf23f)
 
@@ -155,7 +155,7 @@ Nothing is deployed. The user must:
 
 ## Comparison vs `gunba/ato-mcp` (status check)
 
-| Aspect | ato-pro v0.3 (today) | gunba/ato-mcp |
+| Aspect | ato-mcp v0.3 (today) | gunba/ato-mcp |
 |---|---|---|
 | Docs / chunks | 29,180 / 224,585 (unchanged from v0.2) | ~158k / ~467k |
 | Tools | 9 (`stats`, `search`, `get_chunks`, `fetch`, `get_definition`, `get_doc`, `get_doc_anchors`, `get_threshold`, `get_user_facts`) | similar set + `get_asset` |
@@ -188,16 +188,16 @@ Nothing is deployed. The user must:
 ```bash
 pnpm test                                     # 169 TS tests
 cd packages/pipeline && uv run pytest -k "not slow"   # 85 Python tests
-node packages/mcp/bin/ato-pro-mcp.js stats    # 29180 docs (v0.2 corpus)
-node packages/mcp/bin/ato-pro-mcp.js help     # mentions all subcommands incl. onboard
-pnpm --filter @ato-pro/web build              # Next.js builds
-pnpm --filter @ato-pro/backend build          # backend compiles
+node packages/mcp/bin/ato-mcp.js stats    # 29180 docs (v0.2 corpus)
+node packages/mcp/bin/ato-mcp.js help     # mentions all subcommands incl. onboard
+pnpm --filter @ato-mcp/web build              # Next.js builds
+pnpm --filter @ato-mcp/backend build          # backend compiles
 ```
 
 ## What I'd recommend for when you wake up
 
-1. **Test the web app locally** with `MOCK_SUPABASE=1 pnpm --filter @ato-pro/web dev`. Walk through the onboarding flow. Critique the UX before committing to a deployment.
-2. **Test the new `get_user_facts` tool**: manually edit `~/.ato-pro/config.json` to add a `facts` field per `UserFactsSchema`. Reconnect Claude Code. Ask the agent "what do you know about me?" — it should call `get_user_facts` and respond with your facts.
+1. **Test the web app locally** with `MOCK_SUPABASE=1 pnpm --filter @ato-mcp/web dev`. Walk through the onboarding flow. Critique the UX before committing to a deployment.
+2. **Test the new `get_user_facts` tool**: manually edit `~/.ato-mcp/config.json` to add a `facts` field per `UserFactsSchema`. Reconnect Claude Code. Ask the agent "what do you know about me?" — it should call `get_user_facts` and respond with your facts.
 3. **Decide whether to deploy** before v0.4 workflow tools, or skip ahead. Deploying gives you a real shareable URL; skipping ahead means more retrieval features.
 4. **Granite swap** is a low-risk, high-value 1-line change + 70-min rebuild. Worth doing whenever you have a free hour.
 5. **v0.4 workflow tools** (`deduction_discovery`, `bas_prep_checklist`, etc.) are the next phase of real differentiation. They need the personal facts layer (done) and benchmark/threshold extraction (partly done in v0.2).
