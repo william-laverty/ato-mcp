@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { makeBrowserClient } from "@/lib/supabase/client";
 
 export default function OnboardPage() {
@@ -9,6 +9,14 @@ export default function OnboardPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Surface ?error=... from /onboard/verify when a magic link expires / fails.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const e = params.get("error");
+    if (e) setError(decodeURIComponent(e));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
