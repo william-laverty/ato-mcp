@@ -1,8 +1,8 @@
-# v0.4 handoff — depreciation_helper
+# v0.4 handoff — bas_prep_checklist
 
-`depreciation_helper` (v0.4 tool 2 of 4) is shipped on `feat/v0.4-deduction-discovery`. Full test suite green: 117 shared + 75 mcp + 45 backend + 3 web. Remaining hero tools: `bas_prep_checklist`, `audit_risk_check`.
+`bas_prep_checklist` (v0.4 tool 3 of 4) is shipped on `feat/v0.4-deduction-discovery`. Full test suite green: 136 shared + 77 mcp + 47 backend + 3 web. Remaining hero tool: `audit_risk_check`.
 
-`deduction_discovery` (v0.4 tool 1 of 4) is also on this branch and shipped. Both tools reuse the `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`).
+`deduction_discovery` (v0.4 tool 1 of 4) and `depreciation_helper` (v0.4 tool 2 of 4) are also on this branch and shipped. All three tools reuse the `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`).
 
 ---
 

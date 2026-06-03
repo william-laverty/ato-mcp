@@ -217,7 +217,7 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 
 ### Not yet implemented (v0.4 and beyond)
 
-- Hero workflow tools: `bas_prep_checklist`, `audit_risk_check` (the product differentiator from `gunba/ato-mcp`). `deduction_discovery` and `depreciation_helper` are DONE (v0.4 tools 1–2 of 4).
+- Hero workflow tools: `audit_risk_check` (the product differentiator from `gunba/ato-mcp`). `deduction_discovery`, `depreciation_helper` and `bas_prep_checklist` are DONE (v0.4 tools 1–3 of 4).
 - Edited PBR ingest (~120k more docs from law.ato.gov.au — would 5× the corpus)
 - AAT/Federal Court case summaries
 - State revenue offices (8 jurisdictions)
@@ -230,6 +230,7 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 - Citation graph populated: 23,267 outbound refs (13,388 ITAA 1997 sections + 9,879 ATO rulings) extracted by `packages/pipeline/src/ato_pipeline/extractors/citations.py`. Pipeline emits them inline now; one-shot `scripts/populate_citations.py` filled the in-flight Supabase corpus.
 - **`deduction_discovery` (v0.4 tool 1 of 4) shipped.** Curated 59-row taxonomy (`packages/shared/src/data/deduction-categories.ts`, generated from the verified spec JSON) filtered by user facts → fresh citations via the new shared `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`) → live thresholds → discrete confidence. Branches across all taxpayer structures, tags personal vs business_entity returns, types categories by `kind` (deduction/offset/cgt_event/disallowance/precondition/strategy). Registered in `mcp/src/server.ts`; backend handler `backend/api/deduction_discovery.ts`. Spec: `docs/superpowers/specs/2026-06-03-deduction-discovery-design.md`.
 - **`depreciation_helper` (v0.4 tool 2 of 4) shipped.** Deterministic prime-cost / diminishing-value / IAWO / $300-immediate / SBE-pool / Div 43 schedules (`packages/shared/src/tools/depreciation_helper.ts`), branched by `business_structure` + SBE eligibility, reusing the `resolveCitations()` spine and the live `instant_asset_write_off` threshold. effective_life_years is optional (PC/DV degrade gracefully). Registered in `mcp/src/server.ts`; backend handler `backend/api/depreciation_helper.ts`. Spec: `docs/superpowers/specs/2026-06-03-depreciation-helper-design.md`.
+- **`bas_prep_checklist` (v0.4 tool 3 of 4) shipped.** Tiered (core/confirmed/conditional), cited BAS checklist (`packages/shared/src/tools/bas_prep_checklist.ts`) filtered by gst_registered/gst_period/payg_instalments/fbt_payer, reusing the `resolveCitations()` spine. Simpler-BAS default with full-method labels behind `full_gst_method`; not-registered users get an IAS/no-BAS cited note. Registered in `mcp/src/server.ts`; backend handler `backend/api/bas_prep_checklist.ts`. Spec: `docs/superpowers/specs/2026-06-03-bas-prep-checklist-design.md`.
 
 ## Gotchas
 
