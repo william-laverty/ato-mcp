@@ -61,4 +61,18 @@ export const DeductionDiscoveryInputSchema = z.object({
 });
 export type DeductionDiscoveryInput = z.infer<typeof DeductionDiscoveryInputSchema>;
 
-export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery";
+export const DepreciationHelperInputSchema = z.object({
+  asset_cost: z.number().positive(),
+  acquisition_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "acquisition_date must be YYYY-MM-DD"),
+  business_use_pct: z.number().min(0).max(100).default(100),
+  asset_type: z.string().optional(),
+  effective_life_years: z.number().positive().optional(),
+  is_small_business_entity: z.boolean().optional(),
+  is_capital_works: z.boolean().default(false),
+  method: z.enum(["prime_cost", "diminishing_value", "both"]).default("both"),
+  fy: z.string().regex(/^\d{4}-\d{2}$/, "FY must be YYYY-YY").optional(),
+  years: z.number().int().min(1).max(40).optional(),
+});
+export type DepreciationHelperInput = z.infer<typeof DepreciationHelperInputSchema>;
+
+export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery" | "depreciation_helper";
