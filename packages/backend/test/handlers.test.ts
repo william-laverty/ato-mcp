@@ -269,6 +269,26 @@ describe("POST /depreciation_helper", () => {
 });
 
 // ---------------------------------------------------------------------------
+// bas_prep_checklist handler
+// ---------------------------------------------------------------------------
+describe("POST /bas_prep_checklist", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/bas_prep_checklist.js");
+    const resp = await handler(makePostRequest({}));
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/bas_prep_checklist.js");
+    const req = new Request("https://api.ato-mcp.com.au/bas_prep_checklist", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // onboard/poll handler
 // ---------------------------------------------------------------------------
 describe("GET /api/onboard_poll", () => {
