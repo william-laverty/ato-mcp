@@ -49,6 +49,10 @@
     "./lib/rrf": {
       "types": "./dist/lib/rrf.d.ts",
       "import": "./dist/lib/rrf.js"
+    },
+    "./lib/citations": {
+      "types": "./dist/lib/citations.d.ts",
+      "import": "./dist/lib/citations.js"
     }
   },
   "scripts": {
