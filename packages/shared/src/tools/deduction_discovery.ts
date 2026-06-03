@@ -67,3 +67,60 @@ export function dedupe(cats: DeductionCategory[]): DeductionCategory[] {
   }
   return out;
 }
+
+import type { Citation } from "../lib/citations.js";
+
+export type Confidence = "high" | "medium" | "low";
+
+export function rateConfidence(
+  c: DeductionCategory,
+  citations: Citation[],
+): { confidence: Confidence; confidence_reason: string } {
+  const cited = citations.length > 0;
+  const explicit = c.triggers.length > 0;
+  if (!cited) {
+    return { confidence: "low", confidence_reason: "Surfaced for completeness; no live ATO citation resolved — verify applicability before claiming." };
+  }
+  if (explicit) {
+    return { confidence: "high", confidence_reason: `Matches your stated facts and is backed by ${citations.length} ATO source(s).` };
+  }
+  return { confidence: "medium", confidence_reason: `Applies to your taxpayer type; backed by ${citations.length} general ATO source(s).` };
+}
+
+function tokenize(s: string): Set<string> {
+  return new Set((s.toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((w) => w.length > 2));
+}
+
+export interface ActivityCandidate { id: string; label: string; examples: string[] }
+
+export function matchActivity(
+  activity: string,
+  surfaced: ActivityCandidate[],
+): { category_id: string; rationale: string } | null {
+  const a = tokenize(activity);
+  if (a.size === 0) return null;
+  let best: ActivityCandidate | null = null;
+  let bestScore = 0;
+  for (const s of surfaced) {
+    const t = tokenize([s.label, ...s.examples].join(" "));
+    let overlap = 0;
+    for (const w of a) if (t.has(w)) overlap++;
+    if (overlap > bestScore) { bestScore = overlap; best = s; }
+  }
+  if (!best || bestScore < 2) return null;
+  return { category_id: best.id, rationale: `Activity text best matches "${best.label}" (${bestScore} shared terms).` };
+}
+
+export function buildNotes(facts: UserFacts): string[] {
+  const notes: string[] = [];
+  if (["company", "trust", "partnership"].includes(facts.business_structure)) {
+    notes.push(`Your ${facts.business_structure} lodges its own return — categories marked return_context "business_entity" belong on that return, not your individual return.`);
+  }
+  if (facts.business_structure === "sole_trader") {
+    notes.push("Personal services income (PSI) rules can restrict some business deductions — check whether your income is PSI before claiming.");
+  }
+  if (facts.residency_status !== "resident") {
+    notes.push(`As a ${facts.residency_status.replace(/_/g, " ")}, your resident status affects some concessions (the 50% CGT discount, tax-free threshold, main-residence exemption) — verify eligibility.`);
+  }
+  return notes;
+}
