@@ -222,6 +222,28 @@ describe("PUT /facts", () => {
 });
 
 // ---------------------------------------------------------------------------
+// deduction_discovery handler
+// ---------------------------------------------------------------------------
+describe("POST /deduction_discovery", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/deduction_discovery.js");
+    const resp = await handler(makePostRequest({}));
+    // Mock user_facts returns null → tool throws the onboard message → handled
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/deduction_discovery.js");
+    const req = new Request("https://api.ato-mcp.com.au/deduction_discovery", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // onboard/poll handler
 // ---------------------------------------------------------------------------
 describe("GET /api/onboard_poll", () => {
