@@ -244,6 +244,31 @@ describe("POST /deduction_discovery", () => {
 });
 
 // ---------------------------------------------------------------------------
+// depreciation_helper handler
+// ---------------------------------------------------------------------------
+describe("POST /depreciation_helper", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/depreciation_helper.js");
+    const resp = await handler(makePostRequest({ asset_cost: 1000, acquisition_date: "2025-07-01" }));
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+  it("returns 400 on invalid input", async () => {
+    const { handler } = await import("../api/depreciation_helper.js");
+    const resp = await handler(makePostRequest({ asset_cost: -5, acquisition_date: "2025-07-01" }));
+    expect(resp.status).toBe(400);
+  });
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/depreciation_helper.js");
+    const req = new Request("https://api.ato-mcp.com.au/depreciation_helper", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // onboard/poll handler
 // ---------------------------------------------------------------------------
 describe("GET /api/onboard_poll", () => {
