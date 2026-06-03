@@ -65,6 +65,10 @@
     "./tools/bas_prep_checklist": {
       "types": "./dist/tools/bas_prep_checklist.d.ts",
       "import": "./dist/tools/bas_prep_checklist.js"
+    },
+    "./tools/audit_risk_check": {
+      "types": "./dist/tools/audit_risk_check.d.ts",
+      "import": "./dist/tools/audit_risk_check.js"
     }
   },
   "scripts": {
