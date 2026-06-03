@@ -53,4 +53,12 @@ export const GetThresholdInputSchema = z.object({
 });
 export type GetThresholdInput = z.infer<typeof GetThresholdInputSchema>;
 
-export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold";
+export const DeductionDiscoveryInputSchema = z.object({
+  activity: z.string().optional(),
+  fy: z.string().regex(/^\d{4}-\d{2}$/, "FY must be YYYY-YY").optional(),
+  k_citations: z.number().int().min(1).max(5).default(3),
+  include_low_confidence: z.boolean().default(true),
+});
+export type DeductionDiscoveryInput = z.infer<typeof DeductionDiscoveryInputSchema>;
+
+export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery";
