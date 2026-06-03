@@ -587,7 +587,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -629,7 +631,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -670,7 +674,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -711,7 +717,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -752,7 +760,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -793,7 +803,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -833,7 +845,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -874,7 +888,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -914,7 +930,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -955,7 +973,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -996,7 +1016,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [
@@ -1040,7 +1062,9 @@ export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
     "structures": [
       "sole_trader",
       "partnership",
-      "none"
+      "none",
+      "company",
+      "trust"
     ],
     "return_context": "personal",
     "triggers": [

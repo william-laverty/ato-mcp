@@ -124,3 +124,175 @@ export function buildNotes(facts: UserFacts): string[] {
   }
   return notes;
 }
+
+import type { Store, ThresholdRow } from "../store/types.js";
+import type { Embedder } from "../embed/types.js";
+import type { DeductionDiscoveryInput } from "../tools.js";
+import { resolveCitations } from "../lib/citations.js";
+import { DEDUCTION_CATEGORIES } from "../data/deduction-categories.js";
+
+const DISCLAIMER =
+  "This tool retrieves and structures ATO material; it is not tax advice. Verify material decisions with a registered tax agent.";
+
+export interface DeductionDiscoveryDeps {
+  store: Store | null;
+  embedder: Embedder;
+  userFacts: UserFacts | null;
+}
+
+export interface SurfacedCategory {
+  id: string;
+  label: string;
+  kind: CategoryKind;
+  return_context: "personal" | "business_entity";
+  confidence: Confidence;
+  confidence_reason: string;
+  applies_because: string;
+  examples: string[];
+  substantiation: string;
+  consider_prompt: string;
+  ato_focus_area: boolean;
+  legal_basis: string;
+  thresholds: ThresholdRow[];
+  citations: Citation[];
+  residency_caveat?: string;
+  fy_note?: string;
+}
+
+export interface DeductionDiscoveryOutput {
+  fy: string;
+  taxpayer_profile: {
+    business_structure: BusinessStructure;
+    residency_status: UserFacts["residency_status"];
+    has_abn: boolean;
+    occupation?: string;
+    industry_code?: string;
+    flags: string[];
+  };
+  activity?: string;
+  categories: SurfacedCategory[];
+  matched_activity: { category_id: string; rationale: string } | null;
+  counts: Record<CategoryKind, number>;
+  notes: string[];
+  disclaimer: string;
+}
+
+/** FY "2025-26" → a point-in-time date inside that FY (30 June of the ending year). */
+function fyToPit(fy: string): string {
+  const start = parseInt(fy.slice(0, 4), 10);
+  return `${start + 1}-06-30`;
+}
+
+function explain(c: DeductionCategory, facts: UserFacts): string {
+  const parts = [`Applies to your structure (${facts.business_structure}).`];
+  for (const t of c.triggers) {
+    parts.push(`You indicated ${t.field}${t.op === "eq" ? ` = ${t.value}` : ""}.`);
+  }
+  return parts.join(" ");
+}
+
+function profileFlags(facts: UserFacts): string[] {
+  const f: string[] = [];
+  if (facts.has_investment_property) f.push("has_investment_property");
+  if (facts.has_shares_or_managed_funds) f.push("has_shares_or_managed_funds");
+  if (facts.has_crypto) f.push("has_crypto");
+  if (facts.has_spouse) f.push("has_spouse");
+  if (facts.gst_registered) f.push("gst_registered");
+  if (facts.fbt_payer) f.push("fbt_payer");
+  if (facts.super_fund_type === "smsf") f.push("smsf");
+  return f;
+}
+
+const KIND_ORDER: CategoryKind[] = ["deduction", "cgt_event", "offset", "strategy", "precondition", "disallowance"];
+const CONF_ORDER: Record<Confidence, number> = { high: 0, medium: 1, low: 2 };
+
+export async function deductionDiscovery(
+  deps: DeductionDiscoveryDeps,
+  args: DeductionDiscoveryInput,
+): Promise<DeductionDiscoveryOutput> {
+  if (!deps.userFacts) {
+    throw new Error("Personal facts not set. Run `ato-mcp onboard` to complete the web onboarding flow.");
+  }
+  if (!deps.store) {
+    throw new Error("Corpus not installed. Run `ato-mcp update` to download the latest corpus, then retry.");
+  }
+  const facts = deps.userFacts;
+  const store = deps.store;
+  const fy = args.fy ?? facts.current_fy;
+  const pit = fyToPit(fy);
+
+  const applicable = DEDUCTION_CATEGORIES.filter((c) => categoryApplies(facts, c));
+  const deduped = dedupe(applicable);
+
+  let surfaced: SurfacedCategory[] = await Promise.all(
+    deduped.map(async (c): Promise<SurfacedCategory> => {
+      const citations = await resolveCitations({ store, embedder: deps.embedder }, c.seed_queries, {
+        k: args.k_citations,
+        pit,
+        pinnedDocIds: c.seed_doc_ids,
+      });
+      const thresholds = (
+        await Promise.all(c.thresholds.map((n) => store.getThreshold(n, pit)))
+      ).filter((t): t is ThresholdRow => t !== null);
+      const { confidence, confidence_reason } = rateConfidence(c, citations);
+      return {
+        id: c.id,
+        label: c.label,
+        kind: c.kind,
+        return_context: c.return_context,
+        confidence,
+        confidence_reason,
+        applies_because: explain(c, facts),
+        examples: c.examples,
+        substantiation: c.substantiation,
+        consider_prompt: c.consider_prompt,
+        ato_focus_area: c.ato_focus_area,
+        legal_basis: c.legal_basis,
+        thresholds,
+        citations,
+        ...(c.residency_caveat && facts.residency_status !== "resident"
+          ? { residency_caveat: `Your residency status (${facts.residency_status.replace(/_/g, " ")}) may restrict this concession — verify eligibility.` }
+          : {}),
+        ...(c.fy_note ? { fy_note: c.fy_note } : {}),
+      };
+    }),
+  );
+
+  if (!args.include_low_confidence) {
+    surfaced = surfaced.filter((s) => s.confidence !== "low");
+  }
+
+  surfaced.sort((a, b) => {
+    if (a.ato_focus_area !== b.ato_focus_area) return a.ato_focus_area ? -1 : 1;
+    const k = KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind);
+    if (k !== 0) return k;
+    return CONF_ORDER[a.confidence] - CONF_ORDER[b.confidence];
+  });
+
+  const matched_activity = args.activity
+    ? matchActivity(args.activity, surfaced.map((s) => ({ id: s.id, label: s.label, examples: s.examples })))
+    : null;
+
+  const counts: Record<CategoryKind, number> = {
+    deduction: 0, offset: 0, cgt_event: 0, disallowance: 0, precondition: 0, strategy: 0,
+  };
+  for (const s of surfaced) counts[s.kind]++;
+
+  return {
+    fy,
+    taxpayer_profile: {
+      business_structure: facts.business_structure,
+      residency_status: facts.residency_status,
+      has_abn: facts.has_abn,
+      ...(facts.occupation ? { occupation: facts.occupation } : {}),
+      ...(facts.industry_code ? { industry_code: facts.industry_code } : {}),
+      flags: profileFlags(facts),
+    },
+    ...(args.activity ? { activity: args.activity } : {}),
+    categories: surfaced,
+    matched_activity,
+    counts,
+    notes: buildNotes(facts),
+    disclaimer: DISCLAIMER,
+  };
+}

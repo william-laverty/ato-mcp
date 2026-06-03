@@ -53,6 +53,10 @@
     "./lib/citations": {
       "types": "./dist/lib/citations.d.ts",
       "import": "./dist/lib/citations.js"
+    },
+    "./tools/deduction_discovery": {
+      "types": "./dist/tools/deduction_discovery.d.ts",
+      "import": "./dist/tools/deduction_discovery.js"
     }
   },
   "scripts": {
