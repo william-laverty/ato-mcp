@@ -86,8 +86,14 @@ const RISK_RULES: RiskRule[] = [
     seed_queries: ["non-commercial losses rules deferral", "what is a non-commercial loss"],
     seed_doc_ids: ["ato:businesses-and-organisations/income-deductions-and-concessions/losses/non-commercial-losses"],
     legal_basis: "ITAA 1997 Div 35 (non-commercial losses)",
-    detect: (_f, i, m) => (m.total_deductions !== null && i.income !== undefined && m.total_deductions > i.income)
-      ? { why_flagged: `Your total deductions ($${Math.round(m.total_deductions)}) exceed your stated income ($${Math.round(i.income)}).` } : null,
+    detect: (f, i, m) => {
+      if (m.total_deductions === null || i.income === undefined || m.total_deductions <= i.income) return null;
+      const isBusiness = f.business_structure !== "none" || (i.business_income !== undefined && i.business_income > 0);
+      const tail = isBusiness
+        ? " If this loss is from a business activity, the non-commercial loss rules (Div 35) may defer it to a later year."
+        : " Note: the non-commercial loss rules (Div 35) apply to business activity losses, not to an employee whose personal/work-related deductions exceed salary — confirm the deductions are correctly claimed and substantiated.";
+      return { why_flagged: `Your total deductions ($${Math.round(m.total_deductions)}) exceed your stated income ($${Math.round(i.income)}).${tail}` };
+    },
   },
   {
     id: "large_round_numbers", title: "Large round-number claims", default_band: "low",
@@ -100,14 +106,14 @@ const RISK_RULES: RiskRule[] = [
       ? { why_flagged: `${m.round_number_claims} of your claims are exact round numbers (multiples of $100 at or above $300), which can indicate estimates rather than records.`, band: m.round_number_claims >= 3 ? "medium" : "low" } : null,
   },
   {
-    id: "near_300_substantiation", title: "Claim at the $300 written-evidence limit", default_band: "medium",
-    pattern: "A claim sitting right at $300 can look like an attempt to stay under the written-evidence threshold for work expenses.",
-    what_to_do: "Only claim what you actually incurred; you must still be able to show how a claim was worked out, even under $300.",
-    seed_queries: ["$300 work-related expenses without receipts", "work expense records under $300"],
+    id: "near_300_substantiation", title: "Work-related expenses near the $300 written-evidence concession", default_band: "medium",
+    pattern: "Total work-related expenses sitting right at $300 can look like claiming up to the written-evidence concession (no receipts needed only if TOTAL WRE is $300 or less, excluding car, travel, meal-allowance and award-transport claims).",
+    what_to_do: "The $300 concession is a TOTAL across your work-related expenses, not a per-claim cap, and excludes car/travel/meal-allowance claims. Only claim what you incurred and keep records showing how each amount was worked out.",
+    seed_queries: ["$300 total work-related expenses without receipts concession", "work expense written evidence $300 limit"],
     seed_doc_ids: ["ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions"],
     legal_basis: "ITAA 1997 Div 900",
-    detect: (_f, i) => ((i.deductions ?? []).some((d) => d.amount >= 295 && d.amount <= 300))
-      ? { why_flagged: "A claim sits right at the $300 written-evidence limit." } : null,
+    detect: (_f, _i, m) => (m.wre_total >= 250 && m.wre_total <= 300)
+      ? { why_flagged: `Your total work-related expenses (about $${Math.round(m.wre_total)}) are right at the $300 written-evidence concession — which is a total (excluding car/travel/meal-allowance claims), not a per-claim limit.` } : null,
   },
   {
     id: "car_near_cap", title: "Car expense claim near the cents-per-km cap", default_band: "low",

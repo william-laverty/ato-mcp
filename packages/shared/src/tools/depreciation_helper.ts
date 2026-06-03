@@ -313,6 +313,21 @@ export async function depreciationHelper(
     unavailable.push({ method: capDef.id, reason: "Not flagged as capital works (is_capital_works=false). Capital works covers structural building costs, not plant/equipment." });
   }
 
+  // Div 43 capital works and Div 40 decline in value cannot both be claimed on the
+  // same expenditure (ITAA 1997 s 40-45(2)). If both fired, warn on each affected card
+  // so a downstream agent never presents them as concurrently claimable.
+  const hasDiv43 = methods.some((m) => m.method === "capital_works_div43");
+  const hasDiv40 = methods.some((m) => m.method === "prime_cost" || m.method === "diminishing_value");
+  if (hasDiv43 && hasDiv40) {
+    const exclusionNote =
+      "Division 43 capital works and Division 40 decline in value cannot both be claimed on the same expenditure (ITAA 1997 s 40-45(2)): capital works covers the building/structure, Division 40 covers separately identifiable plant and equipment. Split the cost between them — do not claim both methods on the same dollars.";
+    for (const m of methods) {
+      if (m.method === "capital_works_div43" || m.method === "prime_cost" || m.method === "diminishing_value") {
+        m.notes.push(exclusionNote);
+      }
+    }
+  }
+
   const recommended = pickRecommended(methods);
 
   return {

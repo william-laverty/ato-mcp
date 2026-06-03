@@ -171,4 +171,14 @@ describe("depreciationHelper", () => {
     const reason = out.unavailable.find((u) => u.method === "diminishing_value")!.reason;
     expect(reason).toMatch(/2006|150/);
   });
+
+  it("warns of Div 43 / Div 40 mutual exclusion when both capital works and decline-in-value fire", async () => {
+    const out = await depreciationHelper(deps(baseFacts), { asset_cost: 100000, acquisition_date: "2025-07-01", business_use_pct: 100, effective_life_years: 40, is_capital_works: true, method: "both" });
+    const div43 = out.methods.find((mm) => mm.method === "capital_works_div43");
+    const pc = out.methods.find((mm) => mm.method === "prime_cost");
+    expect(div43).toBeDefined();
+    expect(pc).toBeDefined();
+    expect(div43!.notes.join(" ")).toMatch(/cannot both be claimed|s 40-45/i);
+    expect(pc!.notes.join(" ")).toMatch(/cannot both be claimed|s 40-45/i);
+  });
 });

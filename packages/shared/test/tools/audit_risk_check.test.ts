@@ -116,4 +116,24 @@ describe("auditRiskCheck", () => {
     expect(out.disclaimer).toMatch(/not tax advice/i);
     expect(out.notes.join(" ")).toMatch(/heuristic|not an audit/i);
   });
+
+  it("deductions_exceed_income: a non-business individual gets a Div 35 caveat, not a misattribution", async () => {
+    const out = await auditRiskCheck(deps(baseFacts), { income: 5000, deductions: [{ category: "work-related", amount: 9000 }] });
+    const f = out.findings.find((x) => x.id === "deductions_exceed_income")!;
+    expect(f.why_flagged).toMatch(/apply to business activity losses/i);
+  });
+
+  it("deductions_exceed_income: a business taxpayer gets the deferral framing", async () => {
+    const facts = { ...baseFacts, business_structure: "sole_trader" as const, has_abn: true, abn: "51824753556" };
+    const out = await auditRiskCheck(deps(facts), { income: 5000, deductions: [{ category: "business operating", amount: 9000 }] });
+    const f = out.findings.find((x) => x.id === "deductions_exceed_income")!;
+    expect(f.why_flagged).toMatch(/may defer it/i);
+  });
+
+  it("near_300_substantiation fires on total WRE near $300, framed as a total not a per-claim limit", async () => {
+    const out = await auditRiskCheck(deps(baseFacts), { income: 90000, deductions: [{ category: "work-related tools", amount: 280 }] });
+    const f = out.findings.find((x) => x.id === "near_300_substantiation")!;
+    expect(f).toBeDefined();
+    expect(f.why_flagged).toMatch(/total/i);
+  });
 });
