@@ -11,6 +11,7 @@ import {
   GetDocAnchorsInputSchema,
   GetThresholdInputSchema,
   DeductionDiscoveryInputSchema,
+  DepreciationHelperInputSchema,
   UserFactsSchema,
 } from "@ato-mcp/shared";
 import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
@@ -27,6 +28,7 @@ import { getDocAnchors } from "@ato-mcp/shared/tools/get_doc_anchors";
 import { getThreshold } from "@ato-mcp/shared/tools/get_threshold";
 import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
 import { deductionDiscovery } from "@ato-mcp/shared/tools/deduction_discovery";
+import { depreciationHelper } from "@ato-mcp/shared/tools/depreciation_helper";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
@@ -128,6 +130,27 @@ const TOOLS = {
       additionalProperties: false,
     },
   },
+  depreciation_helper: {
+    description:
+      "Compute depreciation for an asset across all applicable methods (prime cost, diminishing value, instant asset write-off, $300 immediate, small business pool, Division 43 capital works), branched by the user's taxpayer structure. Returns year-by-year schedules, the live instant-asset-write-off threshold, and corpus citations. Inputs: asset_cost, acquisition_date (YYYY-MM-DD), and optionally business_use_pct, effective_life_years, is_small_business_entity, is_capital_works, asset_type, fy.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        asset_cost: { type: "number", exclusiveMinimum: 0 },
+        acquisition_date: { type: "string" },
+        business_use_pct: { type: "number", minimum: 0, maximum: 100, default: 100 },
+        asset_type: { type: "string" },
+        effective_life_years: { type: "number", exclusiveMinimum: 0 },
+        is_small_business_entity: { type: "boolean" },
+        is_capital_works: { type: "boolean", default: false },
+        method: { type: "string", enum: ["prime_cost", "diminishing_value", "both"], default: "both" },
+        fy: { type: "string" },
+        years: { type: "integer", minimum: 1, maximum: 40 },
+      },
+      required: ["asset_cost", "acquisition_date"],
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
@@ -161,6 +184,11 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
       return deductionDiscovery(
         { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
         DeductionDiscoveryInputSchema.parse(args),
+      );
+    case "depreciation_helper":
+      return depreciationHelper(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        DepreciationHelperInputSchema.parse(args),
       );
     default:
       throw new Error(`Unknown tool: ${name}`);

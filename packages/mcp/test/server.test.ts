@@ -38,3 +38,17 @@ describe("server: deduction_discovery", () => {
     expect(res.fy).toBe("2025-26");
   });
 });
+
+describe("server: depreciation_helper", () => {
+  it("lists the tool", () => {
+    const srv = buildServerForTesting({ store, embedder, facts, mode: "local" });
+    expect(srv.listToolNames()).toContain("depreciation_helper");
+  });
+  it("dispatches and returns method results", async () => {
+    const srv = buildServerForTesting({ store, embedder, facts, mode: "local" });
+    const res = await srv.callTool("depreciation_helper", { asset_cost: 1000, acquisition_date: "2025-07-01", effective_life_years: 5 });
+    expect(res).toHaveProperty("methods");
+    expect(res).toHaveProperty("disclaimer");
+    expect(Array.isArray(res.methods)).toBe(true);
+  });
+});
