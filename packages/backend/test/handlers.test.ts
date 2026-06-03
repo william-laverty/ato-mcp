@@ -222,6 +222,93 @@ describe("PUT /facts", () => {
 });
 
 // ---------------------------------------------------------------------------
+// deduction_discovery handler
+// ---------------------------------------------------------------------------
+describe("POST /deduction_discovery", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/deduction_discovery.js");
+    const resp = await handler(makePostRequest({}));
+    // Mock user_facts returns null → tool throws the onboard message → handled
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/deduction_discovery.js");
+    const req = new Request("https://api.ato-mcp.com.au/deduction_discovery", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// depreciation_helper handler
+// ---------------------------------------------------------------------------
+describe("POST /depreciation_helper", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/depreciation_helper.js");
+    const resp = await handler(makePostRequest({ asset_cost: 1000, acquisition_date: "2025-07-01" }));
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+  it("returns 400 on invalid input", async () => {
+    const { handler } = await import("../api/depreciation_helper.js");
+    const resp = await handler(makePostRequest({ asset_cost: -5, acquisition_date: "2025-07-01" }));
+    expect(resp.status).toBe(400);
+  });
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/depreciation_helper.js");
+    const req = new Request("https://api.ato-mcp.com.au/depreciation_helper", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// bas_prep_checklist handler
+// ---------------------------------------------------------------------------
+describe("POST /bas_prep_checklist", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/bas_prep_checklist.js");
+    const resp = await handler(makePostRequest({}));
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/bas_prep_checklist.js");
+    const req = new Request("https://api.ato-mcp.com.au/bas_prep_checklist", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// audit_risk_check handler
+// ---------------------------------------------------------------------------
+describe("POST /audit_risk_check", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/audit_risk_check.js");
+    const resp = await handler(makePostRequest({ income: 90000 }));
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/audit_risk_check.js");
+    const req = new Request("https://api.ato-mcp.com.au/audit_risk_check", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // onboard/poll handler
 // ---------------------------------------------------------------------------
 describe("GET /api/onboard_poll", () => {

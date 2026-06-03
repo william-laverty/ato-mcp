@@ -215,9 +215,8 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 5. ~~Schema-version label drift between pipeline / manifest / Supabase~~ — fixed. Single `CORPUS_SCHEMA_VERSION = "0.3.0"` constant in `packages/pipeline/src/ato_pipeline/package.py`, consumed by both `cli.py` and `manifest.py`. The existing local SQLite's `meta.schema_version` was patched in place.
 6. ~~3 of 8 threshold extractors fail against live ATO pages~~ — fixed. All 8 now extract correctly (8/8 verified against live ATO 2026-05-26). Three URLs migrated (`instant_asset_write_off`, `super_concessional_cap`, `low_income_tax_offset_max`, `small_business_income_tax_offset_cap`) and patterns tightened for `gst_registration_threshold_nonprofit`, LITO max (was matching the $66,667 income cutoff instead of the $700 offset), and SBITO cap. Bump the literal in `super_concessional_cap` when rolling the catalogue forward each FY.
 
-### Not yet implemented (v0.4 and beyond)
+### Not yet implemented (v0.5 and beyond)
 
-- Hero workflow tools: `deduction_discovery`, `bas_prep_checklist`, `audit_risk_check`, `depreciation_helper` (the product differentiator from `gunba/ato-mcp`)
 - Edited PBR ingest (~120k more docs from law.ato.gov.au — would 5× the corpus)
 - AAT/Federal Court case summaries
 - State revenue offices (8 jurisdictions)
@@ -228,6 +227,10 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 ### Done since v0.3 ship
 
 - Citation graph populated: 23,267 outbound refs (13,388 ITAA 1997 sections + 9,879 ATO rulings) extracted by `packages/pipeline/src/ato_pipeline/extractors/citations.py`. Pipeline emits them inline now; one-shot `scripts/populate_citations.py` filled the in-flight Supabase corpus.
+- **`deduction_discovery` (v0.4 tool 1 of 4) shipped.** Curated 59-row taxonomy (`packages/shared/src/data/deduction-categories.ts`, generated from the verified spec JSON) filtered by user facts → fresh citations via the new shared `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`) → live thresholds → discrete confidence. Branches across all taxpayer structures, tags personal vs business_entity returns, types categories by `kind` (deduction/offset/cgt_event/disallowance/precondition/strategy). Registered in `mcp/src/server.ts`; backend handler `backend/api/deduction_discovery.ts`. Spec: `docs/superpowers/specs/2026-06-03-deduction-discovery-design.md`.
+- **`depreciation_helper` (v0.4 tool 2 of 4) shipped.** Deterministic prime-cost / diminishing-value / IAWO / $300-immediate / SBE-pool / Div 43 schedules (`packages/shared/src/tools/depreciation_helper.ts`), branched by `business_structure` + SBE eligibility, reusing the `resolveCitations()` spine and the live `instant_asset_write_off` threshold. effective_life_years is optional (PC/DV degrade gracefully). Registered in `mcp/src/server.ts`; backend handler `backend/api/depreciation_helper.ts`. Spec: `docs/superpowers/specs/2026-06-03-depreciation-helper-design.md`.
+- **`bas_prep_checklist` (v0.4 tool 3 of 4) shipped.** Tiered (core/confirmed/conditional), cited BAS checklist (`packages/shared/src/tools/bas_prep_checklist.ts`) filtered by gst_registered/gst_period/payg_instalments/fbt_payer, reusing the `resolveCitations()` spine. Simpler-BAS default with full-method labels behind `full_gst_method`; not-registered users get an IAS/no-BAS cited note. Registered in `mcp/src/server.ts`; backend handler `backend/api/bas_prep_checklist.ts`. Spec: `docs/superpowers/specs/2026-06-03-bas-prep-checklist-design.md`.
+- **`audit_risk_check` (v0.4 tool 4 of 4) shipped — v0.4 hero tools COMPLETE.** Qualitative, cited red-flag detector (`packages/shared/src/tools/audit_risk_check.ts`): ~13 pure rules over facts + a draft return summary (high WRE-to-income, deductions>income, round numbers, WFH/phone double-dip, rental-no-income, unreported crypto, etc.), each with a risk band + ATO guidance citations, reusing the `resolveCitations()` spine. Heuristic indicator, not numeric benchmarking (per-ANZSIC/occupation benchmark numbers + a `benchmarks` table remain a v0.5 lift). Registered in `mcp/src/server.ts`; backend handler `backend/api/audit_risk_check.ts`. Spec: `docs/superpowers/specs/2026-06-03-audit-risk-check-design.md`.
 
 ## Gotchas
 

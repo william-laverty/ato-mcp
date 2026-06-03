@@ -10,6 +10,10 @@ import {
   GetDocInputSchema,
   GetDocAnchorsInputSchema,
   GetThresholdInputSchema,
+  DeductionDiscoveryInputSchema,
+  DepreciationHelperInputSchema,
+  BasPrepChecklistInputSchema,
+  AuditRiskCheckInputSchema,
   UserFactsSchema,
 } from "@ato-mcp/shared";
 import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
@@ -25,6 +29,10 @@ import { getDoc } from "@ato-mcp/shared/tools/get_doc";
 import { getDocAnchors } from "@ato-mcp/shared/tools/get_doc_anchors";
 import { getThreshold } from "@ato-mcp/shared/tools/get_threshold";
 import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
+import { deductionDiscovery } from "@ato-mcp/shared/tools/deduction_discovery";
+import { depreciationHelper } from "@ato-mcp/shared/tools/depreciation_helper";
+import { basPrepChecklist } from "@ato-mcp/shared/tools/bas_prep_checklist";
+import { auditRiskCheck } from "@ato-mcp/shared/tools/audit_risk_check";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
@@ -112,6 +120,70 @@ const TOOLS = {
     description: "Return the authenticated user's personal tax facts (state, ABN, business structure, GST, dependants, etc.). Call once on initialise and reason from the result throughout the session.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
+  deduction_discovery: {
+    description:
+      "Surface every deduction-related category that plausibly applies to the authenticated user's tax profile, with corpus citations, thresholds, and a confidence rating. Branches across all taxpayer structures (individual, sole trader, partnership, company, trust, SMSF member). Optionally pass `activity` to focus on a specific spend.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        activity: { type: "string" },
+        fy: { type: "string" },
+        k_citations: { type: "integer", minimum: 1, maximum: 5, default: 3 },
+        include_low_confidence: { type: "boolean", default: true },
+      },
+      additionalProperties: false,
+    },
+  },
+  depreciation_helper: {
+    description:
+      "Compute depreciation for an asset across all applicable methods (prime cost, diminishing value, instant asset write-off, $300 immediate, small business pool, Division 43 capital works), branched by the user's taxpayer structure. Returns year-by-year schedules, the live instant-asset-write-off threshold, and corpus citations. Inputs: asset_cost, acquisition_date (YYYY-MM-DD), and optionally business_use_pct, effective_life_years, is_small_business_entity, is_capital_works, asset_type, fy.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        asset_cost: { type: "number", exclusiveMinimum: 0 },
+        acquisition_date: { type: "string" },
+        business_use_pct: { type: "number", minimum: 0, maximum: 100, default: 100 },
+        asset_type: { type: "string" },
+        effective_life_years: { type: "number", exclusiveMinimum: 0 },
+        is_small_business_entity: { type: "boolean" },
+        is_capital_works: { type: "boolean", default: false },
+        method: { type: "string", enum: ["prime_cost", "diminishing_value", "both"], default: "both" },
+        fy: { type: "string" },
+        years: { type: "integer", minimum: 1, maximum: 40 },
+      },
+      required: ["asset_cost", "acquisition_date"],
+      additionalProperties: false,
+    },
+  },
+  bas_prep_checklist: {
+    description:
+      "Produce a tiered, cited BAS preparation checklist for the user's GST reporting period: which labels apply (GST G1/1A/1B, PAYG-W, PAYG-I, FBT instalment, fuel tax credits, WET, LCT), what evidence to gather, and common gotchas. Does not calculate amounts. Optional inputs: period_type (monthly/quarterly/annual), quarter (1-4), fy, full_gst_method.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        period_type: { type: "string", enum: ["monthly", "quarterly", "annual"] },
+        quarter: { type: "integer", minimum: 1, maximum: 4 },
+        fy: { type: "string" },
+        full_gst_method: { type: "boolean", default: false },
+      },
+      additionalProperties: false,
+    },
+  },
+  audit_risk_check: {
+    description:
+      "Flag patterns the ATO is known to scrutinise, given the user's facts + a draft return summary (income, deductions, rental). Returns qualitative red-flag findings with a risk band, why-flagged, what-to-do and ATO guidance citations. A heuristic indicator, NOT an audit prediction and NOT numeric benchmarking. Optional inputs: income, deductions [{category, amount}], rental {income, interest, repairs, capital_works}, business_income, fy.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        income: { type: "number", minimum: 0 },
+        deductions: { type: "array", items: { type: "object", properties: { category: { type: "string" }, amount: { type: "number", minimum: 0 } }, required: ["category", "amount"], additionalProperties: false } },
+        rental: { type: "object", properties: { income: { type: "number", minimum: 0 }, interest: { type: "number", minimum: 0 }, repairs: { type: "number", minimum: 0 }, capital_works: { type: "number", minimum: 0 } }, additionalProperties: false },
+        business_income: { type: "number" },
+        fy: { type: "string" },
+      },
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
@@ -140,6 +212,26 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
           mode: deps.mode ?? "local",
         },
         {},
+      );
+    case "deduction_discovery":
+      return deductionDiscovery(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        DeductionDiscoveryInputSchema.parse(args),
+      );
+    case "depreciation_helper":
+      return depreciationHelper(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        DepreciationHelperInputSchema.parse(args),
+      );
+    case "bas_prep_checklist":
+      return basPrepChecklist(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        BasPrepChecklistInputSchema.parse(args),
+      );
+    case "audit_risk_check":
+      return auditRiskCheck(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        AuditRiskCheckInputSchema.parse(args),
       );
     default:
       throw new Error(`Unknown tool: ${name}`);

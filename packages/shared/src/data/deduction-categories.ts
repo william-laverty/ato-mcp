@@ -1,0 +1,2383 @@
+// GENERATED FILE — do not edit by hand.
+// Source: docs/superpowers/specs/2026-06-03-deduction-discovery-taxonomy.json
+// Regenerate: pnpm --filter @ato-mcp/shared gen:deductions
+import type { DeductionCategory } from "../tools/deduction_discovery.js";
+
+export const DEDUCTION_CATEGORIES: DeductionCategory[] = [
+  {
+    "id": "wre_car",
+    "label": "Work-related car expenses (D1)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "work-related car expenses cents per kilometre logbook method",
+      "deduction for using my own car for work between jobs and sites",
+      "car expenses for work other than home to work travel"
+    ],
+    "seed_doc_ids": [
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d1-work-related-car-expenses-2025",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease/logbook-method",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/motor-vehicle-and-car-expenses/expenses-for-a-car-you-own-or-lease/cents-per-kilometre-method",
+      "legis:c2004a05138/28-12"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Cents-per-kilometre claim (up to 5,000 business km per car)",
+      "Logbook-method share of fuel, registration, insurance, servicing and depreciation",
+      "Driving between two separate workplaces or job sites on the same day",
+      "Carrying bulky tools or equipment that cannot be left at the workplace"
+    ],
+    "substantiation": "For cents-per-kilometre: a reasonable estimate of work kilometres (diary or pattern of use). For logbook: a valid 12-week logbook (valid 5 years), odometer readings, and receipts for all car running costs. Cannot claim normal home-to-work travel.",
+    "consider_prompt": "Have you considered claiming car expenses for work trips between sites, to clients, or to alternate workplaces (not your normal commute)? You may use either the cents-per-kilometre or logbook method per car.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 28 (s 28-12, s 28-25); general deductibility s 8-1",
+    "notes": "Car expenses (defined cars: designed to carry < 1 tonne and < 9 passengers) go at D1 and must use cents-per-km or logbook. A sole trader who is also an employee claims their employment car use here on the personal return; their business car use is a separate business_entity / st_business_motor_vehicle category. ATO scrutiny area."
+  },
+  {
+    "id": "wre_travel",
+    "label": "Work-related travel expenses (D2)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "work-related travel expenses overnight accommodation meals airfares",
+      "travel allowance overnight travel for work deduction",
+      "taxi ride-share public transport tolls parking for work travel"
+    ],
+    "seed_doc_ids": [
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d2-work-related-travel-expenses-2025",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/overnight-travel-expenses-and-allowances",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/cars-transport-and-travel/taxi-ride-share-and-public-transport-expenses",
+      "ato-law:TR/2021/4"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Airfares, train, bus, taxi and ride-share fares for work travel",
+      "Accommodation, meals and incidentals while travelling overnight for work",
+      "Bridge and road tolls, parking fees incurred on work trips",
+      "Travel between two workplaces or to off-site work locations"
+    ],
+    "substantiation": "Receipts for fares, accommodation and meals. A travel diary is required for trips of 6 or more consecutive nights away. Where a bona fide travel allowance is received and the claim is within the Commissioner's reasonable amounts, written evidence may not be required but the expense must still be incurred (see TR 2021/4 / annual TD).",
+    "consider_prompt": "Have you considered travel costs not covered by your car claim, such as airfares, public transport, taxis/ride-share, tolls, parking, and overnight accommodation and meals for work trips?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; travel between workplaces s 25-100; substantiation Div 900; TR 2021/4",
+    "notes": "D2 covers non-car transport, fares, accommodation, meals and incidentals. Travel between workplaces (s 25-100) is deductible; ordinary home-to-work travel is not. Distinct from a company/trust's business travel (business_entity)."
+  },
+  {
+    "id": "wre_clothing_laundry",
+    "label": "Work clothing, uniforms, laundry and dry-cleaning (D3)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "work clothing uniform laundry dry-cleaning deduction",
+      "compulsory uniform registered non-compulsory uniform claim",
+      "occupation-specific clothing protective clothing deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d3-work-clothing-laundry-and-dry-cleaning-expenses-2025",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/clothes-and-items-you-wear-at-work/clothing-laundry-and-dry-cleaning-expenses",
+      "ato-law:TXR/TR9712/NAT/ATO/00001",
+      "legis:c2004a05138/34-15"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Compulsory uniform with an employer logo or strictly enforced dress code",
+      "Registered non-compulsory uniform (on the Register of Approved Occupational Clothing)",
+      "Occupation-specific clothing (e.g. chef's checked pants, judge's robes)",
+      "Laundry of eligible work clothing ($1 per load work-only, $0.50 mixed)"
+    ],
+    "substantiation": "Receipts for purchase and cleaning. Laundry claims up to $150 (within the overall $300 written-evidence limit) can use the ATO's reasonable per-load basis without receipts, but you must be able to show how the claim was worked out. Conventional/everyday clothing is not deductible even if required by the employer.",
+    "consider_prompt": "Have you considered claiming compulsory or registered uniforms, occupation-specific clothing, and the cost of laundering or dry-cleaning them?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; uniform rules Div 34 (s 34-10, s 34-15); TR 97/12",
+    "notes": "D3 excludes protective items and PPE (modelled separately as wre_protective_ppe). Plain/conventional clothing is non-deductible (TR 97/12; Edwards' case). ATO scrutiny area."
+  },
+  {
+    "id": "wre_protective_ppe",
+    "label": "Protective clothing, PPE and safety equipment (D3)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "protective clothing PPE deduction high-vis steel-cap boots",
+      "sunglasses sunscreen protective items outdoor work deduction",
+      "safety glasses gloves hard hat respirator work deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/clothes-and-items-you-wear-at-work/protective-items-equipment-and-products",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/clothes-and-items-you-wear-at-work/glasses-contact-lenses-and-protective-glasses",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d3-work-clothing-laundry-and-dry-cleaning-expenses-2025",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "High-visibility vests, steel-capped boots, hard hats, safety glasses, gloves",
+      "Fire-resistant or chemical-resistant clothing and aprons",
+      "Sunscreen, sunglasses and hats where work is mainly outdoors",
+      "Masks, respirators, hand sanitiser and other PPE for the role"
+    ],
+    "substantiation": "Receipts for purchase. The item must protect you from a real and likely risk of illness or injury at work, given the nature of your duties. Sun-protection items require sufficient outdoor work exposure.",
+    "consider_prompt": "Have you considered protective gear and PPE your job requires, such as safety boots, high-vis, gloves, masks, sunscreen and sunglasses for outdoor work?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; sun-protection items per ATO guidance and TR 97/12",
+    "notes": "Modelled distinctly from conventional/uniform clothing because the deductibility test (protection against a work risk) differs. Protective items are reported at D3. Items over $300 are depreciated rather than immediately deducted."
+  },
+  {
+    "id": "wre_self_education",
+    "label": "Work-related self-education expenses (D4)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "work-related self-education expenses course fees deduction connection to current job",
+      "self-education deduction tuition textbooks travel to study",
+      "is my course deductible improve skills in current employment"
+    ],
+    "seed_doc_ids": [
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d4-work-related-self-education-expenses-2025",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/education-training-and-seminars/self-education-expenses",
+      "ato-law:TR/2024/3",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Course or tuition fees (self-funded, not HECS-HELP) for study tied to current work",
+      "Textbooks, stationery, professional and academic journals",
+      "Travel from work to place of education and depreciation of a study computer",
+      "Conference and short-course fees that maintain or improve current skills"
+    ],
+    "substantiation": "Receipts for fees, materials and travel; records connecting the study to your current income-earning activity. There must be a sufficient connection to your current employment (maintains/improves skills or is likely to increase income). The former $250 non-deductible threshold was removed from 1 July 2022.",
+    "consider_prompt": "Have you considered self-education costs for study that maintains or improves the skills you use in your current job, including fees, books, and travel to study?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; assistance-to-students limits s 26-20 (HECS-HELP repayments not deductible); TR 2024/3",
+    "notes": "HECS-HELP loan repayments are never deductible (s 26-20). If hecs_help_debt is true, prompt that fees paid via HELP are excluded. Study to get a new job (rather than improve current work) is not deductible."
+  },
+  {
+    "id": "wre_wfh_fixed_rate",
+    "label": "Working-from-home running expenses — fixed-rate method (D5)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "working from home fixed rate method cents per hour deduction",
+      "PCG 2023/1 revised fixed rate working from home record keeping",
+      "claim home running costs electricity internet phone fixed rate"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/working-from-home-expenses/fixed-rate-method",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/working-from-home-expenses",
+      "ato-law:PCG/2023/1",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d5-other-work-related-expenses-2025"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Revised fixed-rate cents-per-hour covering electricity, gas, phone, internet, stationery",
+      "Hours worked from home over the income year multiplied by the fixed rate",
+      "Separately deductible decline in value of office furniture and equipment"
+    ],
+    "substantiation": "Per PCG 2023/1: a record of all actual hours worked from home for the whole year (timesheet, roster, diary or similar — estimates no longer accepted), plus one bill for each running expense covered by the rate. The fixed rate covers energy, phone, internet, stationery and computer consumables; depreciating assets are claimed separately.",
+    "consider_prompt": "Have you considered the working-from-home fixed-rate (cents-per-hour) deduction if you regularly work from home and have kept a record of your hours?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; PCG 2023/1 (revised fixed-rate method from 1 July 2022)",
+    "notes": "Mutually exclusive with the WFH actual-cost method (wre_wfh_actual) for the same hours. The fixed rate bundles phone and internet, so do NOT also claim those under wre_phone_internet for hours covered by this rate. ATO scrutiny area."
+  },
+  {
+    "id": "wre_wfh_actual",
+    "label": "Working-from-home running expenses — actual-cost method (D5)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "working from home actual cost method deduction work-use percentage",
+      "claim actual electricity internet phone depreciation home office",
+      "home office running expenses actual method records"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/working-from-home-expenses/actual-cost-method",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/working-from-home-expenses",
+      "ato-law:TXR/TR9330/NAT/ATO/00001",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Work-use share of electricity and gas for heating, cooling and lighting",
+      "Work-use share of home phone and internet",
+      "Decline in value of a dedicated home-office desk, chair and equipment",
+      "Cleaning of a dedicated home work area"
+    ],
+    "substantiation": "Records of actual expenses and a reasonable basis for the work-use percentage (e.g. a representative 4-week diary plus bills, floor-area and depreciation calculations). Occupancy expenses (rent, mortgage interest, rates) are generally NOT deductible for an employee absent a place-of-business test (TR 93/30).",
+    "consider_prompt": "Have you considered the actual-cost working-from-home method if you can substantiate the work-related portion of your real running expenses (often higher than the fixed rate)?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; TR 93/30 (home office expenses)",
+    "notes": "Alternative to the fixed-rate method (wre_wfh_fixed_rate) — a taxpayer chooses one for the year. Employees generally cannot claim occupancy costs (CGT main-residence consequences if a home is a place of business)."
+  },
+  {
+    "id": "wre_phone_internet",
+    "label": "Work-related phone, internet and data (D5)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "claim work portion mobile phone home internet deduction",
+      "work use percentage phone bill internet four week diary",
+      "mobile phone data plan work related deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/mobile-phone-mobile-internet-and-other-devices",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/home-phone-and-internet-expenses",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d5-other-work-related-expenses-2025",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Work-use percentage of monthly mobile phone and data plan",
+      "Work-use percentage of home internet",
+      "Work-use percentage of a home phone line"
+    ],
+    "substantiation": "A representative 4-week diary or itemised bills establishing the work-use percentage, applied across the year. If you claim the WFH fixed-rate method, phone and internet are already bundled in that rate and cannot be claimed again here.",
+    "consider_prompt": "Have you considered claiming the work-related portion of your mobile, internet and home phone — unless those are already covered by the working-from-home fixed rate?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; apportionment per ATO guidance",
+    "notes": "Overlaps with wre_wfh_fixed_rate (which bundles phone/internet). Surface both but the consider_prompt warns against double-claiming. Stands alone for work phone/internet use outside WFH hours."
+  },
+  {
+    "id": "wre_tools_equipment",
+    "label": "Tools, equipment and depreciating assets used for work (D5)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "tools and equipment for work deduction immediate $300 depreciation",
+      "computer laptop software work use decline in value",
+      "depreciating assets used for work cost over $300"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/tools-and-equipment-to-perform-your-work",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/depreciating-assets-you-use-for-work/assets-costing-300-dollars-or-less",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/computers-laptops-and-software",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/office-furniture-and-equipment"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Hand tools, power tools and trade equipment for the job",
+      "Immediate deduction for an eligible work item costing $300 or less",
+      "Decline in value (depreciation) of a work laptop, tablet or office furniture",
+      "Work-use share of software subscriptions and licences"
+    ],
+    "substantiation": "Receipts showing purchase date and cost; for items over $300, a depreciation schedule and the work-use percentage. Items $300 or less used mainly for work can be deducted immediately (this $300 limit is a statutory low-cost rule, not one of the configured thresholds).",
+    "consider_prompt": "Have you considered tools, equipment, computers and software you bought for work? Items $300 or less can be claimed in full; dearer items are depreciated over their effective life.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general); decline in value Div 40; immediate deduction for non-business assets costing $300 or less under s 40-80",
+    "notes": "For an employee/individual the $300 immediate-deduction rule (Div 40, s 40-80) applies. Distinct from the small-business instant asset write-off (a business_entity / sole-trader-business concept), so the instant_asset_write_off threshold is intentionally NOT referenced here."
+  },
+  {
+    "id": "wre_union_professional_fees",
+    "label": "Union fees, professional association and bargaining-agent fees (D5)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "union fees professional association subscriptions deduction",
+      "membership fees to a trade or professional body work deduction",
+      "bargaining agents fees deductible"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/memberships-accreditations-fees-and-commissions/union-fees-subscriptions-to-associations-and-bargaining-agents-fees",
+      "ato-law:TR/2000/7",
+      "legis:c2004a05138/25-55",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d5-other-work-related-expenses-2025"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Annual trade union membership fees",
+      "Professional association or registration body membership relevant to the job",
+      "Bargaining-agent's fee for negotiating an enterprise agreement",
+      "Practising certificates and occupation licences required for work"
+    ],
+    "substantiation": "Receipts or end-of-year statements from the union/association. Payments to associations are deductible under s 25-55 (capped at $42 where the body is not relevant to earning income, but uncapped where the membership relates to your income-earning activity). Joining/entrance fees may differ — see TR 2000/7.",
+    "consider_prompt": "Have you considered union fees, professional or trade association memberships, and bargaining-agent fees connected to your job?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; payments to associations s 25-55; TR 2000/7",
+    "notes": "s 25-55 specifically allows association payments (with a $42 cap only where not income-related). Practising certificates / mandatory occupation licences also belong here."
+  },
+  {
+    "id": "wre_income_protection_insurance",
+    "label": "Income protection insurance premiums (D15 — other deductions)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "dedupe_key": "income_protection_8_1",
+    "seed_queries": [
+      "income protection insurance premium deduction outside super",
+      "is income protection insurance tax deductible",
+      "salary continuance insurance premium deductible"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/investments-insurance-and-super/income-protection-insurance",
+      "ato-law:TXD/TD9541/NAT/ATO/00001",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Premiums for an income-protection / salary-continuance policy held outside super",
+      "The income-replacement portion of a combined policy (apportioned)"
+    ],
+    "substantiation": "Premium notices or the insurer's annual statement showing the deductible portion. Only premiums for cover of assessable income are deductible — premiums for lump-sum capital benefits (life, total-and-permanent-disability, trauma) are not. Premiums paid through a super fund are not personally deductible.",
+    "consider_prompt": "Have you considered the deductible portion of income-protection insurance premiums you pay yourself outside superannuation?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (premiums deductible to the extent they cover loss of assessable income); TD 95/41 (trauma/capital-benefit premiums are not deductible)",
+    "notes": "DUPLICATE-AWARE: this is the occupation-gated WRE-slice income-protection row. The structures=[all] variant income_protection_insurance_premiums covers non-employed individuals. The orchestrator should dedupe these at merge time (same s 8-1 deduction, same lead ATO page); retained both for recall — this one surfaces for employees/sole-traders with an occupation, the other for any structure. Income-protection premiums are an 'other deduction' (return label D15), NOT a D1-D5 work-related expense. Life/TPD/trauma premiums are capital and not deductible (TD 95/41)."
+  },
+  {
+    "id": "wre_seminars_subscriptions",
+    "label": "Seminars, conferences, professional subscriptions and journals (D5)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "seminars conferences training courses deduction work related",
+      "professional journals periodicals subscriptions work deduction",
+      "industry publication digital information service deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/education-training-and-seminars/seminars-conferences-and-training-courses",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions/tools-computers-and-items-you-use-for-work/books-periodicals-and-digital-information",
+      "ato-law:TR/2024/3",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Fees for seminars, conferences and short training courses relevant to current work",
+      "Professional and trade journal subscriptions",
+      "Technical books, periodicals and paid digital information services for the role"
+    ],
+    "substantiation": "Receipts / tax invoices and records connecting the seminar, course or subscription to your current employment. Where attendance involves overnight travel, the travel component is dealt with under work-related travel (D2).",
+    "consider_prompt": "Have you considered seminars, conferences, training and professional subscriptions or journals that relate to your current work?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; self-education connection per TR 2024/3",
+    "notes": "Overlaps conceptually with self-education (D4) where the seminar forms part of a course of study; standalone professional development and subscriptions sit at D5. Surfaced separately for recall — at runtime, do not double-count a seminar already part of a D4 self-education claim."
+  },
+  {
+    "id": "wre_gifts_donations",
+    "label": "Gifts and donations to DGRs (D9)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "seed_queries": [
+      "tax deductible gift donation deductible gift recipient DGR",
+      "claim donation to charity over $2 deduction",
+      "what gifts and donations can I claim"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/gifts-and-donations",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d9-gifts-or-donations-2025",
+      "legis:c2004a05138/30-15",
+      "legis:c2004a05138/30-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Cash gifts of $2 or more to a deductible gift recipient (DGR)",
+      "Workplace-giving donations (where tax was not already reduced at source)",
+      "Property donations meeting the Division 30 valuation rules",
+      "Bucket donations to a DGR (up to $10 total without receipts)"
+    ],
+    "substantiation": "A receipt from the DGR (or, for bucket collections, a claim up to $10 in total without receipts). The recipient must be an endorsed DGR and the gift must be a genuine gift (no material benefit received). Items where you receive something in return (raffle tickets, fundraising dinners, badges) are generally not deductible.",
+    "consider_prompt": "Have you considered claiming gifts or donations of $2 or more made to deductible gift recipients during the year?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Div 30 (s 30-1, s 30-15)",
+    "notes": "Applies regardless of occupation — anyone who donated to a DGR can claim (no occupation trigger). Listed for all structures because an individual behind any structure still claims personal DGR gifts on their own return; return_context stays personal. NOTE: a company/trust that makes its OWN gifts claims them on the entity return — that is a separate business_entity concept, not this one."
+  },
+  {
+    "id": "wre_managing_tax_affairs",
+    "label": "Cost of managing tax affairs (D10)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "seed_queries": [
+      "cost of managing tax affairs deduction tax agent fees",
+      "deduction for tax agent fee preparing tax return",
+      "litigation costs ART fees managing tax affairs deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/cost-of-managing-tax-affairs",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d10-cost-of-managing-tax-affairs-2025",
+      "legis:c2004a05138/25-5"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Registered tax agent or accountant fees for preparing and lodging your return",
+      "Travel to obtain tax advice from a recognised tax adviser",
+      "Litigation costs (court and Administrative Review Tribunal fees, solicitor and barrister costs) for tax disputes",
+      "Cost of a valuation for a deductible gift, donation of property or conservation covenant"
+    ],
+    "substantiation": "Receipts/invoices from your tax agent or adviser. The fee paid to a recognised tax adviser is deductible in the year incurred under s 25-5. IMPORTANT: ATO interest charges (general interest charge / shortfall interest charge) are deductible only if incurred BEFORE 1 July 2025 — GIC and SIC incurred on or after 1 July 2025 are no longer deductible, so for current_fy 2025-26 do not include them.",
+    "consider_prompt": "Have you considered the cost of managing your tax affairs — last year's tax agent fee, travel to a tax adviser, and litigation costs of disputing an assessment? (Note: ATO interest charges incurred on or after 1 July 2025 are no longer deductible.)",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 25-5 (tax-related expenses)",
+    "fy_note": "ATO interest charges (GIC/SIC) incurred on or after 1 July 2025 are NOT deductible. Only charges incurred before 1 July 2025 are deductible.",
+    "notes": "Available to any individual taxpayer (no occupation trigger). The personal tax-agent fee sits here; a business entity's own tax-management costs go on the entity return (separate ent_professional_compliance_fees category). Law change: deductibility of GIC/SIC was repealed for charges incurred from 1 July 2025."
+  },
+  {
+    "id": "wre_occupation_specific",
+    "label": "Occupation-specific deductions (catch-all by job)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "occupation",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "occupation specific work-related deductions guide",
+      "deductions for my occupation nurse teacher tradie police pilot",
+      "industry specific deductions I can claim for my job"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/guides-for-occupations-and-industries/occupation-and-industry-specific-guides",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/work-related-deductions",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d5-other-work-related-expenses-2025",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Nurses/midwives: agency-mandated fob watch, nursing supplies, annual registration",
+      "Teachers: excursion costs, teaching aids and resources bought for class",
+      "Tradespersons/construction: tools, sun protection, safety gear",
+      "Pilots/flight attendants: rehydrating moisturiser, in-flight equipment per ATO guides"
+    ],
+    "substantiation": "Receipts and records appropriate to each item, plus a record showing the work connection. The ATO publishes per-occupation guides (A-D, E-K, L-Q, R-Z) listing what that occupation can and cannot claim; resolve the matching guide at runtime from the taxpayer's occupation field.",
+    "consider_prompt": "Have you reviewed the ATO occupation guide for your job? It lists deductions specific to your role that the general D1-D10 questions may not surface.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; ATO occupation and industry-specific guides",
+    "notes": "Recall-first catch-all: at runtime, map the occupation fact to the relevant guide (e.g. l-q/nurses-and-midwives, r-z/teachers, a-d/building-and-construction). Landing page seeded; specific guides exist under guides-for-occupations-and-industries/{a-d,e-k,l-q,r-z}/ and are resolved by seed_queries."
+  },
+  {
+    "id": "rental_loan_interest",
+    "label": "Rental property — loan interest",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "rental property loan interest deduction",
+      "interest expenses on money borrowed to buy a rental property",
+      "apportioning interest where loan is partly private",
+      "redraw or refinance affecting rental interest deductibility"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/interest-expenses",
+      "ato:forms-and-instructions/rental-properties-2025/rental-expenses",
+      "ato-law:TXR/TR9525/NAT/ATO/00001",
+      "ato-law:TR/2000/2",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Interest on the loan used to purchase the rental property",
+      "Interest on a loan to finance renovations or repairs to the rented dwelling",
+      "Interest on a loan to buy depreciating assets (e.g. an air conditioner) for the rental",
+      "Ongoing interest on a redraw/portion of an offset loan attributable to the income-producing use"
+    ],
+    "substantiation": "Loan statements showing interest charged, the loan purpose/drawdown history, and apportionment workings where any part of the loan was used for private purposes or the property was only available to rent for part of the year. Where a redraw or refinance has occurred, records tracing the redrawn funds to an income-producing use.",
+    "consider_prompt": "Have you considered claiming the interest on every loan connected to your rental property — including loans for repairs, renovations and depreciating assets — and apportioning out any private or redraw portion?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; TR 95/25; TR 2000/2 (redraw/line-of-credit)",
+    "notes": "Recall-first: surface whenever has_investment_property is true. Deductible only to the extent the borrowed money is used to produce assessable rental income; private-use and capitalised-interest portions must be apportioned. TR 2000/2 governs interest deductibility on redraw and line-of-credit facilities. ATO scrutiny area — interest over-claims and incorrect apportionment after refinance/redraw are top rental review issues."
+  },
+  {
+    "id": "rental_capital_works_div43",
+    "label": "Rental property — capital works (Div 43)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "capital works deduction rental property division 43",
+      "2.5% per year building construction cost deduction",
+      "structural improvements and extensions capital works",
+      "work out capital works deduction rate and period"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/capital-expenses/work-out-your-capital-works-deductions",
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/capital-expenses",
+      "legis:c2004a05138/43-10",
+      "legis:c2004a05138/43-20"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Construction cost of the building written off at 2.5% per year over 40 years",
+      "Structural improvements such as a new retaining wall, fence, driveway or carport",
+      "Extensions, alterations and major renovations of a structural nature",
+      "Building defect rectification of a capital nature"
+    ],
+    "substantiation": "Construction cost details (or a quantity surveyor's report where actual costs are unknown), the date construction was completed, the period the property was income-producing, and any prior owner's capital works claimed.",
+    "consider_prompt": "Have you considered a capital works (Division 43) deduction for the building's construction cost and any structural improvements — typically 2.5% per year — using a quantity surveyor's report if you don't know the original cost?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 43 (s 43-10, s 43-20)",
+    "notes": "Distinct from Div 40 decline-in-value: Div 43 covers the building structure and fixed structural items; Div 40 covers removable/mechanical depreciating assets. Capital works deductions reduce the property's CGT cost base on later sale. Recall-first on has_investment_property."
+  },
+  {
+    "id": "rental_decline_in_value_div40",
+    "label": "Rental property — decline in value of depreciating assets (Div 40)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "decline in value depreciating assets rental property",
+      "second-hand depreciating assets residential rental restriction",
+      "plant and equipment depreciation rental ovens carpets blinds",
+      "effective life of rental property depreciating assets"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/depreciating-assets-in-rental-properties",
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/depreciating-assets-in-rental-properties/second-hand-depreciating-assets",
+      "ato-law:TR/2004/16",
+      "legis:c2004a05138/40-25"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Decline in value of carpets, curtains and blinds",
+      "Decline in value of an oven, dishwasher, hot-water system or air conditioner",
+      "Decline in value of freestanding furniture in a furnished rental",
+      "Decline in value of a new (not second-hand) depreciating asset installed in the rental"
+    ],
+    "substantiation": "Purchase invoices showing cost and date, the asset's effective life or rate used, depreciation schedules, and evidence of whether each asset was new or second-hand (since second-hand assets in residential rentals are generally not deductible for assets acquired after 9 May 2017).",
+    "consider_prompt": "Have you considered a decline-in-value (Division 40) deduction for the removable plant and equipment in your rental — ovens, carpets, blinds, air conditioners — bearing in mind the limit on claiming second-hand assets in residential properties?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 40 (s 40-25); TR 2004/16",
+    "notes": "Distinct category from Div 43 capital works. Key trap: for residential rental property, decline in value of PREVIOUSLY USED (second-hand) depreciating assets is denied for assets acquired after 9 May 2017 unless the taxpayer is in the business of letting property. Recall-first on has_investment_property."
+  },
+  {
+    "id": "rental_repairs_vs_improvements",
+    "label": "Rental property — repairs and maintenance (vs improvements)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "rental property repairs and maintenance deduction",
+      "difference between repair and improvement rental property",
+      "initial repairs not deductible on newly acquired rental",
+      "deductions for repairs section 25-10"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/repair-and-maintenance-expenses",
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/work-out-the-category-of-your-rental-upkeep-expenses",
+      "ato-law:TXR/TR9723/NAT/ATO/00001",
+      "legis:c2004a05138/25-10"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Repairing a leaking tap, broken window or damaged guttering",
+      "Repainting deteriorated interior or exterior walls",
+      "Replacing part of a fence damaged in a storm (like-for-like)",
+      "Servicing and maintaining existing appliances and systems"
+    ],
+    "substantiation": "Tradesperson invoices describing the work, photographs/records distinguishing restoration of damage from improvement, and evidence the defect arose during your income-producing ownership (not pre-existing at purchase).",
+    "consider_prompt": "Have you considered which of your property works are immediately deductible repairs versus capital improvements — and that 'initial repairs' to fix defects existing when you bought the property are capital, not an immediate deduction?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 25-10; TR 97/23",
+    "notes": "Immediate deduction under s 25-10 only for genuine repairs/maintenance. Improvements, replacements of an entirety, and initial repairs are capital — they go to Div 43 capital works or Div 40 decline in value instead. ATO scrutiny: repairs incorrectly claimed in full when they were improvements. Recall-first on has_investment_property."
+  },
+  {
+    "id": "rental_management_and_admin_fees",
+    "label": "Rental property — property agent fees, rates, insurance, strata and other holding costs",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "property manager and letting agent fees rental deduction",
+      "council rates land tax water rates insurance rental property",
+      "body corporate strata fees deduction rental",
+      "advertising for tenants and property management software"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/common-property-expenses",
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/deductions-for-a-rental-property-that-isnt-a-holiday-home",
+      "ato:forms-and-instructions/rental-properties-2025/rental-expenses",
+      "ato-law:TR/2026/1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Property/letting agent management and re-letting fees",
+      "Council rates, water rates and land tax",
+      "Building, landlord and contents insurance premiums",
+      "Body corporate / strata administration-fund levies and advertising for tenants"
+    ],
+    "substantiation": "Agent statements, rates and land tax notices, insurance schedules, body corporate levy notices and invoices — apportioned for any private use and for periods the property was not genuinely available to rent.",
+    "consider_prompt": "Have you considered the ongoing holding costs of your rental — agent fees, council and water rates, land tax, insurance, strata levies and advertising for tenants — and apportioned them for any private use or part-year availability?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; TR 2026/1",
+    "notes": "Catch-all for the day-to-day deductible holding and management costs of a residential rental. Strata special-purpose/sinking-fund levies for capital works may be capital rather than immediately deductible. TR 2026/1 is the controlling ruling on rental income and deductions for individuals not in business. Recall-first on has_investment_property; apportion for genuine availability."
+  },
+  {
+    "id": "rental_borrowing_and_misc_setup_costs",
+    "label": "Rental property — borrowing expenses and loan setup costs",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "borrowing expenses rental property loan establishment fees",
+      "deduct loan setup costs over five years section 25-25",
+      "lenders mortgage insurance and stamp duty on mortgage rental",
+      "borrowing costs apportioned over term of loan"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/borrowing-expenses",
+      "ato:forms-and-instructions/rental-properties-2025/rental-expenses",
+      "legis:c2004a05138/25-25"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Loan establishment and mortgage application fees",
+      "Lender's mortgage insurance (LMI)",
+      "Stamp duty charged on the mortgage (not on the property title)",
+      "Title search fees and mortgage broker fees connected to the loan"
+    ],
+    "substantiation": "Loan documents and settlement statement itemising borrowing costs, the loan term, and a calculation spreading costs over the lesser of five years or the loan term (full deduction in the first year only if total borrowing costs are $100 or less).",
+    "consider_prompt": "Have you considered your loan setup (borrowing) costs — establishment fees, LMI, mortgage stamp duty, broker fees — which are deductible spread over five years (or the loan term if shorter)?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 25-25",
+    "notes": "Distinct from loan interest: borrowing expenses are the costs of taking out the loan, deductible under s 25-25 over the lesser of 5 years or the loan term ($100-or-less written off immediately). Stamp duty on the property title is a CGT cost base item, not a borrowing expense. Recall-first on has_investment_property."
+  },
+  {
+    "id": "rental_travel_disallowed_note",
+    "label": "Rental property — travel expenses (NOW DISALLOWED for residential rentals)",
+    "kind": "disallowance",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "travel expenses to inspect residential rental property not deductible",
+      "section 26-31 travel residential premises",
+      "exception for taxpayers in business of letting rental properties travel",
+      "rental property travel deduction removed from 1 July 2017"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/residential-rental-properties/rental-expenses/rental-properties-and-travel-expenses",
+      "ato:forms-and-instructions/rental-properties-2025/rental-expenses",
+      "legis:c2004a05138/26-31",
+      "ato-law:TR/2026/1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Car trips to inspect or maintain the rental — NOT deductible for individuals",
+      "Airfares/accommodation to collect rent or visit the property — NOT deductible",
+      "Travel to meet the property manager — NOT deductible for individual investors",
+      "Exception: travel IS deductible only if you carry on a business of letting rental properties, or are an excluded entity (e.g. a company)"
+    ],
+    "substantiation": "Generally none claimable. Only relevant where the taxpayer genuinely carries on a business of letting properties (rare for individuals) — then normal travel substantiation applies.",
+    "consider_prompt": "Note: travel to inspect or maintain a residential rental is NOT deductible for individual investors from 1 July 2017 — flag any rental travel claim as disallowed unless you carry on a property-letting business.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 26-31",
+    "notes": "DISALLOWANCE flag, not a positive deduction. Since 1 July 2017, s 26-31 denies travel deductions for residential rental property for individuals, SMSFs and most trusts/partnerships. Surfaced deliberately so the tool warns the user not to claim. Companies and entities carrying on a letting business are excluded from the denial. Recall-first on has_investment_property."
+  },
+  {
+    "id": "rental_vacant_land_holding_costs",
+    "label": "Rental property — vacant land holding costs (LIMITED for individuals)",
+    "kind": "disallowance",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_investment_property",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductions for vacant land denied for individuals section 26-102",
+      "holding costs vacant land interest rates not deductible",
+      "exception substantial and permanent structure vacant land",
+      "vacant land deduction when property under construction"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/property-and-land/land-vacant-land-and-subdividing/deductions-for-vacant-land",
+      "legis:c2004a05138/26-102",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Interest, council rates and land tax on vacant land held by an individual — generally NOT deductible",
+      "Holding costs while a rental dwelling is being built but is not yet substantial and permanent — denied",
+      "Exception: land with a substantial and permanent income-producing structure already in use",
+      "Exception: land affected by a natural disaster or exceptional circumstances"
+    ],
+    "substantiation": "Records of the land, any structures present and their use, construction/occupancy certificates establishing when a substantial and permanent structure was lawfully able to be occupied and rented, and evidence of any exception relied on.",
+    "consider_prompt": "Have you considered that holding costs for vacant land (or land where the dwelling isn't yet built and able to be occupied) are generally NOT deductible for individuals under s 26-102 — and whether an exception applies?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 26-102",
+    "notes": "Mixed positive/disallowance category. s 26-102 denies holding-cost deductions for vacant land to individuals (and most trusts/SMSFs) unless a substantial and permanent structure is in place and the land is income-producing, or an exception applies. Surfaced to prevent over-claiming during build periods. Recall-first on has_investment_property."
+  },
+  {
+    "id": "shares_borrowing_interest",
+    "label": "Shares & managed funds — interest on borrowings to buy income-producing investments",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_shares_or_managed_funds",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "interest on loan to buy income-producing shares deduction",
+      "D7 interest income deductions individual tax return",
+      "deductibility of interest on margin loan to buy shares",
+      "capital protected borrowing share investment deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d7-interest-income-deductions-2025",
+      "ato:individuals-and-families/investments-and-assets/shares-funds-and-trusts/investing-in-shares/obtaining-shares/how-to-calculate-deductions-for-a-capital-protected-borrowing",
+      "ato-law:TXR/TR9525/NAT/ATO/00001",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Interest on a loan or margin loan used to buy dividend-paying shares",
+      "Interest on borrowings to invest in an income-producing managed fund or ETF",
+      "Ongoing interest on a line of credit drawn down to acquire income-producing investments",
+      "Deductible (non-capital-protected) portion of interest on a capital protected borrowing"
+    ],
+    "substantiation": "Loan statements showing interest, evidence the borrowed funds were used to acquire investments expected to produce assessable income (dividends/distributions), and apportionment where any shares are non-income-producing or the loan is part-private. For capital protected products, the split between deductible interest and the capital protection component.",
+    "consider_prompt": "Have you considered claiming the interest on money you borrowed to buy income-producing shares, ETFs or managed funds — reported at D7 — and identifying the deductible portion of any capital protected borrowing?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; TR 95/25; Div 247 (capital protected borrowings)",
+    "notes": "Deductible where the dominant purpose of the borrowing is to derive assessable dividend/distribution income; interest on borrowings to buy shares acquired solely for capital growth with no expectation of income is at risk. Capital protected borrowings split interest under Div 247. Reported at D7. Recall-first on has_shares_or_managed_funds."
+  },
+  {
+    "id": "shares_management_advice_and_platform_fees",
+    "label": "Shares & managed funds — management, advice and ongoing platform fees",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_shares_or_managed_funds",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductions for managing your investments financial advice fees",
+      "dividend income deductions ongoing portfolio management fees",
+      "D8 dividend deductions individual tax return",
+      "cost of investment journals and internet for managing shares"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/shares-funds-and-trusts/investing-in-shares/owning-shares/dividend-income-deductions",
+      "ato:forms-and-instructions/individual-tax-return-2025-instructions/deduction-questions-d1-d10-individual-tax-return-2025/d8-dividend-deductions-2025",
+      "ato-law:TXR/TR9533/NAT/ATO/00001",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Ongoing portfolio management and administration fees on an income-producing portfolio",
+      "Fees for advice on managing your existing investments (ongoing, not initial set-up advice)",
+      "Annual platform/wrap-account and account-keeping fees",
+      "Cost of investment-related journals, subscriptions and a reasonable apportioned share of internet used to manage the portfolio"
+    ],
+    "substantiation": "Adviser fee statements distinguishing initial (non-deductible, capital) advice from ongoing management advice, platform/account-keeping fee statements, subscription invoices, and apportionment records for any mixed private/investment use (e.g. internet).",
+    "consider_prompt": "Have you considered the ongoing costs of managing your share and fund portfolio — platform fees, ongoing advice fees, investment subscriptions — claimed at D8, while excluding the non-deductible cost of initial set-up advice?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; TR 95/33",
+    "notes": "Ongoing management/advice fees relating to producing assessable investment income are deductible at D8; initial investment-advice and entry/exit (brokerage) costs are capital and form part of the CGT cost base instead. Recall-first on has_shares_or_managed_funds."
+  },
+  {
+    "id": "crypto_cgt_on_disposal",
+    "label": "Crypto — CGT on disposal and the 12-month CGT discount",
+    "kind": "cgt_event",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_crypto",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "how to work out and report CGT on crypto assets",
+      "crypto to crypto swap is a CGT event",
+      "12 month CGT discount eligibility crypto held as investment",
+      "cost base of crypto asset capital gains"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/crypto-asset-investments/how-to-work-out-and-report-cgt-on-crypto",
+      "ato:individuals-and-families/investments-and-assets/crypto-asset-investments/transactions-acquiring-and-disposing-of-crypto-assets",
+      "legis:c2004a05138/104-10",
+      "legis:c2004a05138/115-25"
+    ],
+    "thresholds": [
+      "cgt_discount_individual"
+    ],
+    "examples": [
+      "Capital gain or loss on selling crypto for fiat currency (CGT event A1)",
+      "Capital gain on a crypto-to-crypto exchange or swap (a disposal of the first asset)",
+      "50% CGT discount on crypto held by an individual as an investment for at least 12 months",
+      "Capital loss carried forward where crypto is disposed of at a loss"
+    ],
+    "substantiation": "Records of acquisition date and AUD value, disposal date and AUD proceeds, the cost base (including incidental costs such as brokerage/exchange fees), wallet/exchange transaction histories, and the holding period to support any 50% discount claim.",
+    "consider_prompt": "Have you considered the CGT outcome on every crypto disposal — including crypto-to-crypto swaps — and whether the 50% CGT discount applies to assets you held as an investment for at least 12 months?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 102-5, s 104-10 (CGT event A1), Div 115 (s 115-25, s 115-100 — 50% discount)",
+    "residency_caveat": true,
+    "notes": "Each disposal (sell, swap, gift, use to buy goods) is a CGT event. Individuals holding crypto as an investment get the 50% CGT discount (cgt_discount_individual) if held 12+ months. Not a 'deduction' strictly, but a core passive-income tax item — net capital losses can offset capital gains. Recall-first on has_crypto."
+  },
+  {
+    "id": "crypto_trading_stock_vs_investment",
+    "label": "Crypto — trading-stock vs investment distinction (business of trading)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "none",
+      "company",
+      "trust"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_crypto",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "crypto held as trading stock versus investment capital asset",
+      "carrying on a business of trading crypto assets deductions",
+      "crypto asset personal use asset exemption",
+      "tax and crypto asset investments investor toolkit"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/investments-and-assets/crypto-asset-investments/crypto-asset-as-a-personal-use-asset",
+      "ato:tax-and-super-professionals/for-tax-professionals/prepare-and-lodge/tax-time/tax-time-toolkits/tax-time-toolkit-for-investors/tax-and-crypto-asset-investments",
+      "legis:c2004a05138/70-10",
+      "legis:c2004a05138/108-20"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Investor: gains are on capital account and eligible for the CGT discount; no trading-stock deductions",
+      "Trader (carrying on a business): crypto is trading stock — proceeds are ordinary income, no CGT discount",
+      "Trader: cost of acquiring crypto trading stock and direct trading costs are deductible under s 8-1",
+      "Personal use asset: crypto bought and used to buy personal items may be CGT-exempt (cost <= $10,000)"
+    ],
+    "substantiation": "Evidence of the nature and scale of activity (volume/frequency of trades, business-like organisation, profit-making intention, business plan) to support trader vs investor classification; trading-stock valuations at year-end if carrying on a business; records showing any genuine personal-use acquisition and use.",
+    "consider_prompt": "Have you considered whether your crypto activity is investing (capital account, CGT discount available) or a business of trading (trading stock, ordinary income, deductible costs but no discount) — and whether any holding qualifies as a personal use asset?",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; Div 70 (trading stock, s 70-10); s 108-20 (personal use assets)",
+    "notes": "Determines the entire treatment: investors are on capital account (see crypto_cgt_on_disposal and the CGT discount); traders carrying on a business hold crypto as trading stock with ordinary-income proceeds and s 8-1 deductions but NO CGT discount. Personal-use-asset exemption is narrow (cost <= $10,000, genuine personal use). Recall-first on has_crypto."
+  },
+  {
+    "id": "st_business_motor_vehicle",
+    "label": "Business motor vehicle expenses (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "sole trader motor vehicle expenses logbook method",
+      "cents per kilometre method car expenses business",
+      "Division 28 car expense limit one tonne passenger vehicle",
+      "actual cost method motor vehicle business deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-motor-vehicle-expenses",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-motor-vehicle-expenses/logbook-method",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-motor-vehicle-expenses/cents-per-kilometre-method",
+      "legis:c2004a05138/28-12"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Fuel and oil",
+      "Registration and insurance for the business vehicle",
+      "Repairs, servicing and tyres",
+      "Lease payments or interest on a car loan",
+      "Decline in value (depreciation) of the vehicle",
+      "Cents-per-kilometre claim for a car (capped business kms per year)"
+    ],
+    "substantiation": "A valid logbook covering a continuous 12-week representative period (valid 5 years) establishing the business-use percentage, plus odometer readings and receipts for all running costs if using the logbook/actual-cost method. For cents-per-kilometre, a reasonable diary basis evidencing business kilometres. Keep the vehicle purchase contract and finance/lease documents.",
+    "consider_prompt": "Have you compared the logbook method against cents-per-kilometre for your vehicle? If business use is high, a logbook often produces a larger deduction. A 'car' (designed to carry fewer than 1 tonne and under 9 passengers) is subject to the Division 28 rules and the car-limit cap on depreciation.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 28 (s 28-12, s 28-25); general deductibility under s 8-1; decline in value under Div 40",
+    "notes": "Div 28 applies to 'cars' and to individuals (incl. sole traders), not companies/trusts — correct for sole_trader. Vehicles that are not cars (e.g. utes/vans designed to carry 1 tonne or more) fall outside Div 28 and are deducted on actual business-use proportion under s 8-1 / Div 40. Cents-per-kilometre rate and car depreciation limit change each FY — resolve current rate at runtime. Distinct from wre_car (the employment-use D1 claim of a sole trader who is also an employee)."
+  },
+  {
+    "id": "st_home_based_business",
+    "label": "Home-based business running and occupancy expenses (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "home-based business expenses sole trader running costs",
+      "occupancy expenses home as place of business floor area",
+      "home office electricity heating cooling cleaning deduction business",
+      "home based business CGT main residence exemption impact"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-home-based-business-expenses",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-home-based-business-expenses/home-based-business-expenses-sole-trader-or-partnership",
+      "ato:tax-and-super-professionals/for-tax-professionals/prepare-and-lodge/tax-time/tax-time-toolkits/tax-time-toolkit-small-business/small-business-guides/home-based-business-expenses",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Running expenses: electricity and gas for heating/cooling/lighting the work area",
+      "Business phone and internet portion",
+      "Cleaning of the dedicated work area",
+      "Decline in value of office furniture and equipment used for the business",
+      "Occupancy expenses (only if part of the home is a place of business): rent, mortgage interest, council rates, house insurance — apportioned by floor area"
+    ],
+    "substantiation": "Records of the work-area floor area as a percentage of the whole home, actual cost bills (power, phone, internet, rates, insurance, rent/interest), and a basis for apportionment. If claiming occupancy expenses, evidence the area is a distinct 'place of business' (e.g. signage, client visits, no alternative premises).",
+    "consider_prompt": "Have you checked whether part of your home is a genuine 'place of business' (which unlocks occupancy expenses like rent/mortgage interest and rates), or merely a place of convenience (running expenses only)? Note: claiming occupancy expenses can expose part of your main residence to capital gains tax on sale.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1; apportionment principles; CGT main residence consequences under Div 118",
+    "residency_caveat": true,
+    "notes": "Uses the sole-trader/partnership home-based page, which is the correct variant (a distinct company/trust page exists at home-based-businesses-expenses-company-or-trust). Occupancy expenses are only available where the home is a place of business and trigger a partial loss of the CGT main-residence exemption — flag this trade-off."
+  },
+  {
+    "id": "st_operating_expenses",
+    "label": "General operating expenses (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "business operating expenses deductible sole trader",
+      "advertising marketing bank fees merchant fees deduction business",
+      "subcontractor materials consumables business expense deduction",
+      "ordinary business running costs section 8-1 general deductions"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions",
+      "legis:c2004a05138/8-1",
+      "legis:c2004a05138/8-5"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Advertising and marketing",
+      "Bank fees and merchant/EFTPOS transaction fees",
+      "Materials, consumables and supplies",
+      "Subcontractor and contractor payments",
+      "Stationery, postage and minor office running costs",
+      "Commissions paid"
+    ],
+    "substantiation": "Tax invoices and receipts for each expense, bank/merchant statements, contractor invoices (with the contractor's ABN), and records showing the expense was incurred in producing assessable business income. Where there is any private use, keep a basis for apportioning the business portion.",
+    "consider_prompt": "Have you captured every recurring running cost — advertising, bank and merchant fees, subcontractors, materials and consumables? These are deductible under the general s 8-1 test to the extent they relate to earning your business income.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general deductions); s 8-5 (specific deductions)",
+    "notes": "Catch-all for ordinary recurring business outgoings not covered by a more specific category. Overlaps with st_professional_fees and st_business_insurance on the s 8-1 base; kept distinct because those have specific provisions/substantiation. Subcontractor payments may have separate TPAR reporting obligations in some industries — out of scope here."
+  },
+  {
+    "id": "st_trading_stock_cogs",
+    "label": "Trading stock and cost of goods sold (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "trading stock purchases deduction cost of goods sold",
+      "valuing trading stock closing stock cost market value",
+      "simplified trading stock rules small business under 5000 difference",
+      "when do you deduct trading stock outgoing income year"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/accounting-for-trading-stock",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/accounting-for-trading-stock/general-trading-stock-rules",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/accounting-for-trading-stock/simplified-trading-stock-rules",
+      "legis:c2004a05138/70-15"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Cost of stock purchased for resale",
+      "Raw materials forming part of finished goods",
+      "Closing-stock valuation adjustment (cost, market selling value, or replacement value)",
+      "Opening vs closing stock difference flowing into deductions"
+    ],
+    "substantiation": "Purchase invoices for stock, a stocktake (count and valuation) at year end, and records of the valuation method chosen per item. Under the simplified rules, evidence that the estimated difference between opening and closing stock is $5,000 or less if electing not to do a formal stocktake.",
+    "consider_prompt": "If you buy and sell goods, have you done a year-end stocktake? Closing stock value adjusts your deduction. Small businesses can use the simplified trading-stock rules and skip the stocktake where the estimated change in stock value is $5,000 or less.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Div 70 (s 70-15 timing of trading-stock outgoings, s 70-35 value of trading stock); Subdiv 328-E simplified trading stock rules",
+    "notes": "Only relevant to businesses that hold trading stock (retail, manufacturing, primary production). Service-only sole traders can skip. COGS deduction is mediated by opening/closing stock valuation, not raw purchases. s 70-15 and s 70-35 both verified in corpus."
+  },
+  {
+    "id": "st_depreciating_assets_iawo",
+    "label": "Depreciating assets and instant asset write-off (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "instant asset write-off eligible small business threshold",
+      "decline in value depreciating asset business use percentage",
+      "immediate deduction asset costing less than threshold sole trader",
+      "effective life prime cost diminishing value depreciation business"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/depreciation-and-capital-expenses-and-allowances/simpler-depreciation-for-small-business/instant-asset-write-off",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-depreciating-assets-and-capital-expenses",
+      "legis:c2004a05138/40-25",
+      "legis:c2004a05138/328-180"
+    ],
+    "thresholds": [
+      "instant_asset_write_off"
+    ],
+    "examples": [
+      "Tools, equipment and machinery used in the business",
+      "Computers, tablets and printers (business-use portion)",
+      "Office furniture",
+      "Immediate write-off of an eligible asset costing less than the instant asset write-off threshold",
+      "Decline in value over effective life for assets above the threshold"
+    ],
+    "substantiation": "Purchase invoices showing the asset's cost and date first used or installed ready for use, records of the taxable-purpose (business-use) percentage, and the depreciation method and effective life chosen. For instant asset write-off, evidence the asset cost was below the threshold per asset and the business met the aggregated turnover eligibility.",
+    "consider_prompt": "Did you buy any tools, equipment, or technology this year? If you are an eligible small business and the asset cost is under the instant asset write-off threshold, you may be able to deduct the full business-use portion immediately rather than depreciating it over years.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 40 (s 40-25 decline in value); Subdiv 328-D simplified depreciation / instant asset write-off",
+    "notes": "instant_asset_write_off threshold is the gate per asset and changes by FY. Resolve the live threshold value at runtime. Assets used partly privately are deductible only to the business-use proportion. legis:c2004a05138/328-180 verifies in corpus but is titled 'Assets costing less than $1,000' — it is the closest in-corpus ITAA 1997 simplified-depreciation write-off anchor; the operative IAWO measure sits in IT(TP)A 1997 and is captured by the ATO IAWO page + the runtime threshold."
+  },
+  {
+    "id": "st_small_business_pool",
+    "label": "Small business simplified depreciation pool (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "small business pool simplified depreciation 15% 30% rate",
+      "general small business pool calculations balance deduction",
+      "pooling depreciating assets small business entity",
+      "low pool value write-off threshold simplified depreciation"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/depreciation-and-capital-expenses-and-allowances/simpler-depreciation-for-small-business/small-business-pool-calculations",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/depreciation-and-capital-expenses-and-allowances/simpler-depreciation-for-small-business/instant-asset-write-off",
+      "legis:c2004a05138/328-185",
+      "legis:c2004a05138/328-180"
+    ],
+    "thresholds": [
+      "instant_asset_write_off"
+    ],
+    "examples": [
+      "Assets above the instant-write-off threshold pooled into the general small business pool",
+      "15% deduction in the year an asset is added to the pool",
+      "30% deduction on the opening pool balance each subsequent year",
+      "Full write-off of the pool balance if it falls below the relevant threshold"
+    ],
+    "substantiation": "Records of assets allocated to the pool, their taxable-purpose proportion, the opening and closing pool balance each year, and the calculation of the 15%/30% deductions. Evidence the entity satisfied the small-business-entity aggregated-turnover test to use simplified depreciation.",
+    "consider_prompt": "If you use simplified depreciation as a small business, assets above the instant write-off threshold go into your general small business pool — have you claimed 15% in the year added and 30% on the pool balance thereafter, and written off the whole pool if its balance dropped below the threshold?",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Subdiv 328-D simplified depreciation (s 328-185 pooling)",
+    "notes": "Distinct from st_depreciating_assets_iawo despite shared Subdiv 328-D base and two shared seed_doc_ids: this category is the diminishing-value pool mechanism (15%/30%) for assets ABOVE the IAWO threshold, vs the immediate write-off below it. Kept separate for recall. Only relevant where the sole trader has elected simplified depreciation; the low-pool-value write-off aligns with the instant_asset_write_off threshold for the FY."
+  },
+  {
+    "id": "st_professional_fees",
+    "label": "Accounting, legal and tax-related professional fees (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "cost of managing tax affairs deduction accountant fees",
+      "section 25-5 tax-related expenses deduction",
+      "legal expenses business deductible capital revenue distinction",
+      "bookkeeping and tax agent fees business deduction"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/25-5",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions",
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Tax agent / accountant fees for preparing the return and BAS",
+      "Bookkeeping fees",
+      "Cost of managing tax affairs (s 25-5)",
+      "Legal fees of a revenue (non-capital) nature, e.g. recovering debts or drafting trading contracts"
+    ],
+    "substantiation": "Invoices from the accountant, tax agent, bookkeeper or solicitor describing the work, and evidence the cost relates to the business or to managing tax affairs. For legal fees, records establishing the expense is revenue (not capital) in nature.",
+    "consider_prompt": "Have you claimed the cost of managing your tax affairs — accountant and tax-agent fees, bookkeeping, and the cost of this software? Revenue-nature legal fees (debt recovery, contract drafting) are also deductible, but capital legal costs (e.g. buying the business) are not.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 25-5 (tax-related expenses); s 8-1 (general deductions for revenue legal costs)",
+    "notes": "Cost of managing tax affairs is specifically deductible under s 25-5 (verified, titled 'Tax - related expenses') even where s 8-1 might not reach it. Capital-nature legal expenses are not deductible here — they may be Div 40-880 blackhole (s 40-880 verified in corpus) or CGT cost-base items instead."
+  },
+  {
+    "id": "st_business_insurance",
+    "label": "Business insurance premiums (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "business insurance premiums deduction sole trader",
+      "public liability professional indemnity insurance deductible",
+      "income protection insurance deduction self-employed",
+      "insurance of business premises and equipment deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions",
+      "legis:c2004a05138/8-1",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/investments-insurance-and-super/income-protection-insurance"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Public liability insurance",
+      "Professional indemnity insurance",
+      "Insurance on business premises, stock and equipment",
+      "Business interruption / loss of profits insurance",
+      "Income protection premiums (where the policy covers loss of income, claimed on the personal return)"
+    ],
+    "substantiation": "Insurance policy schedules and premium-payment receipts identifying the insured business risk. For income protection, evidence the premium relates to replacing assessable income (and is not for a lump-sum capital or life component).",
+    "consider_prompt": "Have you claimed your business insurance premiums — public liability, professional indemnity, and cover on premises, stock and equipment? Income protection premiums are also generally deductible where the benefit would be assessable income.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general deductions)",
+    "notes": "Income protection is deductible but life and trauma/TPD components are generally not — flag the split. Includes the dedicated income-protection-insurance ATO page since income protection is a personal-return claim distinct from pure business-premises cover; the rest are business operating insurance under s 8-1."
+  },
+  {
+    "id": "st_phone_internet",
+    "label": "Business phone, internet and digital subscriptions (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "business phone and internet expenses deduction work use percentage",
+      "claiming deductions for phone and internet business",
+      "software subscriptions digital product expenses deduction business",
+      "apportion mobile phone bill business private use"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-depreciating-assets-and-capital-expenses/digital-id-claiming-deductions-for-phone-and-internet-expenses",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-digital-product-expenses",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Business-use portion of mobile and landline phone bills",
+      "Business-use portion of home/office internet",
+      "Software subscriptions (accounting, design, productivity)",
+      "Cloud storage and website hosting fees",
+      "Domain registration"
+    ],
+    "substantiation": "Itemised phone/internet bills plus a representative 4-week diary or call/data log establishing the business-use percentage, and invoices for software and digital subscriptions. Apportion any private-use portion out.",
+    "consider_prompt": "Have you worked out the business-use percentage of your phone and internet, and claimed your software and digital subscriptions? A representative 4-week record can support an apportionment used across the year.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general deductions); apportionment for private use",
+    "notes": "Overlaps with st_home_based_business running costs if the connection is shared with the home — avoid double counting at runtime. Software may be either an immediately deductible subscription or a depreciating asset depending on the licence. The phone/internet seed_doc_id carries an odd 'digital-id-' URL slug but verifies as an existing row in the corpus."
+  },
+  {
+    "id": "st_repairs_maintenance",
+    "label": "Repairs, maintenance and replacement expenses (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "repairs and maintenance business deduction section 25-10",
+      "repair versus capital improvement deductibility",
+      "initial repairs not deductible TR 97/23",
+      "replacement of part of an asset repair deduction business"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-repairs-maintenance-and-replacement-expenses",
+      "legis:c2004a05138/25-10",
+      "ato-law:TXR/TR9723/NAT/ATO/00001",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Repairing business equipment, tools or machinery",
+      "Servicing and maintaining premises and fixtures used for the business",
+      "Replacing a worn part of an asset (restoring, not improving)",
+      "Painting and minor maintenance of business premises"
+    ],
+    "substantiation": "Tradesperson and supplier invoices describing the work, evidence the work restores rather than improves or replaces the whole asset, and that the asset is used to produce business income. Distinguish initial repairs (on acquisition) and improvements, which are capital.",
+    "consider_prompt": "Have you separated genuine repairs (deductible) from improvements or initial repairs (capital, depreciated instead)? Restoring a worn part to its prior condition is a deductible repair; upgrading or replacing the whole asset is not.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 25-10 (repairs); TR 97/23 (deductions for repairs); s 8-1",
+    "notes": "Repair vs capital improvement is a classic ATO scrutiny line. Initial repairs (to remedy defects existing at acquisition) and improvements are capital and instead go to depreciation / Div 40. TR 97/23 (doc_type ATO_RULING_TR, verified) is the controlling ruling."
+  },
+  {
+    "id": "st_bad_debts",
+    "label": "Bad debts written off (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "bad debt deduction written off section 25-35 business",
+      "bad debt previously included in assessable income deductible",
+      "writing off uncollectable debtors business deduction",
+      "GST decreasing adjustment bad debt written off"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-unrecoverable-income-bad-debts",
+      "legis:c2004a05138/25-35",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "An invoice previously included as assessable income that the customer cannot pay, written off as bad before year end",
+      "Genuinely unrecoverable debtor balances written off in the accounts"
+    ],
+    "substantiation": "Evidence the amount was previously brought to account as assessable income (or lent in the course of a money-lending business), and that the debt was genuinely written off as bad in the accounts before the end of the income year — e.g. a written-off ledger entry, recovery attempts, and the date of write-off.",
+    "consider_prompt": "Did any customer fail to pay an invoice you had already declared as income? If you write the debt off as bad before year end, you may claim a deduction under s 25-35 (and, if registered, a GST decreasing adjustment).",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 25-35 (bad debts); s 8-1",
+    "notes": "Only available where the amount was previously assessable income (accruals/non-cash basis) or relates to money lending. Cash-basis sole traders who never returned the amount as income cannot claim a bad-debt deduction. The debt must be written off as bad before year end. s 25-35 verified, titled 'Bad debts'."
+  },
+  {
+    "id": "st_personal_super_contribution",
+    "label": "Deductible personal super contributions for self (sole trader)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "dedupe_key": "super_personal_290_150",
+    "seed_queries": [
+      "personal super contributions deduction self-employed sole trader",
+      "notice of intent to claim deduction personal super contribution",
+      "concessional contributions cap personal deductible contribution",
+      "section 290-150 personal contributions deductible conditions"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/investments-insurance-and-super/personal-super-contributions",
+      "ato:forms-and-instructions/superannuation-personal-contributions-notice-of-intent-to-claim-or-vary-a-deduction",
+      "ato:forms-and-instructions/individual-supplementary-tax-return-2025-instructions/deduction-questions-d11-d15-supplementary-tax-return-2025/d12-personal-superannuation-contributions-2025",
+      "legis:c2004a05138/290-150"
+    ],
+    "thresholds": [
+      "super_concessional_cap"
+    ],
+    "examples": [
+      "Personal contributions made to your own super fund from after-tax money",
+      "Contributions claimed as a deduction at D12 on the individual return",
+      "Topping up super toward the concessional contributions cap"
+    ],
+    "substantiation": "A valid 'Notice of intent to claim or vary a deduction for personal super contributions' lodged with your fund and acknowledged by the fund BEFORE lodging your return (or before the earlier of withdrawing/rolling over). Records of the contribution amount and date, and confirmation the total concessional contributions stay within the cap.",
+    "consider_prompt": "As a sole trader your super is not paid by an employer — have you made personal contributions to your own fund and lodged a valid notice of intent so you can claim them as a deduction at D12? Watch the concessional contributions cap, which counts all your concessional contributions.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Subdiv 290-C (s 290-150 personal contributions deductible); notice-of-intent requirement under s 290-170",
+    "notes": "Reported at D12 on the individual return, not on the business schedule — the deduction is personal even though it is a self-employed person's substitute for employer super. return_context='personal' is correct. DEDUPE NOTE: mechanically a subset of personal_super_concessional_deduction (structures=[all]); this sole-trader-gated row is retained for the recall signal that sole traders MUST self-contribute. Capped at the concessional cap (super_concessional_cap). s 290-150 and s 290-170 both verified in corpus."
+  },
+  {
+    "id": "ent_general_operating_8_1",
+    "label": "General business operating expenses (s 8-1)",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "general deductions for business operating expenses ITAA 1997 section 8-1",
+      "what business expenses can a company claim",
+      "deductible business expenses other operating expenses"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Stationery, office supplies and consumables",
+      "Utilities (electricity, water, gas) for business premises",
+      "Bank fees and merchant charges",
+      "Software subscriptions and cloud services",
+      "Telephone and internet for business use",
+      "Advertising and marketing",
+      "Accounting software fees"
+    ],
+    "substantiation": "Tax invoices and receipts for each expense; bank/credit-card statements; a record showing the outgoing was incurred in gaining or producing the entity's assessable income (s 8-1 positive limb) and is not capital, private or domestic (negative limbs). Keep records 5 years.",
+    "consider_prompt": "Have you captured every recurring operating cost the entity incurred this year (subscriptions, bank fees, utilities, consumables)? Each is generally deductible to the entity under s 8-1 if it relates to producing the entity's income.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general deductions); s 8-5 (specific deductions); s 8-10 (no double deductions)",
+    "notes": "ENTITY-LEVEL deduction, claimed on the company/trust/partnership's OWN return, NOT on any individual's return. This is the catch-all general-deduction provision and the umbrella under which most other entity categories sit. A company/trust does NOT claim 'work-related expenses' (D1-D5) — those are a personal-return concept for employees; the entity's equivalent costs are operating expenses under s 8-1."
+  },
+  {
+    "id": "ent_salaries_wages_super",
+    "label": "Employee salaries, wages and super guarantee contributions",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductions for salaries wages and super contributions paid to employees",
+      "are employer super guarantee contributions tax deductible",
+      "section 290-60 employer contributions deductible"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-salaries-wages-and-super-contributions",
+      "legis:c2004a05138/290-60",
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/super-for-employers/paying-super-contributions"
+    ],
+    "thresholds": [
+      "super_concessional_cap"
+    ],
+    "examples": [
+      "Gross salaries and wages paid to employees",
+      "PAYG-withholding employee remuneration",
+      "Super guarantee contributions paid to a complying fund by the due date",
+      "Bonuses and commissions to staff",
+      "Allowances paid to employees"
+    ],
+    "substantiation": "Single Touch Payroll (STP) reports, payroll records, payslips, super contribution receipts/clearing-house confirmations showing payment to a complying fund. Super is only deductible in the year it is actually PAID (not merely accrued). Keep records 5 years.",
+    "consider_prompt": "Have you claimed the super guarantee contributions the entity actually paid this year? Employer SG contributions are deductible under s 290-60 only when physically paid to a complying fund — accrued-but-unpaid super at year end is not deductible until paid.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (wages); s 290-60 to s 290-75 (deductibility of employer super contributions, complying-fund and employment-activity conditions)",
+    "notes": "ENTITY-LEVEL. Lodged on the entity's own return, separate from the recipient employee's individual return. Super is deductible only when paid, not accrued. The super concessional cap governs the amount the employee can have contributed concessionally, not the entity's deduction limit per se — flagged for context."
+  },
+  {
+    "id": "ent_directors_fees",
+    "label": "Directors' fees and remuneration",
+    "kind": "deduction",
+    "structures": [
+      "company"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "are directors fees deductible to the company",
+      "directors remuneration deduction section 8-1",
+      "company tax return deduction directors fees"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-salaries-wages-and-super-contributions",
+      "ato:forms-and-instructions/company-tax-return-2025-instructions/instructions-to-complete-the-company-tax-return-2025"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Directors' fees resolved and paid by the company",
+      "Remuneration to working directors",
+      "Super guarantee contributions on directors' fees (where the director is an employee for SG purposes)"
+    ],
+    "substantiation": "Board minutes / resolutions authorising the fees, PAYG-withholding records, STP reporting, evidence the amount was incurred (a present obligation to pay existed by year end). Keep records 5 years.",
+    "consider_prompt": "Has the company resolved and recorded directors' fees? They are deductible to the company under s 8-1 where incurred in producing the company's assessable income, but must be properly authorised and the recipient declares them on their own individual return.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; (super on directors' fees) s 290-60",
+    "notes": "ENTITY-LEVEL deduction for the company; the director separately includes the fees as income on their PERSONAL return. structures narrowed to company-only: a trust is administered by a trustee (not a board), and partnerships do not pay directors' fees. Where a trustee is itself a company, any directors' fees that company pays are that trustee company's own deduction on its company return — still a company concept."
+  },
+  {
+    "id": "ent_depreciating_assets",
+    "label": "Depreciating assets — decline in value (capital allowances, Div 40)",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductions for depreciating assets and capital expenses decline in value",
+      "capital allowances Division 40 effective life diminishing value",
+      "how to depreciate business plant and equipment"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-depreciating-assets-and-capital-expenses",
+      "legis:c2004a05138/40-25",
+      "legis:c2004a05138/40-30",
+      "ato-law:TR/2024/1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Plant and equipment (machinery, tools)",
+      "Office furniture and fit-out",
+      "Computers, servers and IT hardware",
+      "Depreciating intangibles where eligible",
+      "Decline in value of business vehicles (held by entity)"
+    ],
+    "substantiation": "Asset register recording cost, acquisition date, business-use percentage, method (prime cost vs diminishing value) and effective life; purchase invoices; records of any balancing adjustment on disposal. Keep records 5 years (and while the asset is held).",
+    "consider_prompt": "Does the entity hold assets costing more than the instant-asset-write-off threshold or that are not in a small-business pool? Their decline in value is deductible over their effective life under Div 40 — check the asset register is complete.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Div 40 (capital allowances); s 40-25 (deducting decline in value); s 40-30 (meaning of depreciating asset); TR 2024/1 (composite items)",
+    "notes": "ENTITY-LEVEL. This is the general (non-small-business) capital allowances regime. An entity uses EITHER Div 40 effective-life depreciation OR the Div 328 simplified depreciation/pool if it is a small business entity that chooses to — the small-business pool / IAWO is modelled as distinct category ent_instant_asset_write_off_sb_pool."
+  },
+  {
+    "id": "ent_instant_asset_write_off_sb_pool",
+    "label": "Instant asset write-off and small business depreciation pool (Div 328)",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "instant asset write-off eligible businesses threshold",
+      "simplified depreciation small business pool calculations",
+      "section 328-180 assets costing less than threshold immediate deduction"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/depreciation-and-capital-expenses-and-allowances/simpler-depreciation-for-small-business/instant-asset-write-off",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/depreciation-and-capital-expenses-and-allowances/simpler-depreciation-for-small-business/small-business-pool-calculations",
+      "legis:c2004a05138/328-180",
+      "legis:c2004a05138/328-185"
+    ],
+    "thresholds": [
+      "instant_asset_write_off"
+    ],
+    "examples": [
+      "Immediate write-off of an eligible asset costing under the threshold",
+      "Addition of higher-cost assets to the general small-business pool",
+      "Pool deduction at the relevant pool rate",
+      "Write-off of a low pool balance below the threshold"
+    ],
+    "substantiation": "Records of asset cost, date first used or installed ready for use, business-use percentage, and that aggregated turnover is under the small-business-entity threshold; asset register / pool reconciliation. Keep records 5 years.",
+    "consider_prompt": "Is the entity a small business entity (aggregated turnover under the threshold)? If so, eligible assets first used or installed ready for use this year and costing under the instant-asset-write-off threshold can be written off immediately rather than depreciated.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 328 Subdiv 328-D (simplified depreciation); s 328-180 (assets costing less than threshold — instant write-off); s 328-185 (pooling); s 328-175 (calculations)",
+    "notes": "ENTITY-LEVEL. Only available to small business entities (turnover test). Mutually exclusive per income year with Div 40 effective-life depreciation for the assets covered. The instant_asset_write_off threshold changes each FY — resolve the current value at runtime via get_threshold. ATO scrutiny area: eligibility, business-use percentage, and timing."
+  },
+  {
+    "id": "ent_motor_vehicle_entity_owned",
+    "label": "Motor vehicle expenses (vehicle owned/leased by the entity)",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductions for motor vehicle expenses business owned vehicle",
+      "company car running costs deduction logbook",
+      "claiming car expenses for a vehicle owned by the business"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-motor-vehicle-expenses",
+      "legis:c2004a05138/8-1",
+      "legis:c2004a05138/40-25"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Fuel and oil for entity-owned vehicles",
+      "Registration and insurance on business vehicles",
+      "Repairs, servicing and tyres",
+      "Lease payments on a leased vehicle",
+      "Decline in value (depreciation) of an owned vehicle"
+    ],
+    "substantiation": "Logbook or records establishing the business-use proportion; fuel and running-cost receipts; lease agreement; vehicle in the asset register for depreciation. Where a vehicle is also made available to an employee/associate for private use, consider FBT consequences. Keep records 5 years.",
+    "consider_prompt": "Does the entity own or lease vehicles? Running costs and decline in value are deductible to the entity on its actual business-use proportion — but a company/trust cannot use the individual cents-per-km or logbook personal-return method, and private use by directors/employees may trigger FBT.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 8-1 (running costs); Div 40 (decline in value of the vehicle); s 25-10 (repairs)",
+    "notes": "ENTITY-LEVEL and DISTINCT from the personal-return D1 work-related car expense question (wre_car / st_business_motor_vehicle). A company/trust/partnership claims actual costs apportioned for business use, not the individual's cents-per-km method. Private use of an entity vehicle by an associate is an ATO focus area (FBT)."
+  },
+  {
+    "id": "ent_premises_occupancy",
+    "label": "Rent and occupancy of business premises",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deduction for rent of business premises",
+      "occupancy costs business premises rates land tax deductible",
+      "lease payments commercial premises tax deduction"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses",
+      "ato:businesses-and-organisations/assets-and-property/property/property-used-in-running-a-business/leasing-and-renting-commercial-premises"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Rent or lease payments for commercial premises",
+      "Council rates and land tax on business premises",
+      "Building insurance and strata levies",
+      "Cleaning and security of premises",
+      "Outgoings recharged under a commercial lease"
+    ],
+    "substantiation": "Lease agreement, rent invoices/receipts, rates and land-tax notices, evidence the premises are used to produce the entity's assessable income. Where premises are leased from an associate, the amount must be at arm's length. Keep records 5 years.",
+    "consider_prompt": "Has the entity claimed all occupancy costs of its business premises (rent, rates, land tax, building insurance, cleaning)? These are deductible under s 8-1 to the extent the premises produce the entity's income.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general deduction for rent, rates, land tax and other occupancy outgoings of income-producing business premises)",
+    "notes": "ENTITY-LEVEL. s 25-75 is the narrow special rule for rates/land taxes on premises producing MUTUAL receipts (clubs/mutuals), NOT the general deduction for ordinary business rates and land tax, which fall under s 8-1. Rent paid to an associated entity must be on arm's-length commercial terms. Distinct from individual home-office occupancy."
+  },
+  {
+    "id": "ent_professional_compliance_fees",
+    "label": "Professional, management and compliance fees",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deduction for accounting and tax agent fees business",
+      "managing tax affairs deduction section 25-5",
+      "legal expenses deductibility business"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/25-5",
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Tax agent and accountant fees",
+      "Bookkeeping and payroll service fees",
+      "Audit fees (e.g. SMSF or company audit)",
+      "Deductible legal fees (revenue, not capital, nature)",
+      "ASIC annual review fees",
+      "Cost of managing tax affairs"
+    ],
+    "substantiation": "Invoices from the adviser/firm, evidence the cost relates to the entity's income-producing activity or to managing its tax affairs. Capital legal costs (e.g. acquiring a business asset) are not deductible under these provisions. Keep records 5 years.",
+    "consider_prompt": "Has the entity claimed its tax-agent, accounting, audit and ASIC compliance costs? The cost of managing tax affairs is specifically deductible under s 25-5, and other professional fees of a revenue nature under s 8-1.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 25-5 (cost of managing tax affairs); s 8-1 (other professional/management fees, where of a revenue nature)",
+    "notes": "ENTITY-LEVEL. Legal expenses that are capital in nature (e.g. acquiring premises or a business) are not deductible here — they may be capital allowances or CGT cost-base items. Penalties and fines themselves (s 26-5) are NOT deductible even though the agent fee to manage them may be."
+  },
+  {
+    "id": "ent_business_insurance",
+    "label": "Business insurance premiums (entity)",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductibility of business insurance premiums",
+      "public liability professional indemnity workers compensation insurance deduction",
+      "business insurance tax deduction section 8-1"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/8-1",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Public liability and professional indemnity insurance",
+      "Workers' compensation premiums",
+      "Business contents, building and plant insurance",
+      "Business interruption / loss-of-profits insurance",
+      "Cyber and product liability cover"
+    ],
+    "substantiation": "Insurance policy schedules and premium invoices/receipts; evidence the cover protects the entity's income-producing activity or assets. Premiums prepaid for more than 12 months may need apportioning under the prepayment rules. Keep records 5 years.",
+    "consider_prompt": "Has the entity claimed all its business insurance premiums (public liability, professional indemnity, workers' comp, contents, business interruption)? These are generally deductible under s 8-1 when the cover relates to the business.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1; prepayment rules in ITAA 1936 s 82KZM/82KZMD for premiums covering future periods",
+    "notes": "ENTITY-LEVEL. Premiums on life or personal-injury policies covering owners/directors are generally NOT deductible (private/capital) — only genuine business-protection policies qualify. Prepaid premiums covering more than 12 months may be apportioned. The ITAA 1936 prepayment-rule sections are cited as legal context only — they are 1936 Act provisions outside this ITAA 1997 corpus, so are deliberately not listed as seed_doc_ids."
+  },
+  {
+    "id": "ent_interest_business_borrowings",
+    "label": "Interest on business borrowings",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deductibility of interest on money borrowed for business purposes",
+      "interest deduction TR 95/25 business loan",
+      "borrowing expenses business loan establishment fees deduction"
+    ],
+    "seed_doc_ids": [
+      "legis:c2004a05138/8-1",
+      "legis:c2004a05138/25-25",
+      "ato-law:TXR/TR9525/NAT/ATO/00001",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/deductions/deductions-for-other-operating-expenses"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Interest on a business loan or overdraft",
+      "Interest on finance used to acquire income-producing assets",
+      "Borrowing expenses (loan establishment fees) written off over the lesser of 5 years or the loan term under s 25-25",
+      "Interest on a hire-purchase finance charge"
+    ],
+    "substantiation": "Loan agreements and statements showing interest charged; a clear nexus between the borrowed funds and the entity's income-producing purpose (use of funds tracing). Apportion where funds are partly private. Keep records 5 years.",
+    "consider_prompt": "Has the entity borrowed to fund its business or income-producing assets? The interest is deductible under s 8-1 where the borrowed funds were applied for an income-producing purpose, and loan establishment (borrowing) costs are deductible under s 25-25.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (interest where funds used for income-producing purpose); s 25-25 (borrowing expenses); TR 95/25 (deductibility of interest)",
+    "notes": "ENTITY-LEVEL. Deductibility follows the USE of the borrowed funds (the 'use test' in TR 95/25), not the security given. Interest on funds drawn for private purposes or to pay non-deductible distributions is not deductible."
+  },
+  {
+    "id": "ent_trading_stock",
+    "label": "Trading stock — purchases and stock adjustments (Div 70)",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust",
+      "partnership"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "deduction for trading stock purchases and valuing closing stock",
+      "general trading stock rules cost market selling value",
+      "Division 70 trading stock when do you deduct an outgoing"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/accounting-for-trading-stock/general-trading-stock-rules",
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/accounting-for-trading-stock",
+      "legis:c2004a05138/70-15",
+      "legis:c2004a05138/70-35"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Cost of trading stock purchased during the year",
+      "Decrease in stock value (opening higher than closing) deductible as a stock adjustment",
+      "Stock valued at cost, market selling value, or replacement value at year end",
+      "Write-down of obsolete stock"
+    ],
+    "substantiation": "Stocktake records at the start and end of the year, purchase invoices, chosen valuation method per item, and basis for any obsolescence write-down. Small business entities may use the simplified trading stock rules where the estimated change is under the relevant amount. Keep records 5 years.",
+    "consider_prompt": "Does the entity hold trading stock? The cost of stock purchased is deductible, and the difference between opening and closing stock adjusts assessable income — make sure a year-end stocktake (or eligible simplified estimate) has been done.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Div 70 (trading stock); s 70-15 (year of deduction for stock outgoings); s 70-35 (value of stock included in income/deductions); s 70-45 (closing value options)",
+    "notes": "ENTITY-LEVEL. Trading-stock outgoings interact with the income side — a fall in stock value gives a deduction, a rise is assessable. Small business entities can use simplified trading stock rules. Only relevant to entities that hold stock."
+  },
+  {
+    "id": "ent_prior_year_tax_losses",
+    "label": "Prior-year (carried-forward) tax losses",
+    "kind": "deduction",
+    "structures": [
+      "company",
+      "trust"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      },
+      {
+        "field": "prior_fy_lodged",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "claiming business tax losses from previous years company",
+      "company carried forward tax loss continuity of ownership business continuity test",
+      "deducting prior year tax losses corporate tax entity section 36-17"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/income-and-deductions-for-business/business-losses/claiming-business-tax-losses-from-previous-years",
+      "legis:c2004a05138/36-17",
+      "legis:c2004a05138/165-10",
+      "ato-law:LCR/2019/1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Deducting a tax loss carried forward from an earlier income year",
+      "Offsetting current-year assessable income against prior-year losses",
+      "Applying losses after satisfying the continuity of ownership test or business continuity test (companies)"
+    ],
+    "substantiation": "Records of the loss year(s) showing how the loss was calculated; for companies, evidence of continuity of ownership (>50% test) or, failing that, that the business continuity (same/similar business) test is satisfied. Trusts must satisfy the trust loss rules (Sch 2F ITAA 1936). Keep records 5 years from the year the loss is fully used.",
+    "consider_prompt": "Does the entity have unused tax losses from prior years? A company can deduct them this year if it passes the continuity of ownership test or the business continuity test; check those tests before claiming.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Div 36 (tax losses); s 36-17 (how corporate tax entities deduct losses); s 165-10 / s 165-13 (continuity of ownership and business continuity tests); LCR 2019/1 (similar business test)",
+    "notes": "ENTITY-LEVEL. Gated on prior_fy_lodged (a prior return must exist for losses to be carried forward). Companies must pass COT or BCT (s 165); trusts use the Sch 2F trust loss tests. Partnerships are excluded because partnership losses are distributed to and claimed by partners on their OWN returns, not carried forward at partnership level — a separate personal-return concept (see open_questions and gaps)."
+  },
+  {
+    "id": "ent_rd_tax_incentive",
+    "label": "Research & development (R&D) tax incentive — notional deductions",
+    "kind": "deduction",
+    "structures": [
+      "company"
+    ],
+    "return_context": "business_entity",
+    "triggers": [
+      {
+        "field": "has_abn",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "research and development tax incentive eligible R&D entity notional deductions",
+      "R&D tax offset section 355-100 at risk rule",
+      "claiming the R&D tax incentive company registered activities"
+    ],
+    "seed_doc_ids": [
+      "ato:businesses-and-organisations/income-deductions-and-concessions/incentives-and-concessions/research-and-development-tax-incentive",
+      "legis:c2004a05138/355-100",
+      "ato-law:TR/2021/5"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Notional deduction for eligible core and supporting R&D activities",
+      "Decline in value of assets used in R&D (notional Div 40)",
+      "R&D expenditure that converts to a refundable or non-refundable tax offset",
+      "Salaries of staff conducting registered R&D activities"
+    ],
+    "substantiation": "Registration of the R&D activities with the Department of Industry (AusIndustry) before lodging; contemporaneous records linking expenditure to registered core/supporting activities; evidence the 'at risk' rule (TR 2021/5) is satisfied; expenditure apportionment records. Keep records 5 years.",
+    "consider_prompt": "Is the company conducting eligible R&D activities? If registered with AusIndustry, the expenditure gives a notional deduction that converts to an R&D tax offset under Div 355 — confirm registration before claiming.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 Div 355 (R&D); s 355-100 (entitlement to the R&D tax offset); s 355-205 / s 355-305 (notional deductions); TR 2021/5 (the 'at risk' rule)",
+    "notes": "ENTITY-LEVEL and COMPANY-ONLY — Div 355 is available only to eligible R&D entities (broadly companies), not to trusts or partnerships directly. The deduction is NOTIONAL: it does not reduce taxable income directly but generates a tax offset. Requires prior registration with AusIndustry. Known scrutiny area. No R&D-activity facts field exists, so the trigger is the proxy (has_abn + company gate); runtime activity-text should confirm relevance before surfacing prominently."
+  },
+  {
+    "id": "personal_super_concessional_deduction",
+    "label": "Personal (concessional) super contribution deduction",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "dedupe_key": "super_personal_290_150",
+    "seed_queries": [
+      "claim a deduction for personal super contributions",
+      "personal superannuation contributions deduction D12",
+      "concessional contributions cap personal deduction",
+      "section 290-150 personal contributions deductible"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/investments-insurance-and-super/personal-super-contributions",
+      "ato:individuals-and-families/your-tax-return/instructions-to-complete-your-tax-return/mytax-instructions/2025/deductions/other-deductions/personal-super-contributions",
+      "ato:forms-and-instructions/individual-supplementary-tax-return-2025-instructions/deduction-questions-d11-d15-supplementary-tax-return-2025/d12-personal-superannuation-contributions-2025",
+      "legis:c2004a05138/290-150"
+    ],
+    "thresholds": [
+      "super_concessional_cap"
+    ],
+    "examples": [
+      "After-tax (non-concessional) personal contributions to your super fund that you then elect to claim as a deduction",
+      "Lump-sum personal contribution made before 30 June to a complying fund",
+      "Regular voluntary personal contributions (not salary-sacrificed and not employer SG)"
+    ],
+    "substantiation": "Receipt/confirmation of the contribution from the fund; a valid notice of intent to claim a deduction (s 290-170) lodged with and acknowledged by the fund before lodging the return; the fund's written acknowledgement of the notice; records showing the contribution counts toward the concessional cap.",
+    "consider_prompt": "Have you considered claiming a deduction for personal after-tax super contributions made this year? A valid notice of intent must be given to your fund and acknowledged BEFORE you lodge your return, and the contribution counts toward your concessional contributions cap.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 Div 290 Subdiv 290-C, esp. s 290-150 (personal contributions deductible); s 290-155 complying fund condition; s 290-165/290-167/290-168 contribution conditions",
+    "notes": "Headline super category. Applies regardless of business structure — the deduction belongs to the natural person who contributed and is claimed on the INDIVIDUAL's personal return for EVERY structure, so structures=[all] + return_context=personal is correct (it does not face the WRE-on-company problem). Subject to the concessional contributions cap (super_concessional_cap). Notice-of-intent requirement handled in distinct category personal_super_notice_of_intent. st_personal_super_contribution is the sole-trader-gated subset of this row."
+  },
+  {
+    "id": "personal_super_notice_of_intent",
+    "label": "Notice of intent to claim a deduction for personal super contributions",
+    "kind": "precondition",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "seed_queries": [
+      "notice of intent to claim or vary a deduction for personal super contributions",
+      "section 290-170 notice of intent to deduct conditions",
+      "valid notice acknowledged by fund before lodging return",
+      "deduction limited by amount specified in notice 290-175"
+    ],
+    "seed_doc_ids": [
+      "ato:forms-and-instructions/superannuation-personal-contributions-notice-of-intent-to-claim-or-vary-a-deduction",
+      "legis:c2004a05138/290-170",
+      "legis:c2004a05138/290-175",
+      "ato:tax-and-super-professionals/for-superannuation-professionals/apra-regulated-funds/managing-member-benefits/notice-of-intent-to-claim-a-deduction"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Lodging the approved Notice of intent to claim or vary a deduction form (or fund's equivalent) with your super fund",
+      "Receiving the fund's written acknowledgement of your notice before you lodge",
+      "Varying a previously lodged notice down (e.g. if you exceeded your cap) before lodging"
+    ],
+    "substantiation": "The completed notice of intent given to the fund within the statutory time limit (before lodging the return or end of the next income year, whichever is earlier); the fund's acknowledgement; evidence the notice amount does not exceed the contribution and that you were still a member when the notice was given.",
+    "consider_prompt": "Have you considered whether your notice of intent is valid? Without a valid, acknowledged notice the personal super contribution is NOT deductible (s 290-170). The notice cannot be revoked or withdrawn, only varied downward, and must be given before you lodge.",
+    "ato_focus_area": true,
+    "legal_basis": "ITAA 1997 s 290-170 (notice of intent to deduct conditions); s 290-175 (deduction limited by amount in notice); s 290-180 (notice may be varied but not revoked or withdrawn)",
+    "notes": "Modelled as a distinct category because the notice-of-intent failure is the single most common reason personal super deduction claims are denied — high recall value as an ATO scrutiny/compliance gate. Pairs with personal_super_concessional_deduction. ato_focus_area=true because invalid/missing notices are a frequent adjustment area. NOT itself a separate dollar deduction — a precondition gate; do not add it to deduction totals."
+  },
+  {
+    "id": "personal_super_carry_forward_concessional",
+    "label": "Carry-forward (catch-up) unused concessional contributions",
+    "kind": "strategy",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "seed_queries": [
+      "carry forward unused concessional contributions cap catch-up",
+      "total superannuation balance under 500000 carry forward",
+      "unused concessional cap from prior years personal deduction",
+      "concessional contributions cap carry-forward eligibility"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/super-for-individuals-and-families/super/growing-and-keeping-track-of-your-super/caps-limits-and-tax-on-super-contributions/concessional-contributions-cap",
+      "ato:individuals-and-families/super-for-individuals-and-families/super/growing-and-keeping-track-of-your-super/caps-limits-and-tax-on-super-contributions/total-superannuation-balance",
+      "ato:tax-rates-and-codes/key-superannuation-rates-and-thresholds/contributions-caps",
+      "legis:c2004a05138/291-20"
+    ],
+    "thresholds": [
+      "super_concessional_cap"
+    ],
+    "examples": [
+      "Claiming a larger personal super deduction this year by using unused concessional cap accrued over the prior 5 income years",
+      "A taxpayer with a one-off high-income year (e.g. capital gain) topping up super using carried-forward cap space",
+      "Re-entering the workforce after a break and using accumulated unused cap"
+    ],
+    "substantiation": "Total superannuation balance below the eligibility threshold (under $500,000) at 30 June of the prior year; records of concessional contributions in each of the prior 5 years showing the unused amounts; the standard personal-deduction substantiation (notice of intent, fund acknowledgement) for the amount claimed.",
+    "consider_prompt": "Have you considered using carry-forward (catch-up) concessional contributions? If your total super balance was under $500,000, you may be able to claim a deduction larger than the annual cap by using unused concessional cap amounts from the previous 5 financial years.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 291-20 (concessional contributions cap, incl. carry-forward of unused cap where total super balance < $500k) governing the maximum deductible amount; underlying deduction is s 290-150",
+    "notes": "A modifier on the headline personal-deduction category that materially raises the deductible amount; surfaced separately to maximise recall. Eligibility hinges on the prior-year total superannuation balance (under $500k) and only counts unused cap from years since 2018-19. threshold super_concessional_cap referenced for the annual baseline. legis:c2004a05138/291-20 carries the concessional cap definition the carry-forward rule modifies."
+  },
+  {
+    "id": "smsf_member_personal_super_deduction",
+    "label": "SMSF member personal super contribution deduction (member-level, not the fund's)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "super_fund_type",
+        "op": "eq",
+        "value": "smsf"
+      }
+    ],
+    "dedupe_key": "super_personal_290_150",
+    "seed_queries": [
+      "SMSF member claim personal super contribution deduction notice of intent",
+      "personal contributions to my self-managed super fund deduction",
+      "SMSF contributions and rollovers member deduction",
+      "section 290-150 contribution to complying SMSF"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/super-for-individuals-and-families/self-managed-super-funds-smsf/smsf-contributions-and-rollovers",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/investments-insurance-and-super/personal-super-contributions",
+      "legis:c2004a05138/290-150",
+      "legis:c2004a05138/290-170"
+    ],
+    "thresholds": [
+      "super_concessional_cap"
+    ],
+    "examples": [
+      "An SMSF member making a personal contribution to their own fund and claiming the deduction on their individual return",
+      "Giving the SMSF (as trustee) a notice of intent to claim, then the SMSF acknowledging it",
+      "Member-level concessional contribution counted against the member's concessional cap"
+    ],
+    "substantiation": "Contribution recorded by the SMSF as a member contribution; valid notice of intent given to the SMSF trustee and acknowledged before lodging; member's individual records; confirmation the SMSF is a complying fund (s 290-155). NOTE: this is the MEMBER's deduction on the personal return — distinct from any deduction the SMSF itself claims on the fund's SMSF annual return.",
+    "consider_prompt": "Have you considered that as an SMSF member you claim the personal super contribution deduction on YOUR individual return, not the fund's? You still need a valid notice of intent acknowledged by the SMSF trustee, and the contribution counts toward your personal concessional cap.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 290-150 (personal contributions deductible); s 290-155 (complying superannuation fund condition); s 290-170 (notice of intent)",
+    "notes": "Gated to super_fund_type='smsf'. RETAINED as distinct (not merged) despite being mechanically identical to personal_super_concessional_deduction (both s 290-150): the brief explicitly demands disambiguation of the SMSF return-context confusion — the individual member claims the deduction PERSONALLY (return_context=personal), while the SMSF's OWN deductions (e.g. insurance premiums under s 295-465, fund running costs) belong on the fund's business_entity return and are OUT of scope for this personal-return slice (see gaps)."
+  },
+  {
+    "id": "income_protection_insurance_premiums",
+    "label": "Income protection insurance premium deduction (any structure)",
+    "kind": "deduction",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "dedupe_key": "income_protection_8_1",
+    "seed_queries": [
+      "income protection insurance premiums deduction",
+      "deduct income protection policy premium personal",
+      "income protection insurance not held inside super",
+      "premium for insurance against loss of income deductible"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/investments-insurance-and-super/income-protection-insurance",
+      "ato:individuals-and-families/income-deductions-offsets-and-records/income-you-must-declare/compensation-and-insurance-payments/income-protection-insurance-payments",
+      "legis:c2004a05138/8-1"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Premiums for a stand-alone income protection / salary continuance policy held outside super",
+      "The income-protection portion of a bundled policy (life/TPD portions are NOT deductible)",
+      "Premiums paid by a self-employed person to insure their own income"
+    ],
+    "substantiation": "Premium notices / insurer statements showing the income-protection component; apportionment records where the policy bundles non-deductible cover (life, trauma, TPD); evidence the policy insures against loss of assessable income. Premiums for cover held INSIDE super are generally not separately deductible to the individual.",
+    "consider_prompt": "Have you considered deducting income protection insurance premiums? Premiums for a policy that insures your assessable income are generally deductible, but the life/TPD/trauma portions of a bundled policy are not, and any benefit you later receive is assessable income.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 8-1 (general deductions); benefit receipts assessable as ordinary income",
+    "notes": "PERSONAL s 8-1 deduction for the individual who pays to insure their own assessable income — correct return_context=personal across structures (not an entity operating expense, not a WRE D-question item). DEDUPE NOTE: overlaps with wre_income_protection_insurance (occupation-gated WRE row). The orchestrator should dedupe at merge time; retained for recall so it also surfaces for non-employed individuals (e.g. investors, trust beneficiaries without an occupation)."
+  },
+  {
+    "id": "fhss_personal_contribution_notes",
+    "label": "First Home Super Saver scheme — deductible-contribution interaction",
+    "kind": "strategy",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [],
+    "seed_queries": [
+      "first home super saver scheme eligible contributions deduction",
+      "FHSS voluntary concessional contributions personal deduction",
+      "contribution must not be a re-contribution under first home super saver scheme 290-168",
+      "FHSS released amount assessable income tax offset"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/super-for-individuals-and-families/super/withdrawing-and-using-your-super/early-access-to-super/first-home-super-saver-scheme",
+      "ato-law:TR/2024/4",
+      "legis:c2004a05138/290-168",
+      "ato:individuals-and-families/your-tax-return/instructions-to-complete-your-tax-return/mytax-instructions/2025/income/salary-wages-or-other-income-on-an-income-statement-or-payment-summary/first-home-super-saver-scheme"
+    ],
+    "thresholds": [
+      "super_concessional_cap"
+    ],
+    "examples": [
+      "Making voluntary personal (deductible) concessional contributions that can later be released under FHSS toward a first home",
+      "Claiming the s 290-150 deduction for the voluntary contribution in the year it is made",
+      "Noting that a 290-168 FHSS re-contribution is NOT itself deductible"
+    ],
+    "substantiation": "Standard personal-deduction substantiation (notice of intent, fund acknowledgement) for any voluntary concessional contribution claimed; FHSS determination from the ATO before release; records of eligible voluntary contributions. The FHSS RELEASED amount is reported as assessable income (with an associated tax offset) in the year of release — it is not a deduction.",
+    "consider_prompt": "Have you considered the First Home Super Saver scheme? Voluntary personal concessional contributions you claim as a deduction can also count as eligible FHSS contributions for release toward a first home — but the released amount is later assessable, and a 290-168 re-contribution is not deductible.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 290-150 (deduction for the underlying voluntary contribution); s 290-168 (contribution must not be a FHSS re-contribution); TR 2024/4 (FHSS scheme)",
+    "notes": "Adjacent/strategy category, not a standalone new deduction: the deduction itself is the s 290-150 personal concessional deduction; FHSS is the release mechanism. Flags that the released amount is assessable income and that re-contributions (s 290-168) are carved out of deductibility. TR 2024/4 confirmed (doc_type=ATO_RULING_TR) as the controlling FHSS ruling."
+  },
+  {
+    "id": "spouse_super_contribution_offset",
+    "label": "Tax offset for super contributions on behalf of your spouse",
+    "kind": "offset",
+    "structures": [
+      "sole_trader",
+      "partnership",
+      "company",
+      "trust",
+      "none"
+    ],
+    "return_context": "personal",
+    "triggers": [
+      {
+        "field": "has_spouse",
+        "op": "truthy"
+      }
+    ],
+    "seed_queries": [
+      "tax offset for super contributions on behalf of your spouse T3",
+      "spouse super contribution offset eligibility low income spouse",
+      "section 290-230 offset for spouse contribution",
+      "contributions to spouse super fund tax offset limit"
+    ],
+    "seed_doc_ids": [
+      "ato:individuals-and-families/your-tax-return/instructions-to-complete-your-tax-return/mytax-instructions/2025/tax-offsets/other-tax-offsets/super-contributions-on-behalf-of-your-spouse",
+      "legis:c2004a05138/290-230",
+      "legis:c2004a05138/290-235"
+    ],
+    "thresholds": [],
+    "examples": [
+      "Making an after-tax contribution to your low-income or non-working spouse's complying super fund",
+      "Claiming the spouse contribution tax offset (T3) on your own return",
+      "Contributions where the spouse's income is below the relevant phase-out range"
+    ],
+    "substantiation": "Records of the contribution made to the spouse's complying super fund; the spouse's assessable income + reportable fringe benefits + reportable employer super contributions for the year (to test the income threshold); evidence the spouse had not exceeded their non-concessional cap. The offset is capped (max offset on up to $3,000 of contributions, phasing out as spouse income rises).",
+    "consider_prompt": "Have you considered the spouse super contribution tax offset? If you contributed to a low-income or non-working spouse's super fund, you may be entitled to a tax offset (claimed at T3 on your own return) — note this is an OFFSET, not a deduction.",
+    "ato_focus_area": false,
+    "legal_basis": "ITAA 1997 s 290-230 (offset for spouse contribution); s 290-235 (limit on amount of tax offset)",
+    "notes": "This is a tax OFFSET (reduces tax payable), NOT a deduction — flagged so it is not double-counted with deduction totals. Gated on has_spouse. The contributing spouse claims it on their personal return (return_context=personal correct). The co-contribution and LISTO are government-PAID amounts surfaced as nudges in headline categories rather than as claimable categories here."
+  }
+];

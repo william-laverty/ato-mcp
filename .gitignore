@@ -11,6 +11,8 @@ __pycache__/
 .coverage
 coverage/
 data/
+!packages/shared/src/data/
+!packages/shared/test/data/
 corpus-out/
 corpus-real/
 corpus-smoke/

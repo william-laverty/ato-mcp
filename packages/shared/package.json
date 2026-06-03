@@ -49,12 +49,33 @@
     "./lib/rrf": {
       "types": "./dist/lib/rrf.d.ts",
       "import": "./dist/lib/rrf.js"
+    },
+    "./lib/citations": {
+      "types": "./dist/lib/citations.d.ts",
+      "import": "./dist/lib/citations.js"
+    },
+    "./tools/deduction_discovery": {
+      "types": "./dist/tools/deduction_discovery.d.ts",
+      "import": "./dist/tools/deduction_discovery.js"
+    },
+    "./tools/depreciation_helper": {
+      "types": "./dist/tools/depreciation_helper.d.ts",
+      "import": "./dist/tools/depreciation_helper.js"
+    },
+    "./tools/bas_prep_checklist": {
+      "types": "./dist/tools/bas_prep_checklist.d.ts",
+      "import": "./dist/tools/bas_prep_checklist.js"
+    },
+    "./tools/audit_risk_check": {
+      "types": "./dist/tools/audit_risk_check.d.ts",
+      "import": "./dist/tools/audit_risk_check.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gen:deductions": "node scripts/gen-deduction-categories.mjs"
   },
   "dependencies": {
     "zod": "3.23.8"
