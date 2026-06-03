@@ -163,4 +163,12 @@ describe("depreciationHelper", () => {
     const out = await depreciationHelper(deps(baseFacts), { asset_cost: 1000, acquisition_date: "2025-07-01", business_use_pct: 100, effective_life_years: 5, is_capital_works: false, method: "both" });
     expect(out.disclaimer).toMatch(/not tax advice/i);
   });
+
+  it("pre-9-May-2006 acquisition: diminishing value unavailable (150% rate not supported), prime cost still computes", async () => {
+    const out = await depreciationHelper(deps(baseFacts), { asset_cost: 1000, acquisition_date: "2005-07-01", business_use_pct: 100, effective_life_years: 5, is_capital_works: false, method: "both" });
+    expect(unav(out).has("diminishing_value")).toBe(true);
+    expect(ids(out).has("prime_cost")).toBe(true);
+    const reason = out.unavailable.find((u) => u.method === "diminishing_value")!.reason;
+    expect(reason).toMatch(/2006|150/);
+  });
 });
