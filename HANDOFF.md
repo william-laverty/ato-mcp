@@ -1,4 +1,19 @@
-# v0.4 handoff — bas_prep_checklist
+# v0.4 handoff — COMPLETE (all 4 hero tools shipped)
+
+All four v0.4 hero tools are shipped on `feat/v0.4-deduction-discovery`. Full test suite green: 155 shared + 79 mcp + 49 backend + 3 web (286 total TS tests).
+
+- `deduction_discovery` (tool 1 of 4) — curated 59-row deduction taxonomy, `resolveCitations()` spine, discrete confidence
+- `depreciation_helper` (tool 2 of 4) — deterministic PC/DV/IAWO/SBE-pool/Div 43 schedules
+- `bas_prep_checklist` (tool 3 of 4) — tiered, cited BAS checklist filtered by user facts
+- `audit_risk_check` (tool 4 of 4) — ~13 qualitative red-flag rules over facts + draft return summary; risk bands + ATO guidance citations; heuristic indicator not numeric benchmarking
+
+All four tools reuse the `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`). All four are registered in `packages/mcp/src/server.ts` (now 13 tools total) and have backend handlers under `packages/backend/api/`.
+
+**Next:** v0.5 scoping. Per-ANZSIC/occupation numeric benchmarking (requires a `benchmarks` table), edited PBR ingest, AAT/FCA case summaries, state revenue offices, better embedding model (see CLAUDE.md "Not yet implemented").
+
+---
+
+# v0.4 handoff — bas_prep_checklist (superseded)
 
 `bas_prep_checklist` (v0.4 tool 3 of 4) is shipped on `feat/v0.4-deduction-discovery`. Full test suite green: 136 shared + 77 mcp + 47 backend + 3 web. Remaining hero tool: `audit_risk_check`.
 
