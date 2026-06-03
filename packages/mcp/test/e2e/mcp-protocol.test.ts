@@ -21,8 +21,8 @@ describe("MCP tool registration", () => {
     server.close();
   });
 
-  it("exposes all v0.2 tools plus get_user_facts", () => {
-    expect(server.listToolNames().sort()).toEqual(["fetch", "get_chunks", "get_definition", "get_doc", "get_doc_anchors", "get_threshold", "get_user_facts", "search", "stats"]);
+  it("exposes all v0.2 tools plus get_user_facts and deduction_discovery", () => {
+    expect(server.listToolNames().sort()).toEqual(["deduction_discovery", "fetch", "get_chunks", "get_definition", "get_doc", "get_doc_anchors", "get_threshold", "get_user_facts", "search", "stats"]);
   });
 
   it("calls the stats tool", async () => {
