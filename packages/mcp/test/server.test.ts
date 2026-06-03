@@ -52,3 +52,18 @@ describe("server: depreciation_helper", () => {
     expect(Array.isArray(res.methods)).toBe(true);
   });
 });
+
+describe("server: bas_prep_checklist", () => {
+  it("lists the tool", () => {
+    const srv = buildServerForTesting({ store, embedder, facts, mode: "local" });
+    expect(srv.listToolNames()).toContain("bas_prep_checklist");
+  });
+  it("dispatches and returns a checklist", async () => {
+    const gstFacts = { ...facts, has_abn: true, abn: "51824753556", business_structure: "sole_trader" as const, gst_registered: true, gst_period: "quarterly" as const };
+    const srv = buildServerForTesting({ store, embedder, facts: gstFacts, mode: "local" });
+    const res = await srv.callTool("bas_prep_checklist", { period_type: "quarterly", quarter: 1 });
+    expect(res).toHaveProperty("sections");
+    expect(res).toHaveProperty("disclaimer");
+    expect(res.registered).toBe(true);
+  });
+});

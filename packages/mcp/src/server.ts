@@ -12,6 +12,7 @@ import {
   GetThresholdInputSchema,
   DeductionDiscoveryInputSchema,
   DepreciationHelperInputSchema,
+  BasPrepChecklistInputSchema,
   UserFactsSchema,
 } from "@ato-mcp/shared";
 import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
@@ -29,6 +30,7 @@ import { getThreshold } from "@ato-mcp/shared/tools/get_threshold";
 import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
 import { deductionDiscovery } from "@ato-mcp/shared/tools/deduction_discovery";
 import { depreciationHelper } from "@ato-mcp/shared/tools/depreciation_helper";
+import { basPrepChecklist } from "@ato-mcp/shared/tools/bas_prep_checklist";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
@@ -151,6 +153,20 @@ const TOOLS = {
       additionalProperties: false,
     },
   },
+  bas_prep_checklist: {
+    description:
+      "Produce a tiered, cited BAS preparation checklist for the user's GST reporting period: which labels apply (GST G1/1A/1B, PAYG-W, PAYG-I, FBT instalment, fuel tax credits, WET, LCT), what evidence to gather, and common gotchas. Does not calculate amounts. Optional inputs: period_type (monthly/quarterly/annual), quarter (1-4), fy, full_gst_method.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        period_type: { type: "string", enum: ["monthly", "quarterly", "annual"] },
+        quarter: { type: "integer", minimum: 1, maximum: 4 },
+        fy: { type: "string" },
+        full_gst_method: { type: "boolean", default: false },
+      },
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
@@ -189,6 +205,11 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
       return depreciationHelper(
         { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
         DepreciationHelperInputSchema.parse(args),
+      );
+    case "bas_prep_checklist":
+      return basPrepChecklist(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        BasPrepChecklistInputSchema.parse(args),
       );
     default:
       throw new Error(`Unknown tool: ${name}`);
