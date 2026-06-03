@@ -63,3 +63,21 @@ describe("BasPrepChecklistInputSchema", () => {
     expect(() => BasPrepChecklistInputSchema.parse({ period_type: "weekly" })).toThrow();
   });
 });
+
+import { AuditRiskCheckInputSchema } from "../src/tools.js";
+
+describe("AuditRiskCheckInputSchema", () => {
+  it("accepts an empty object (all optional)", () => {
+    expect(() => AuditRiskCheckInputSchema.parse({})).not.toThrow();
+  });
+  it("accepts income + deductions + rental", () => {
+    const v = AuditRiskCheckInputSchema.parse({ income: 80000, deductions: [{ category: "work-related car", amount: 4000 }], rental: { interest: 8000 } });
+    expect(v.deductions![0]!.amount).toBe(4000);
+  });
+  it("rejects a negative deduction amount", () => {
+    expect(() => AuditRiskCheckInputSchema.parse({ deductions: [{ category: "x", amount: -1 }] })).toThrow();
+  });
+  it("rejects an empty deduction category", () => {
+    expect(() => AuditRiskCheckInputSchema.parse({ deductions: [{ category: "", amount: 1 }] })).toThrow();
+  });
+});

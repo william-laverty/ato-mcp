@@ -83,4 +83,18 @@ export const BasPrepChecklistInputSchema = z.object({
 });
 export type BasPrepChecklistInput = z.infer<typeof BasPrepChecklistInputSchema>;
 
-export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery" | "depreciation_helper" | "bas_prep_checklist";
+export const AuditRiskCheckInputSchema = z.object({
+  income: z.number().nonnegative().optional(),
+  deductions: z.array(z.object({ category: z.string().min(1), amount: z.number().nonnegative() })).optional(),
+  rental: z.object({
+    income: z.number().nonnegative().optional(),
+    interest: z.number().nonnegative().optional(),
+    repairs: z.number().nonnegative().optional(),
+    capital_works: z.number().nonnegative().optional(),
+  }).optional(),
+  business_income: z.number().optional(),
+  fy: z.string().regex(/^\d{4}-\d{2}$/, "FY must be YYYY-YY").optional(),
+});
+export type AuditRiskCheckInput = z.infer<typeof AuditRiskCheckInputSchema>;
+
+export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery" | "depreciation_helper" | "bas_prep_checklist" | "audit_risk_check";
