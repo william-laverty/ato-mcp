@@ -289,6 +289,26 @@ describe("POST /bas_prep_checklist", () => {
 });
 
 // ---------------------------------------------------------------------------
+// audit_risk_check handler
+// ---------------------------------------------------------------------------
+describe("POST /audit_risk_check", () => {
+  it("returns a structured onboard error when the user has no facts (mock store)", async () => {
+    const { handler } = await import("../api/audit_risk_check.js");
+    const resp = await handler(makePostRequest({ income: 90000 }));
+    expect(resp.status).toBe(400);
+    const body = await resp.json() as { kind: string; message: string };
+    expect(body.kind).toBe("error");
+    expect(body.message).toMatch(/onboard/i);
+  });
+  it("returns 401 without auth", async () => {
+    const { handler } = await import("../api/audit_risk_check.js");
+    const req = new Request("https://api.ato-mcp.com.au/audit_risk_check", { method: "POST", body: "{}" });
+    const resp = await handler(req);
+    expect(resp.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // onboard/poll handler
 // ---------------------------------------------------------------------------
 describe("GET /api/onboard_poll", () => {
