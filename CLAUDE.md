@@ -217,7 +217,7 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 
 ### Not yet implemented (v0.4 and beyond)
 
-- Hero workflow tools: `deduction_discovery`, `bas_prep_checklist`, `audit_risk_check`, `depreciation_helper` (the product differentiator from `gunba/ato-mcp`)
+- Hero workflow tools: `bas_prep_checklist`, `audit_risk_check`, `depreciation_helper` (the product differentiator from `gunba/ato-mcp`). `deduction_discovery` is DONE (v0.4 tool 1 of 4).
 - Edited PBR ingest (~120k more docs from law.ato.gov.au — would 5× the corpus)
 - AAT/Federal Court case summaries
 - State revenue offices (8 jurisdictions)
@@ -228,6 +228,7 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 ### Done since v0.3 ship
 
 - Citation graph populated: 23,267 outbound refs (13,388 ITAA 1997 sections + 9,879 ATO rulings) extracted by `packages/pipeline/src/ato_pipeline/extractors/citations.py`. Pipeline emits them inline now; one-shot `scripts/populate_citations.py` filled the in-flight Supabase corpus.
+- **`deduction_discovery` (v0.4 tool 1 of 4) shipped.** Curated 59-row taxonomy (`packages/shared/src/data/deduction-categories.ts`, generated from the verified spec JSON) filtered by user facts → fresh citations via the new shared `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`) → live thresholds → discrete confidence. Branches across all taxpayer structures, tags personal vs business_entity returns, types categories by `kind` (deduction/offset/cgt_event/disallowance/precondition/strategy). Registered in `mcp/src/server.ts`; backend handler `backend/api/deduction_discovery.ts`. Spec: `docs/superpowers/specs/2026-06-03-deduction-discovery-design.md`.
 
 ## Gotchas
 

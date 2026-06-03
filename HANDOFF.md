@@ -1,3 +1,9 @@
+# v0.4 handoff — deduction_discovery
+
+`deduction_discovery` (v0.4 tool 1 of 4) is shipped on `feat/v0.4-deduction-discovery`. Full test suite green: 93 shared + 73 mcp + 42 backend + 3 web. Remaining hero tools: `bas_prep_checklist`, `audit_risk_check`, `depreciation_helper`.
+
+---
+
 # v0.3 handoff
 
 Phases A, B, C, D shipped as code. Phase E (analytics polish + RLS verification) and **deployment** are explicit follow-ups that need real Supabase + Vercel credentials. The Granite embedding swap was deferred (still on MiniLM); the v0.2 corpus is what's installed.
