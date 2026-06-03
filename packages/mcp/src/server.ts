@@ -10,6 +10,7 @@ import {
   GetDocInputSchema,
   GetDocAnchorsInputSchema,
   GetThresholdInputSchema,
+  DeductionDiscoveryInputSchema,
   UserFactsSchema,
 } from "@ato-mcp/shared";
 import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
@@ -25,6 +26,7 @@ import { getDoc } from "@ato-mcp/shared/tools/get_doc";
 import { getDocAnchors } from "@ato-mcp/shared/tools/get_doc_anchors";
 import { getThreshold } from "@ato-mcp/shared/tools/get_threshold";
 import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
+import { deductionDiscovery } from "@ato-mcp/shared/tools/deduction_discovery";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
@@ -112,6 +114,20 @@ const TOOLS = {
     description: "Return the authenticated user's personal tax facts (state, ABN, business structure, GST, dependants, etc.). Call once on initialise and reason from the result throughout the session.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
+  deduction_discovery: {
+    description:
+      "Surface every deduction-related category that plausibly applies to the authenticated user's tax profile, with corpus citations, thresholds, and a confidence rating. Branches across all taxpayer structures (individual, sole trader, partnership, company, trust, SMSF member). Optionally pass `activity` to focus on a specific spend.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        activity: { type: "string" },
+        fy: { type: "string" },
+        k_citations: { type: "integer", minimum: 1, maximum: 5, default: 3 },
+        include_low_confidence: { type: "boolean", default: true },
+      },
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
@@ -140,6 +156,11 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
           mode: deps.mode ?? "local",
         },
         {},
+      );
+    case "deduction_discovery":
+      return deductionDiscovery(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        DeductionDiscoveryInputSchema.parse(args),
       );
     default:
       throw new Error(`Unknown tool: ${name}`);
