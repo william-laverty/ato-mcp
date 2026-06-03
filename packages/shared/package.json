@@ -57,6 +57,10 @@
     "./tools/deduction_discovery": {
       "types": "./dist/tools/deduction_discovery.d.ts",
       "import": "./dist/tools/deduction_discovery.js"
+    },
+    "./tools/depreciation_helper": {
+      "types": "./dist/tools/depreciation_helper.d.ts",
+      "import": "./dist/tools/depreciation_helper.js"
     }
   },
   "scripts": {
