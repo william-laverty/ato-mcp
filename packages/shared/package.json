@@ -58,7 +58,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gen:deductions": "node scripts/gen-deduction-categories.mjs"
   },
   "dependencies": {
     "zod": "3.23.8"
