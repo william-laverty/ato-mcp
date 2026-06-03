@@ -75,4 +75,12 @@ export const DepreciationHelperInputSchema = z.object({
 });
 export type DepreciationHelperInput = z.infer<typeof DepreciationHelperInputSchema>;
 
-export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery" | "depreciation_helper";
+export const BasPrepChecklistInputSchema = z.object({
+  period_type: z.enum(["monthly", "quarterly", "annual"]).optional(),
+  quarter: z.number().int().min(1).max(4).optional(),
+  fy: z.string().regex(/^\d{4}-\d{2}$/, "FY must be YYYY-YY").optional(),
+  full_gst_method: z.boolean().default(false),
+});
+export type BasPrepChecklistInput = z.infer<typeof BasPrepChecklistInputSchema>;
+
+export type ToolName = "search" | "get_chunks" | "fetch" | "stats" | "get_definition" | "get_doc" | "get_doc_anchors" | "get_threshold" | "deduction_discovery" | "depreciation_helper" | "bas_prep_checklist";

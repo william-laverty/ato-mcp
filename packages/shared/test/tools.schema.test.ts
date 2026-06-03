@@ -43,3 +43,23 @@ describe("DepreciationHelperInputSchema", () => {
     expect(() => DepreciationHelperInputSchema.parse({ asset_cost: 1, acquisition_date: "2025-07-01", business_use_pct: 150 })).toThrow();
   });
 });
+
+import { BasPrepChecklistInputSchema } from "../src/tools.js";
+
+describe("BasPrepChecklistInputSchema", () => {
+  it("applies defaults", () => {
+    const v = BasPrepChecklistInputSchema.parse({});
+    expect(v.full_gst_method).toBe(false);
+    expect(v.period_type).toBeUndefined();
+  });
+  it("accepts period_type + quarter", () => {
+    const v = BasPrepChecklistInputSchema.parse({ period_type: "quarterly", quarter: 2 });
+    expect(v.quarter).toBe(2);
+  });
+  it("rejects quarter out of range", () => {
+    expect(() => BasPrepChecklistInputSchema.parse({ quarter: 5 })).toThrow();
+  });
+  it("rejects bad period_type", () => {
+    expect(() => BasPrepChecklistInputSchema.parse({ period_type: "weekly" })).toThrow();
+  });
+});
