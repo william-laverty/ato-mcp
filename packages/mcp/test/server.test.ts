@@ -67,3 +67,17 @@ describe("server: bas_prep_checklist", () => {
     expect(res.registered).toBe(true);
   });
 });
+
+describe("server: audit_risk_check", () => {
+  it("lists the tool", () => {
+    const srv = buildServerForTesting({ store, embedder, facts, mode: "local" });
+    expect(srv.listToolNames()).toContain("audit_risk_check");
+  });
+  it("dispatches and returns findings + overall_risk", async () => {
+    const srv = buildServerForTesting({ store, embedder, facts, mode: "local" });
+    const res = await srv.callTool("audit_risk_check", { income: 90000, deductions: [{ category: "tax agent fee", amount: 175 }] });
+    expect(res).toHaveProperty("findings");
+    expect(res).toHaveProperty("overall_risk");
+    expect(res).toHaveProperty("disclaimer");
+  });
+});

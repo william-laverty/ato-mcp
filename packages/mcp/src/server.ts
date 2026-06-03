@@ -13,6 +13,7 @@ import {
   DeductionDiscoveryInputSchema,
   DepreciationHelperInputSchema,
   BasPrepChecklistInputSchema,
+  AuditRiskCheckInputSchema,
   UserFactsSchema,
 } from "@ato-mcp/shared";
 import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
@@ -31,6 +32,7 @@ import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
 import { deductionDiscovery } from "@ato-mcp/shared/tools/deduction_discovery";
 import { depreciationHelper } from "@ato-mcp/shared/tools/depreciation_helper";
 import { basPrepChecklist } from "@ato-mcp/shared/tools/bas_prep_checklist";
+import { auditRiskCheck } from "@ato-mcp/shared/tools/audit_risk_check";
 import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
 interface ServerDeps {
@@ -167,6 +169,21 @@ const TOOLS = {
       additionalProperties: false,
     },
   },
+  audit_risk_check: {
+    description:
+      "Flag patterns the ATO is known to scrutinise, given the user's facts + a draft return summary (income, deductions, rental). Returns qualitative red-flag findings with a risk band, why-flagged, what-to-do and ATO guidance citations. A heuristic indicator, NOT an audit prediction and NOT numeric benchmarking. Optional inputs: income, deductions [{category, amount}], rental {income, interest, repairs, capital_works}, business_income, fy.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        income: { type: "number", minimum: 0 },
+        deductions: { type: "array", items: { type: "object", properties: { category: { type: "string" }, amount: { type: "number", minimum: 0 } }, required: ["category", "amount"], additionalProperties: false } },
+        rental: { type: "object", properties: { income: { type: "number", minimum: 0 }, interest: { type: "number", minimum: 0 }, repairs: { type: "number", minimum: 0 }, capital_works: { type: "number", minimum: 0 } }, additionalProperties: false },
+        business_income: { type: "number" },
+        fy: { type: "string" },
+      },
+      additionalProperties: false,
+    },
+  },
 } as const;
 
 async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
@@ -210,6 +227,11 @@ async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<
       return basPrepChecklist(
         { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
         BasPrepChecklistInputSchema.parse(args),
+      );
+    case "audit_risk_check":
+      return auditRiskCheck(
+        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
+        AuditRiskCheckInputSchema.parse(args),
       );
     default:
       throw new Error(`Unknown tool: ${name}`);
