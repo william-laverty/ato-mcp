@@ -61,6 +61,10 @@
     "./tools/depreciation_helper": {
       "types": "./dist/tools/depreciation_helper.d.ts",
       "import": "./dist/tools/depreciation_helper.js"
+    },
+    "./tools/bas_prep_checklist": {
+      "types": "./dist/tools/bas_prep_checklist.d.ts",
+      "import": "./dist/tools/bas_prep_checklist.js"
     }
   },
   "scripts": {
