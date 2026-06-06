@@ -91,11 +91,13 @@ SUPABASE_SECRET_KEY='sb_secret_...' \
 | GitHub | `william-laverty/ato-mcp` (private) | live |
 | Supabase | project `ato-mcp` (`pznbngklxhkyigmlvruk`), ap-southeast-2 | live; 4 migrations applied; pgvector enabled |
 | Vercel `ato-mcp-web` | Next.js app, root `packages/web` | live at `ato-mcp.com.au` (canonical) |
-| Vercel `ato-mcp-backend` | Functions, root `packages/backend` | live at `api.ato-mcp.com.au` |
-| Local corpus | `~/Library/Application Support/ato-mcp/live/ato.sqlite` | 29,180 docs / 224k chunks |
-| Supabase corpus | `docs` + `chunks` + `anchors` + `definitions` + `thresholds` tables | 29k docs / chunks ongoing (import script) |
+| Vercel `ato-mcp-backend` | Functions, root `packages/backend` | live at `api.ato-mcp.com.au`; **16 serverless functions → requires Vercel Pro** (Hobby caps at 12) |
+| Local corpus | `~/Library/Application Support/ato-mcp/live/ato.sqlite` | 29,180 docs / 224k chunks (stale v0.2 build locally) |
+| Supabase corpus | `docs` + `chunks` + `anchors` + `citations` + `definitions` + `thresholds` | 29,181 docs / 224,585 chunks (complete; 8 thresholds, 23,267 citations) |
 
 The Supabase team ID for the Vercel MCP is `team_UWCodSopgUHNhnJCAGNsJ1uA`. Project IDs: `prj_xREEymkcKg1VwkgvoTXbQjYJIjHt` (web), `prj_ok6AxQ6e1iH8NtV33zpgGoNiYh1t` (backend).
+
+**Operational requirement (v0.4+):** the backend ships **16 serverless functions**, so the `ato-mcp-backend` Vercel project **must be on the Pro plan** — Vercel Hobby caps a deployment at 12 functions, and a 16-function deploy fails at the "Deploying outputs" stage *after a clean build* (no code error, just the cap). Every new tool adds a function; the durable fix is to consolidate the per-tool `api/*.ts` handlers into one dynamic `api/[tool].ts` dispatcher (tracked as a v0.5 issue).
 
 ## MCP servers available
 
