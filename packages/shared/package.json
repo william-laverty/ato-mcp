@@ -1,7 +1,6 @@
 {
   "name": "@ato-mcp/shared",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -83,5 +82,34 @@
   "devDependencies": {
     "typescript": "5.6.3",
     "vitest": "2.1.5"
-  }
+  },
+  "description": "Shared tool core for ato-mcp: types, Zod schemas, Store/Embedder interfaces, and the 13 MCP tool implementations used by both local and hosted modes.",
+  "keywords": [
+    "mcp",
+    "ato",
+    "australian-tax",
+    "tax",
+    "australia"
+  ],
+  "license": "MIT",
+  "author": "William Laverty",
+  "homepage": "https://ato-mcp.com.au",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/william-laverty/ato-mcp.git",
+    "directory": "packages/shared"
+  },
+  "bugs": {
+    "url": "https://github.com/william-laverty/ato-mcp/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }

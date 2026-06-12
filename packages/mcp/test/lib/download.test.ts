@@ -9,22 +9,29 @@ import { installFromLocalFile, fetchLatestRelease, runUpdateFromGitHub } from ".
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Build a minimal fake GitHub releases/latest response. */
+/** Build a minimal fake corpus release object. */
 function fakeRelease(extraAssets: Array<{ name: string; browser_download_url: string }> = []) {
   return {
-    tag_name: "v0.2.2026.05",
+    tag_name: "corpus-v2026.05",
+    draft: false,
+    prerelease: false,
     assets: [
       {
         name: "ato-corpus-v2026.05.sqlite.zst",
-        browser_download_url: "https://github.example.com/releases/download/v0.2.2026.05/ato-corpus-v2026.05.sqlite.zst",
+        browser_download_url: "https://github.example.com/releases/download/corpus-v2026.05/ato-corpus-v2026.05.sqlite.zst",
       },
       {
         name: "manifest.json",
-        browser_download_url: "https://github.example.com/releases/download/v0.2.2026.05/manifest.json",
+        browser_download_url: "https://github.example.com/releases/download/corpus-v2026.05/manifest.json",
       },
       ...extraAssets,
     ],
   };
+}
+
+/** The releases-list API returns an array, newest first. */
+function releasesList(...releases: unknown[]) {
+  return JSON.stringify(releases);
 }
 
 /** Build a manifest whose corpus_sha256 matches the provided bytes. */
@@ -79,11 +86,10 @@ describe("fetchLatestRelease", () => {
   it("returns corpus_url, manifest_url, and parsed manifest", async () => {
     const corpusBytes = new TextEncoder().encode("fake corpus data");
     const manifest = fakeManifest(corpusBytes);
-    const release = fakeRelease();
 
     globalThis.fetch = vi.fn()
       .mockResolvedValueOnce(
-        new Response(JSON.stringify(release), { status: 200, headers: { "content-type": "application/json" } }),
+        new Response(releasesList(fakeRelease()), { status: 200, headers: { "content-type": "application/json" } }),
       )
       .mockResolvedValueOnce(
         new Response(JSON.stringify(manifest), { status: 200, headers: { "content-type": "application/json" } }),
@@ -94,6 +100,28 @@ describe("fetchLatestRelease", () => {
     expect(result.manifest.embedding_model).toBe("sentence-transformers/all-MiniLM-L6-v2");
   });
 
+  it("skips newer software releases without corpus assets (regression: v1.x must not break update)", async () => {
+    const corpusBytes = new TextEncoder().encode("fake corpus data");
+    const manifest = fakeManifest(corpusBytes);
+    const softwareRelease = {
+      tag_name: "v1.0.0",
+      draft: false,
+      prerelease: false,
+      assets: [], // npm/software release — no corpus
+    };
+
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(
+        new Response(releasesList(softwareRelease, fakeRelease()), { status: 200 }),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(manifest), { status: 200 }),
+      ) as unknown as typeof fetch;
+
+    const result = await fetchLatestRelease("williaml/ato-mcp");
+    expect(result.corpus_url).toContain("ato-corpus-v2026.05.sqlite.zst");
+  });
+
   it("throws on 403 with rate-limit message", async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce(
       new Response("rate limited", { status: 403 }),
@@ -102,10 +130,11 @@ describe("fetchLatestRelease", () => {
     await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/rate.limit/i);
   });
 
-  it("throws when corpus asset is missing", async () => {
-    const manifest = fakeManifest(new TextEncoder().encode("x"));
+  it("throws when no release carries a corpus asset", async () => {
     const releaseNoCorpus = {
-      tag_name: "v0.2.2026.05",
+      tag_name: "v1.0.0",
+      draft: false,
+      prerelease: false,
       assets: [
         {
           name: "manifest.json",
@@ -114,20 +143,18 @@ describe("fetchLatestRelease", () => {
       ],
     };
 
-    globalThis.fetch = vi.fn()
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(releaseNoCorpus), { status: 200 }),
-      )
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(manifest), { status: 200 }),
-      ) as unknown as typeof fetch;
+    globalThis.fetch = vi.fn().mockResolvedValueOnce(
+      new Response(releasesList(releaseNoCorpus), { status: 200 }),
+    ) as unknown as typeof fetch;
 
-    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/missing a corpus asset/i);
+    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/no release .* corpus asset/i);
   });
 
-  it("throws when manifest.json asset is missing", async () => {
+  it("throws when the corpus release lacks manifest.json", async () => {
     const releaseNoManifest = {
-      tag_name: "v0.2.2026.05",
+      tag_name: "corpus-v2026.05",
+      draft: false,
+      prerelease: false,
       assets: [
         {
           name: "ato-corpus-v2026.05.sqlite.zst",
@@ -137,10 +164,10 @@ describe("fetchLatestRelease", () => {
     };
 
     globalThis.fetch = vi.fn().mockResolvedValueOnce(
-      new Response(JSON.stringify(releaseNoManifest), { status: 200 }),
+      new Response(releasesList(releaseNoManifest), { status: 200 }),
     ) as unknown as typeof fetch;
 
-    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/missing manifest/i);
+    await expect(fetchLatestRelease("williaml/ato-mcp")).rejects.toThrow(/no release .* corpus asset/i);
   });
 
   it("throws on non-200 GitHub API response", async () => {
@@ -207,7 +234,7 @@ describe("runUpdateFromGitHub", () => {
     globalThis.fetch = vi.fn()
       // 1. GitHub API
       .mockResolvedValueOnce(
-        new Response(JSON.stringify(release), { status: 200, headers: { "content-type": "application/json" } }),
+        new Response(releasesList(release), { status: 200, headers: { "content-type": "application/json" } }),
       )
       // 2. manifest.json download
       .mockResolvedValueOnce(
@@ -260,7 +287,7 @@ describe("runUpdateFromGitHub", () => {
     const release = fakeRelease();
 
     globalThis.fetch = vi.fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify(release), { status: 200 }))
+      .mockResolvedValueOnce(new Response(releasesList(release), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify(manifest), { status: 200 }))
       .mockResolvedValueOnce(
         new Response(zstBytes, { status: 200 }),
@@ -294,7 +321,7 @@ describe("runUpdateFromGitHub", () => {
     const release = fakeRelease();
 
     globalThis.fetch = vi.fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify(release), { status: 200 }))
+      .mockResolvedValueOnce(new Response(releasesList(release), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify(manifest), { status: 200 })) as unknown as typeof fetch;
 
     process.env.ATO_MCP_RELEASE_REPO = "williaml/ato-mcp";
