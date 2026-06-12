@@ -1,4 +1,14 @@
-# v0.4 handoff — COMPLETE (all 4 hero tools shipped)
+# v1.0 — LAUNCHED (2026-06-12)
+
+**ato-mcp v1.0.0 is public.** Repo public (full-history secret scan clean), website redesigned + live at https://ato-mcp.com.au, `v1.0.0` + `corpus-v2026.06` releases published, local mode verified end-to-end (`ato-mcp update` → sha256 → install), hosted mode verified end-to-end with an authenticated 13-tool production smoke. 318 TS + 85 Python tests green.
+
+Launch-day engineering: two live bugs found by the authenticated smoke and fixed (hosted getThreshold SETOF unwrap; citation fan-out statement timeouts → bounded fault-tolerant resolution with explicit degradation notes); backend consolidated 16 → 4 serverless functions via the dynamic `api/[tool].ts` dispatcher; corpus released by exporting the live hosted corpus (`packages/pipeline/scripts/export_from_supabase.py`) because ato.gov.au now bot-blocks fresh scrapes — local and hosted serve the identical snapshot.
+
+**Open human actions:** npm org + token then enable `NPM_PUBLISH_ENABLED` (issue #9); disclaimer legal review before marketing push (issue #10). Open engineering: numeric benchmarking (#5), KV rate-limit + RLS CI (#11), Granite embeddings (#12).
+
+---
+
+# v0.4 handoff (history) — all 4 hero tools shipped
 
 All four v0.4 hero tools are **merged to `main` (PR #1) and live in production** (`api.ato-mcp.com.au` — all four routes return 401 unauthenticated = deployed + auth-gated). Full TS suite green: 159 shared + 79 mcp + 49 backend + 3 web (290 total). **Vercel Web Analytics enabled** on the web app (PR #2; `/_vercel/insights/script.js` serving). **The backend now requires the Vercel Pro plan** — 16 serverless functions exceed Hobby's 12-function cap (the deploy fails post-build otherwise). Recommended next step: consolidate the backend tool endpoints into a single dynamic `api/[tool].ts` dispatcher to remove the function-count pressure and shrink bundles.
 
