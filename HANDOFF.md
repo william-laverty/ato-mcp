@@ -1,6 +1,8 @@
 # v0.4 handoff — COMPLETE (all 4 hero tools shipped)
 
-All four v0.4 hero tools are shipped on `feat/v0.4-deduction-discovery`. Full test suite green: 155 shared + 79 mcp + 49 backend + 3 web (286 total TS tests).
+All four v0.4 hero tools are **merged to `main` (PR #1) and live in production** (`api.ato-mcp.com.au` — all four routes return 401 unauthenticated = deployed + auth-gated). Full TS suite green: 159 shared + 79 mcp + 49 backend + 3 web (290 total). **Vercel Web Analytics enabled** on the web app (PR #2; `/_vercel/insights/script.js` serving). **The backend now requires the Vercel Pro plan** — 16 serverless functions exceed Hobby's 12-function cap (the deploy fails post-build otherwise). Recommended next step: consolidate the backend tool endpoints into a single dynamic `api/[tool].ts` dispatcher to remove the function-count pressure and shrink bundles.
+
+> Not yet verified: an **authenticated** prod call exercising the new tools' hosted path (RemoteToolForwarder → backend → WasmEmbedder cold-start → Supabase). The 401s prove the routes deploy, not that the tools execute. Run one real authenticated call per tool before calling v0.4 fully battle-tested.
 
 - `deduction_discovery` (tool 1 of 4) — curated 59-row deduction taxonomy, `resolveCitations()` spine, discrete confidence
 - `depreciation_helper` (tool 2 of 4) — deterministic PC/DV/IAWO/SBE-pool/Div 43 schedules

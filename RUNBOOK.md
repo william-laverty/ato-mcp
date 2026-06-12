@@ -80,6 +80,7 @@ Once connected, **I can run the SQL migrations for you** in the next phase. You 
      - `SUPABASE_URL` = your Project URL
      - `SUPABASE_SECRET_KEY` = your secret key
    - Click **Deploy**.
+   - **⚠️ v0.4+ requires Vercel Pro for the backend.** As of v0.4 the backend ships **16 serverless functions** (one per tool/endpoint). Vercel **Hobby caps a deployment at 12 functions**, so the deploy will fail at the "Deploying outputs" stage *after a clean build* on the free plan. Put the `ato-mcp-backend` project on **Pro**. (Future fix: consolidate the per-tool `api/*.ts` handlers into one dynamic `api/[tool].ts` dispatcher — see the v0.5 tracking issue.)
 
 Vercel will now auto-deploy both projects on every push to `main`. Pushes that only touch `packages/web/` won't redeploy the backend (and vice versa) — Vercel's Ignored Build Step detects per-root changes.
 
