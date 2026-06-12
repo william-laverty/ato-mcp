@@ -1,3 +1,15 @@
+# Website redesign — "Clinical" design system (2026-06-12, branch `feat/clinical-redesign`)
+
+Full visual redesign of `packages/web` + brand assets away from the NOX dark-mesh/purple aesthetic to a superpower.com-inspired light system: **Switzer** (self-hosted, Fontshare FFL) + **Geist Mono**, Tailwind-zinc neutrals on white, one vermillion accent (`#fa520f`) reserved for citation chips/dots/logo, regular-weight headlines, flat pill buttons, hairline cards, light code blocks. New brand mark (vermillion citation-chip square), new light OG image, new homepage sections (How-it-works, corpus editorial index, striped retrieval-tool table). Every page restyled: home, docs, privacy, terms, onboard ×4 + wizard, account ×3, 404, nav/footer.
+
+- Spec: `docs/superpowers/specs/2026-06-12-website-redesign-design.md` (incl. extracted superpower.com token analysis)
+- Plan: `docs/superpowers/plans/2026-06-12-website-redesign.md`
+- Verified: 3/3 web tests (privacy contract intact), typecheck, build, grep-audit (zero legacy tokens), Playwright screenshot sweep desktop+mobile of all pages
+- `globals.css` 330 → ~120 lines; design vocabulary: `.btn-primary/.btn-outline/.btn-fill`, `.card`, `.chip`, `.code-block`, `.eyebrow`, `.input/.label`, `.badge`
+- **Awaiting:** PR review + merge (deploys to Vercel `ato-mcp-web` on merge)
+
+---
+
 # v1.0 — LAUNCHED (2026-06-12)
 
 **ato-mcp v1.0.0 is public.** Repo public (full-history secret scan clean), website redesigned + live at https://ato-mcp.com.au, `v1.0.0` + `corpus-v2026.06` releases published, local mode verified end-to-end (`ato-mcp update` → sha256 → install), hosted mode verified end-to-end with an authenticated 13-tool production smoke. 318 TS + 85 Python tests green.
