@@ -27,19 +27,21 @@ export default function DeleteAccountClient({ userId }: DeleteAccountClientProps
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-xl border border-gray-200 p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <div className="text-4xl">⚠️</div>
-          <h1 className="text-xl font-bold text-gray-900">Delete your account?</h1>
-          <p className="text-sm text-gray-600">
+    <main className="flex min-h-screen items-center justify-center bg-white px-4">
+      <div className="card w-full max-w-md space-y-6 p-8">
+        <div className="space-y-3 text-center">
+          <p className="eyebrow">Delete account</p>
+          <h1 className="text-2xl font-normal tracking-tight1 text-zinc-900">
+            Delete your account?
+          </h1>
+          <p className="text-sm text-zinc-500">
             This will permanently delete your account, tax profile, and any
             issued API tokens. This action cannot be undone.
           </p>
         </div>
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p className="rounded-[10px] border border-[#dc2626]/30 px-3 py-2 text-[13px] text-[#dc2626]">
             {error}
           </p>
         )}
@@ -48,33 +50,33 @@ export default function DeleteAccountClient({ userId }: DeleteAccountClientProps
           <div className="flex flex-col gap-3">
             <button
               onClick={() => setConfirming(true)}
-              className="w-full rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-500 transition-colors"
+              className="btn w-full rounded-full bg-[#dc2626] px-4 py-2.5 text-sm text-white hover:bg-[#b91c1c]"
             >
               Yes, delete my account
             </button>
             <button
               onClick={() => router.back()}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-outline w-full px-4 py-2.5 text-sm"
             >
               Cancel
             </button>
           </div>
         ) : (
           <div className="space-y-3">
-            <p className="text-sm font-medium text-gray-900 text-center">
+            <p className="text-center text-sm font-medium text-zinc-900">
               Are you absolutely sure?
             </p>
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="w-full rounded-lg bg-red-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="btn w-full rounded-full bg-[#b91c1c] px-4 py-2.5 text-sm text-white hover:bg-[#991b1b] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {deleting ? "Deleting…" : "Permanently delete"}
               </button>
               <button
                 onClick={() => setConfirming(false)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                className="btn btn-outline w-full px-4 py-2.5 text-sm"
               >
                 Cancel
               </button>
