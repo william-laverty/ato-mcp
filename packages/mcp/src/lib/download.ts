@@ -36,13 +36,39 @@ export interface ReleaseAssets {
   corpus_url: string;
   manifest_url: string;
   manifest: Record<string, unknown>;
+  /** Extra headers required to download the corpus asset (private repos). */
+  corpus_headers?: Record<string, string>;
 }
 
 interface GithubRelease {
   tag_name?: string;
   draft?: boolean;
   prerelease?: boolean;
-  assets: Array<{ name: string; browser_download_url: string }>;
+  assets: Array<{ name: string; browser_download_url: string; url?: string }>;
+}
+
+/**
+ * Pick the download URL + headers for a release asset. Public repos serve
+ * `browser_download_url` unauthenticated; private repos (self-hosted forks via
+ * ATO_MCP_RELEASE_REPO) require the asset *API* URL with a token and an
+ * octet-stream Accept header.
+ */
+function assetRequest(asset: { browser_download_url: string; url?: string }): {
+  url: string;
+  headers: Record<string, string>;
+} {
+  const token = process.env.GH_TOKEN;
+  if (token && asset.url) {
+    return {
+      url: asset.url,
+      headers: {
+        "User-Agent": "ato-mcp",
+        Accept: "application/octet-stream",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
+  return { url: asset.browser_download_url, headers: { "User-Agent": "ato-mcp" } };
 }
 
 /**
@@ -90,22 +116,29 @@ export async function fetchLatestRelease(repo: string): Promise<ReleaseAssets> {
   const corpusAsset = release.assets.find((a) => CORPUS_ASSET_RE.test(a.name))!;
   const manifestAsset = release.assets.find((a) => a.name === "manifest.json")!;
 
-  const manifestResp = await fetch(manifestAsset.browser_download_url);
+  const manifestReq = assetRequest(manifestAsset);
+  const manifestResp = await fetch(manifestReq.url, { headers: manifestReq.headers });
   if (!manifestResp.ok) {
     throw new Error(`Failed to download manifest.json: ${manifestResp.status}`);
   }
   const manifest = (await manifestResp.json()) as Record<string, unknown>;
 
+  const corpusReq = assetRequest(corpusAsset);
   return {
-    corpus_url: corpusAsset.browser_download_url,
-    manifest_url: manifestAsset.browser_download_url,
+    corpus_url: corpusReq.url,
+    manifest_url: manifestReq.url,
     manifest,
+    corpus_headers: corpusReq.headers,
   };
 }
 
 /** Stream *url* to *destPath*. */
-async function streamDownload(url: string, destPath: string): Promise<void> {
-  const resp = await fetch(url);
+async function streamDownload(
+  url: string,
+  destPath: string,
+  headers: Record<string, string> = {},
+): Promise<void> {
+  const resp = await fetch(url, { headers });
   if (!resp.ok) {
     throw new Error(`Failed to download ${url}: ${resp.status}`);
   }
@@ -174,7 +207,7 @@ export async function runUpdateFromGitHub(dataDir?: string): Promise<void> {
   const dir = dataDir ?? defaultDataDir();
 
   process.stdout.write(`Fetching latest release from github.com/${repo} ...\n`);
-  const { corpus_url, manifest } = await fetchLatestRelease(repo);
+  const { corpus_url, manifest, corpus_headers } = await fetchLatestRelease(repo);
 
   // Validate embedding model compatibility
   const manifestModel = manifest["embedding_model"] as string | undefined;
@@ -203,7 +236,7 @@ export async function runUpdateFromGitHub(dataDir?: string): Promise<void> {
 
   // Download compressed corpus
   process.stdout.write(`Downloading corpus from ${corpus_url} ...\n`);
-  await streamDownload(corpus_url, zstStagingPath);
+  await streamDownload(corpus_url, zstStagingPath, corpus_headers);
 
   // Decompress first, then verify sha256 of uncompressed bytes
   // (corpus_sha256 in manifest is of the uncompressed SQLite, not the .zst)
