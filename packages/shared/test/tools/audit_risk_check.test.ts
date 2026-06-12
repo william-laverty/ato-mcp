@@ -137,3 +137,70 @@ describe("auditRiskCheck", () => {
     expect(f.why_flagged).toMatch(/total/i);
   });
 });
+
+// ---------------------------------------------------------------------------
+// v1.0 gap-closure: direct tests for the six previously-untested detectors.
+// ---------------------------------------------------------------------------
+describe("auditRiskCheck remaining detectors", () => {
+  it("car_near_cap fires for a car claim near the 5,000km cents-per-km maximum", async () => {
+    const out = await auditRiskCheck(deps(baseFacts), { income: 90000, deductions: [{ category: "work-related car", amount: 4400 }] });
+    const f = out.findings.find((x) => x.id === "car_near_cap")!;
+    expect(f).toBeDefined();
+    expect(f.risk_band).toBe("low");
+    expect(f.why_flagged).toMatch(/4400/);
+  });
+
+  it("clothing_high fires above the $150 laundry no-receipt limit", async () => {
+    const out = await auditRiskCheck(deps(baseFacts), { income: 90000, deductions: [{ category: "clothing and laundry", amount: 450 }] });
+    const f = out.findings.find((x) => x.id === "clothing_high")!;
+    expect(f).toBeDefined();
+    expect(f.why_flagged).toMatch(/450/);
+  });
+
+  it("clothing_high does NOT fire at or below $150", async () => {
+    const out = await auditRiskCheck(deps(baseFacts), { income: 90000, deductions: [{ category: "laundry", amount: 150 }] });
+    expect(out.findings.some((x) => x.id === "clothing_high")).toBe(false);
+  });
+
+  it("self_education_present fires when a study category exists", async () => {
+    const out = await auditRiskCheck(deps(baseFacts), { income: 90000, deductions: [{ category: "self-education course fees", amount: 1200 }] });
+    expect(out.findings.some((x) => x.id === "self_education_present")).toBe(true);
+  });
+
+  it("rental_interest_vs_income fires when interest exceeds rental income", async () => {
+    const facts = { ...baseFacts, has_investment_property: true };
+    const out = await auditRiskCheck(deps(facts), { income: 90000, rental: { income: 12000, interest: 18000 } });
+    const f = out.findings.find((x) => x.id === "rental_interest_vs_income")!;
+    expect(f).toBeDefined();
+    expect(f.risk_band).toBe("medium");
+  });
+
+  it("rental_interest_vs_income does NOT fire when income covers interest", async () => {
+    const facts = { ...baseFacts, has_investment_property: true };
+    const out = await auditRiskCheck(deps(facts), { income: 90000, rental: { income: 20000, interest: 18000 } });
+    expect(out.findings.some((x) => x.id === "rental_interest_vs_income")).toBe(false);
+  });
+
+  it("rental_repairs_large fires on repairs above $5,000", async () => {
+    const facts = { ...baseFacts, has_investment_property: true };
+    const out = await auditRiskCheck(deps(facts), { income: 90000, rental: { income: 20000, repairs: 7500 } });
+    expect(out.findings.some((x) => x.id === "rental_repairs_large")).toBe(true);
+  });
+
+  it("no_prior_year_lodged fires when the prior return is outstanding", async () => {
+    const out = await auditRiskCheck(deps({ ...baseFacts, prior_fy_lodged: false }), { income: 90000 });
+    const f = out.findings.find((x) => x.id === "no_prior_year_lodged")!;
+    expect(f).toBeDefined();
+    expect(f.risk_band).toBe("low");
+  });
+
+  it("degraded citation resolution surfaces an explicit note instead of erroring", async () => {
+    const d = deps({ ...baseFacts, prior_fy_lodged: false });
+    d.store!.keywordSearch = async () => { throw new Error("statement timeout"); };
+    d.store!.vectorSearch = async () => { throw new Error("statement timeout"); };
+    const out = await auditRiskCheck(d, { income: 90000 });
+    expect(out.findings.length).toBeGreaterThan(0);
+    expect(out.findings[0]!.citations).toEqual([]);
+    expect(out.notes.join(" ")).toMatch(/degraded/i);
+  });
+});

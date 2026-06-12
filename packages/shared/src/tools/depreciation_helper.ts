@@ -121,7 +121,7 @@ import type { Store, ThresholdRow } from "../store/types.js";
 import type { Embedder } from "../embed/types.js";
 import type { UserFacts } from "../facts.js";
 import type { DepreciationHelperInput } from "../tools.js";
-import { resolveCitations, type Citation } from "../lib/citations.js";
+import { resolveCitationsSafe, type Citation } from "../lib/citations.js";
 
 export type BusinessStructure = UserFacts["business_structure"];
 
@@ -233,7 +233,14 @@ export async function depreciationHelper(
   if ((args.asset_type ?? "").toLowerCase().match(/\bcar\b|vehicle/)) notes.push("If this is a car, the car limit caps the depreciable cost (ITAA 1997 Div 28 / s 40-230) — not applied here; check the current car limit.");
   if (facts.has_investment_property && !isBusiness) notes.push("For residential rental plant, the second-hand depreciating-asset restriction (assets acquired after 9 May 2017) may deny Div 40 — confirm the asset is new.");
 
-  const resolve = (id: string) => resolveCitations({ store, embedder: deps.embedder }, METHODS[id]!.seed_queries, { k: 3, pit, pinnedDocIds: METHODS[id]!.seed_doc_ids });
+  // Per-method citation failures degrade explicitly instead of erroring the
+  // whole computation (the schedules themselves never depend on search).
+  let citationsDegraded = false;
+  const resolve = async (id: string) => {
+    const resolved = await resolveCitationsSafe({ store, embedder: deps.embedder }, METHODS[id]!.seed_queries, { k: 3, pit, pinnedDocIds: METHODS[id]!.seed_doc_ids });
+    if (resolved.degraded) citationsDegraded = true;
+    return resolved.citations;
+  };
 
   // --- Prime cost / diminishing value (need effective life) ---
   const wantPC = args.method === "both" || args.method === "prime_cost";
@@ -337,7 +344,12 @@ export async function depreciationHelper(
     unavailable,
     recommended,
     disclaimer: DISCLAIMER,
-    notes,
+    notes: [
+      ...notes,
+      ...(citationsDegraded
+        ? ["Live citation resolution was partially degraded under load — some methods show fewer (or no) citations than usual. The schedules and eligibility are unaffected; retry for full citations."]
+        : []),
+    ],
   };
 }
 

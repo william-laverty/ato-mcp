@@ -227,6 +227,29 @@ describe("SupabaseStore.getThreshold()", () => {
     const result = await store.getThreshold("unknown", null);
     expect(result).toBeNull();
   });
+
+  // Regression (found live 2026-06-06): ato_get_threshold is a SETOF RPC, so
+  // PostgREST returns an ARRAY. The store must unwrap to the single row — the
+  // un-unwrapped array reached depreciation_helper in prod and made
+  // `threshold.value` undefined.
+  it("unwraps the SETOF array shape PostgREST actually returns", async () => {
+    const row = { name: "instant_asset_write_off", value: 20000, unit: "AUD",
+                  effective_from: "2023-07-01", effective_to: null,
+                  source_doc_id: null, source_anchor: null };
+    const { client } = makeMockClient({ rpcResult: [row] });
+    const store = new SupabaseStore(client);
+    const result = await store.getThreshold("instant_asset_write_off", "2026-06-30");
+    expect(Array.isArray(result)).toBe(false);
+    expect(result).toEqual(row);
+    expect(result!.value).toBe(20000);
+  });
+
+  it("returns null for an empty SETOF array (threshold not found)", async () => {
+    const { client } = makeMockClient({ rpcResult: [] });
+    const store = new SupabaseStore(client);
+    const result = await store.getThreshold("nonexistent", null);
+    expect(result).toBeNull();
+  });
 });
 
 // ---------------------------------------------------------------------------
