@@ -47,14 +47,17 @@ export default function OnboardPage() {
   if (submitted) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center px-4">
-        <div className="max-w-md w-full text-center space-y-4">
-          <div className="text-4xl">📬</div>
-          <h1 className="text-2xl font-bold text-gray-900">Check your email</h1>
-          <p className="text-gray-600">
-            We sent a magic link to <strong>{email}</strong>. Click the link to
-            continue setting up ato-mcp.
+        <div className="w-full max-w-md space-y-4 text-center">
+          <p className="eyebrow">Check your email</p>
+          <h1 className="text-2xl font-normal tracking-tight1 text-zinc-900">
+            Magic link sent
+          </h1>
+          <p className="text-[15px] text-zinc-500">
+            We sent a magic link to{" "}
+            <span className="font-medium text-zinc-900">{email}</span>. Click
+            the link to continue setting up ato-mcp.
           </p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-zinc-400">
             The link expires in 1 hour. Check your spam folder if it doesn&apos;t
             arrive.
           </p>
@@ -65,10 +68,10 @@ export default function OnboardPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">Get started</h1>
-          <p className="text-gray-600">
+      <div className="w-full max-w-md space-y-8">
+        <div className="space-y-2 text-center">
+          <h1 className="text-3xl font-normal tracking-tight1 text-zinc-900">Get started</h1>
+          <p className="text-[15px] text-zinc-500">
             Create a free account to save your tax context and generate an MCP
             config snippet.
           </p>
@@ -76,24 +79,26 @@ export default function OnboardPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Disclaimer */}
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3">
-            <h2 className="font-semibold text-amber-900 text-sm">Disclaimer</h2>
-            <p className="text-sm text-amber-800">
+          <div className="space-y-3 rounded-xl border border-zinc-200 bg-zinc-50 p-5">
+            <h2 className="text-[13px] font-medium text-zinc-900">Disclaimer</h2>
+            <p className="text-[13px] leading-relaxed text-zinc-600">
               ato-mcp.com.au is an independent tool that retrieves publicly
               available ATO information. It is{" "}
-              <strong>not affiliated with the Australian Taxation Office</strong>
+              <span className="font-medium text-zinc-900">
+                not affiliated with the Australian Taxation Office
+              </span>
               . Information provided is for general guidance only and does not
               constitute tax advice. Always consult a registered tax agent for
               advice specific to your situation.
             </p>
-            <label className="flex items-start gap-2 cursor-pointer">
+            <label className="flex cursor-pointer items-start gap-2">
               <input
                 type="checkbox"
                 checked={accepted}
                 onChange={(e) => setAccepted(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="mt-0.5 h-4 w-4 rounded border-zinc-300 accent-zinc-900"
               />
-              <span className="text-sm text-amber-900 font-medium">
+              <span className="text-[13px] font-medium text-zinc-900">
                 I understand and accept this disclaimer
               </span>
             </label>
@@ -101,10 +106,7 @@ export default function OnboardPage() {
 
           {/* Email input */}
           <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="label">
               Email address
             </label>
             <input
@@ -114,12 +116,12 @@ export default function OnboardPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p className="rounded-[10px] border border-[#dc2626]/30 px-3 py-2 text-[13px] text-[#dc2626]">
               {error}
             </p>
           )}
@@ -127,15 +129,18 @@ export default function OnboardPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn btn-primary w-full px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Sending…" : "Send magic link"}
           </button>
         </form>
 
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-xs text-zinc-400">
           Already have an account?{" "}
-          <a href="/account" className="text-blue-600 hover:underline">
+          <a
+            href="/account"
+            className="text-zinc-900 underline decoration-zinc-300 underline-offset-2 hover:decoration-zinc-900"
+          >
             Go to your account
           </a>
         </p>

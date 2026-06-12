@@ -166,14 +166,13 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
 
   if (saved) {
     return (
-      <div className="text-center space-y-4 py-8">
-        <div className="text-4xl">✅</div>
-        <h2 className="text-xl font-semibold text-gray-900">Tax profile saved!</h2>
-        <p className="text-gray-600">Your facts have been saved securely.</p>
-        <a
-          href="/onboard/mode"
-          className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition-colors"
-        >
+      <div className="space-y-4 py-8 text-center">
+        <p className="eyebrow">Saved</p>
+        <h2 className="text-2xl font-normal tracking-tight1 text-zinc-900">
+          Tax profile saved
+        </h2>
+        <p className="text-[15px] text-zinc-500">Your facts have been saved securely.</p>
+        <a href="/onboard/mode" className="btn btn-primary px-6 py-2.5 text-sm">
           Continue to setup
         </a>
       </div>
@@ -188,7 +187,7 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
           <div
             key={i}
             className={`h-1.5 flex-1 rounded-full transition-colors ${
-              i + 1 <= step ? "bg-blue-600" : "bg-gray-200"
+              i + 1 <= step ? "bg-zinc-900" : "bg-zinc-200"
             }`}
           />
         ))}
@@ -197,29 +196,29 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       {/* Step 1 — Identity */}
       {step === 1 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">About you</h2>
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">About you</h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               First name
             </label>
             <input
               {...register("given_name")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
               placeholder="Alex"
             />
             {errors.given_name && (
-              <p className="text-red-600 text-sm mt-1">{errors.given_name.message}</p>
+              <p className="mt-1 text-[13px] text-[#dc2626]">{errors.given_name.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               State / Territory
             </label>
             <select
               {...register("state")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
             >
               {["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"].map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -228,12 +227,12 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Tax residency status
             </label>
             <select
               {...register("residency_status")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
             >
               <option value="resident">Australian resident</option>
               <option value="non_resident">Non-resident</option>
@@ -247,40 +246,40 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       {/* Step 2 — Business */}
       {step === 2 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Business details</h2>
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">Business details</h2>
 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               {...register("has_abn")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">I have an ABN</span>
+            <span className="text-sm text-zinc-700">I have an ABN</span>
           </label>
 
           {hasAbn && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="label">
                 ABN (11 digits)
               </label>
               <input
                 {...register("abn")}
-                className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="input"
                 placeholder="51 824 753 556"
               />
               {errors.abn && (
-                <p className="text-red-600 text-sm mt-1">{errors.abn.message}</p>
+                <p className="mt-1 text-[13px] text-[#dc2626]">{errors.abn.message}</p>
               )}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Business structure
             </label>
             <select
               {...register("business_structure")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
             >
               <option value="none">Not applicable</option>
               <option value="sole_trader">Sole trader</option>
@@ -291,24 +290,24 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Business name (optional)
             </label>
             <input
               {...register("business_name")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
               placeholder="Acme Pty Ltd"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Industry (ANZSIC code, optional)
             </label>
             <input
               {...register("industry_code")}
               list="anzsic-codes"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
               placeholder="Type to search (e.g. 7000)"
             />
             <datalist id="anzsic-codes">
@@ -317,17 +316,17 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
               ))}
             </datalist>
             {errors.industry_code && (
-              <p className="text-red-600 text-sm mt-1">{errors.industry_code.message}</p>
+              <p className="mt-1 text-[13px] text-[#dc2626]">{errors.industry_code.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Occupation (optional)
             </label>
             <input
               {...register("occupation")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
               placeholder="Software engineer"
             />
           </div>
@@ -337,32 +336,32 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       {/* Step 3 — Tax registrations */}
       {step === 3 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Tax registrations</h2>
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">Tax registrations</h2>
 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               {...register("gst_registered")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">Registered for GST</span>
+            <span className="text-sm text-zinc-700">Registered for GST</span>
           </label>
 
           {gstRegistered && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="label">
                 GST reporting period
               </label>
               <select
                 {...register("gst_period")}
-                className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="input"
               >
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="annual">Annual</option>
               </select>
               {errors.gst_period && (
-                <p className="text-red-600 text-sm mt-1">{errors.gst_period.message}</p>
+                <p className="mt-1 text-[13px] text-[#dc2626]">{errors.gst_period.message}</p>
               )}
             </div>
           )}
@@ -371,9 +370,9 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("payg_instalments")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               Pay PAYG instalments
             </span>
           </label>
@@ -382,9 +381,9 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("fbt_payer")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               Registered for FBT (Fringe Benefits Tax)
             </span>
           </label>
@@ -394,21 +393,21 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       {/* Step 4 — Personal */}
       {step === 4 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Personal circumstances</h2>
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">Personal circumstances</h2>
 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               {...register("has_spouse")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I have a spouse or de facto partner
             </span>
           </label>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Number of dependants
             </label>
             <input
@@ -416,10 +415,10 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
               {...register("dependants", { valueAsNumber: true })}
               min={0}
               max={20}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
             />
             {errors.dependants && (
-              <p className="text-red-600 text-sm mt-1">{errors.dependants.message}</p>
+              <p className="mt-1 text-[13px] text-[#dc2626]">{errors.dependants.message}</p>
             )}
           </div>
 
@@ -427,9 +426,9 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("hecs_help_debt")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I have a HECS/HELP debt
             </span>
           </label>
@@ -438,9 +437,9 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("private_health_insurance")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I have private health insurance
             </span>
           </label>
@@ -450,15 +449,15 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       {/* Step 5 — Investments */}
       {step === 5 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Investments</h2>
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">Investments</h2>
 
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               {...register("has_investment_property")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I own an investment property
             </span>
           </label>
@@ -467,9 +466,9 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("has_shares_or_managed_funds")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I hold shares or managed funds
             </span>
           </label>
@@ -478,20 +477,20 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("has_crypto")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I hold cryptocurrency
             </span>
           </label>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Superannuation fund type
             </label>
             <select
               {...register("super_fund_type")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
             >
               <option value="unsure">Not sure</option>
               <option value="industry">Industry fund</option>
@@ -506,20 +505,20 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       {/* Step 6 — Year context */}
       {step === 6 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Financial year</h2>
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">Financial year</h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="label">
               Current financial year
             </label>
             <input
               {...register("current_fy")}
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input"
               placeholder="2024-25"
             />
-            <p className="text-xs text-gray-400 mt-1">Format: YYYY-YY (e.g. 2024-25)</p>
+            <p className="mt-1 text-xs text-zinc-400">Format: YYYY-YY (e.g. 2024-25)</p>
             {errors.current_fy && (
-              <p className="text-red-600 text-sm mt-1">{errors.current_fy.message}</p>
+              <p className="mt-1 text-[13px] text-[#dc2626]">{errors.current_fy.message}</p>
             )}
           </div>
 
@@ -527,9 +526,9 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
             <input
               type="checkbox"
               {...register("prior_fy_lodged")}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600"
+              className="h-4 w-4 rounded border-zinc-300 accent-zinc-900"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm text-zinc-700">
               I have lodged my prior year tax return
             </span>
           </label>
@@ -537,23 +536,23 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
       )}
 
       {serverError && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <p className="rounded-[10px] border border-[#dc2626]/30 px-3 py-2 text-[13px] text-[#dc2626]">
           {serverError}
         </p>
       )}
 
       {/* Navigation */}
-      <div className="flex justify-between items-center pt-2">
+      <div className="flex items-center justify-between pt-2">
         <button
           type="button"
           onClick={goPrev}
           disabled={step === 1}
-          className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="btn btn-outline px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
         >
           Back
         </button>
 
-        <span className="text-sm text-gray-400">
+        <span className="font-mono text-xs text-zinc-400">
           Step {step} of {STEP_COUNT}
         </span>
 
@@ -561,7 +560,7 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
           <button
             type="button"
             onClick={goNext}
-            className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-500 transition-colors"
+            className="btn btn-primary px-4 py-2 text-sm"
           >
             Next
           </button>
@@ -569,7 +568,7 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn btn-primary px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
           >
             {saving ? "Saving…" : "Save & continue"}
           </button>
