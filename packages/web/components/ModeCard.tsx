@@ -30,10 +30,8 @@ export default function ModeCard({
 
   return (
     <div
-      className={`relative flex cursor-pointer flex-col rounded-xl border bg-white p-6 transition-colors ${
-        recommended
-          ? "border-zinc-900"
-          : "border-zinc-200 hover:border-zinc-400"
+      className={`card card-hover relative flex cursor-pointer flex-col p-6 ${
+        recommended ? "!border-zinc-900" : ""
       }`}
       onClick={handleSelect}
     >

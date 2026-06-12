@@ -140,12 +140,12 @@ ato-mcp update`}</code></pre>
           { href: "/privacy", title: "Privacy", body: "Schema-generated policy — see exactly what's stored.", ext: false },
         ].map((c) =>
           c.ext ? (
-            <a key={c.title} href={c.href} target="_blank" rel="noopener noreferrer" className="card block p-5 transition-colors hover:border-zinc-400">
+            <a key={c.title} href={c.href} target="_blank" rel="noopener noreferrer" className="card card-hover block p-5">
               <p className="text-sm font-medium">{c.title} ↗</p>
               <p className="mt-1 text-sm text-zinc-500">{c.body}</p>
             </a>
           ) : (
-            <Link key={c.title} href={c.href} className="card block p-5 transition-colors hover:border-zinc-400">
+            <Link key={c.title} href={c.href} className="card card-hover block p-5">
               <p className="text-sm font-medium">{c.title}</p>
               <p className="mt-1 text-sm text-zinc-500">{c.body}</p>
             </Link>

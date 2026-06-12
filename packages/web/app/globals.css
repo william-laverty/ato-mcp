@@ -44,9 +44,17 @@ body {
     @apply bg-zinc-100 text-zinc-900 hover:bg-zinc-200;
   }
 
-  /* --- Cards: white + hairline ----------------------------------------- */
+  /* --- Cards: superpower chrome — soft border, layered shadow ----------- */
   .card {
-    @apply rounded-xl border border-zinc-200 bg-white;
+    @apply rounded-[15px] border border-black/5 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.1)];
+  }
+  .card-hover {
+    @apply transition-shadow duration-300 hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_16px_40px_-16px_rgba(0,0,0,0.16)];
+  }
+
+  /* --- Tile: visual-first area inside/as a card (image-card pattern) ---- */
+  .tile {
+    @apply relative overflow-hidden rounded-[15px] border border-black/[0.04] bg-zinc-50;
   }
 
   /* --- Citation chip: the one place the accent lives ------------------- */

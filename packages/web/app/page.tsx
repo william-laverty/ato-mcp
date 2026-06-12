@@ -176,7 +176,7 @@ function CitationGraphMotif() {
 function HeroDemo() {
   return (
     <div
-      className="card reveal relative rounded-[14px] p-6 text-left shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+      className="card reveal relative p-6 text-left"
       style={{ "--reveal-delay": "0.3s" } as React.CSSProperties}
     >
       <p className="font-mono text-[0.6875rem] text-zinc-400">
@@ -295,11 +295,14 @@ export default function HomePage() {
             From npm to a tax-fluent agent in two minutes
           </h2>
         </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {HOW_IT_WORKS.map((s) => (
-            <div key={s.num} className="card reveal-scroll p-5">
-              <p className="font-mono text-[0.6875rem] text-zinc-400">{s.num}</p>
-              <div className="mt-3 rounded-lg bg-zinc-50 px-4 py-5">
+            <div key={s.num} className="reveal-scroll">
+              {/* Visual-first tile (superpower image-card pattern), caption below */}
+              <div className="tile flex h-36 items-center justify-center px-5">
+                <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white font-mono text-[0.6875rem] text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  {s.num}
+                </span>
                 <p className="overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-700">
                   {s.fragment}
                 </p>

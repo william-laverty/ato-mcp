@@ -167,7 +167,15 @@ Centered: mono `404` eyebrow, h2 400, outline pill home.
 - No changes to backend, MCP package, or pipeline.
 - README/repo badges and npm package branding: out of scope this pass.
 
-## 8. Testing & verification
+## 8. Amendments (2026-06-12, post-initial-build)
+
+Per William: replicate superpower.com's actual navbar and card treatments, porting from the heynox-website implementation (`/Users/williamlaverty/Projects/NOX/heynox-website/src/components/Header`):
+
+- **Nav** (supersedes §5.1.1 full-width bar): scroll-aware morph — full-width transparent bar at top (links left / **logo centre** / GitHub + CTA right) collapses on scroll into a centred floating glass pill (`max-w-3xl`, `bg-white/80` + `backdrop-blur-xl`, `border-black/5`, `shadow 0 4px 24px rgba(0,0,0,0.08)`). Mobile: always-painted rounded-2xl pill that expands downward (grid-rows clip reveal) with hamburger→× morph. Light treatment only (site has no dark sections); heynox's dark-backdrop axis, sidebar drawer, GSAP scrolling and view transitions are deliberately not ported.
+- **Cards** (supersedes §3.3 hairline-only): superpower chrome — radius 15px, `border-black/5`, layered soft shadow (`0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -16px rgba(0,0,0,0.1)`); `.card-hover` deepens the shadow on interactive cards. New `.tile` class for visual-first areas (zinc-50, 15px radius).
+- **How-it-works** (supersedes §5.1.4 bordered cards): superpower image-card pattern — large `.tile` visual area with overlaid white number chip and centred product fragment; title + description sit below the tile, unboxed.
+
+## 9. Testing & verification
 
 1. `pnpm --filter @ato-mcp/web test` — privacy contract test green.
 2. `pnpm --filter @ato-mcp/web build` — clean build, no missing-font errors.
