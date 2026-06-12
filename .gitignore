@@ -23,3 +23,6 @@ packages/pipeline/corpus-*/
 *.sqlite-shm
 *.sqlite-wal
 !packages/mcp/test/fixtures/*.sqlite
+
+# brainstorming visual companion sessions
+.superpowers/
