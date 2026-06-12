@@ -54,7 +54,7 @@ const notStored = [
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-white py-12 px-4">
+    <main className="mx-auto min-h-screen max-w-3xl px-5 pb-24 pt-10">
       <div className="max-w-3xl mx-auto space-y-10">
         <div className="space-y-2">
           <Link href="/" className="text-sm text-blue-600 hover:underline">
