@@ -135,8 +135,10 @@ export class SupabaseStore implements Store {
       pit_date: pit,
     });
     if (error) throw new Error(`getThreshold: ${(error as { message: string }).message}`);
-    if (!data) return null;
-    return data as ThresholdRow;
+    // ato_get_threshold is a SETOF RPC — PostgREST returns an array. Unwrap to the
+    // single row (or null) so the hosted Store matches SqliteStore's contract.
+    if (Array.isArray(data)) return (data[0] as ThresholdRow | undefined) ?? null;
+    return (data as ThresholdRow | null) ?? null;
   }
 
   // -------------------------------------------------------------------------

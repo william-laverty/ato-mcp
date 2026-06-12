@@ -5,7 +5,7 @@ import type { AuditRiskCheckInput } from "../tools.js";
 import type { Store } from "../store/types.js";
 import type { Embedder } from "../embed/types.js";
 import type { UserFacts } from "../facts.js";
-import { resolveCitations, type Citation } from "../lib/citations.js";
+import { resolveCitationsSafe, type Citation } from "../lib/citations.js";
 
 const WRE_KEYWORDS = [
   "work-related", "work related", "wre", "car", "travel", "clothing", "laundry", "uniform",
@@ -254,12 +254,14 @@ export async function auditRiskCheck(
 
   const checked: string[] = [];
   const findings: AuditRiskFinding[] = [];
+  let citationsDegraded = false;
   for (const rule of RISK_RULES) {
     checked.push(rule.id);
     const r = rule.detect(facts, args, m);
     if (!r) continue;
-    const citations = await resolveCitations({ store, embedder: deps.embedder }, rule.seed_queries, { k: 3, pit, pinnedDocIds: rule.seed_doc_ids });
-    findings.push({ id: rule.id, title: rule.title, risk_band: r.band ?? rule.default_band, pattern: rule.pattern, why_flagged: r.why_flagged, what_to_do: rule.what_to_do, legal_basis: rule.legal_basis, citations });
+    const resolved = await resolveCitationsSafe({ store, embedder: deps.embedder }, rule.seed_queries, { k: 3, pit, pinnedDocIds: rule.seed_doc_ids });
+    if (resolved.degraded) citationsDegraded = true;
+    findings.push({ id: rule.id, title: rule.title, risk_band: r.band ?? rule.default_band, pattern: rule.pattern, why_flagged: r.why_flagged, what_to_do: rule.what_to_do, legal_basis: rule.legal_basis, citations: resolved.citations });
   }
   findings.sort((a, b) => BAND_ORDER[a.risk_band] - BAND_ORDER[b.risk_band]);
 
@@ -281,6 +283,12 @@ export async function auditRiskCheck(
     checked,
     skipped,
     disclaimer: DISCLAIMER,
-    notes: ["Risk bands are heuristic indicators based on conservative thresholds — they are not an audit prediction or an ATO determination.", "This tool does not compare your figures against ATO benchmark numbers (numeric benchmarking is a future enhancement)."],
+    notes: [
+      "Risk bands are heuristic indicators based on conservative thresholds — they are not an audit prediction or an ATO determination.",
+      "This tool does not compare your figures against ATO benchmark numbers (numeric benchmarking is a future enhancement).",
+      ...(citationsDegraded
+        ? ["Live citation resolution was partially degraded under load — some findings show fewer (or no) citations than usual. The findings themselves are unaffected; retry for full citations."]
+        : []),
+    ],
   };
 }

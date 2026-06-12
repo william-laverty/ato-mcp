@@ -128,7 +128,7 @@ export function buildNotes(facts: UserFacts): string[] {
 import type { Store, ThresholdRow } from "../store/types.js";
 import type { Embedder } from "../embed/types.js";
 import type { DeductionDiscoveryInput } from "../tools.js";
-import { resolveCitations } from "../lib/citations.js";
+import { resolveCitationsSafe, mapWithConcurrency } from "../lib/citations.js";
 import { DEDUCTION_CATEGORIES } from "../data/deduction-categories.js";
 
 const DISCLAIMER =
@@ -224,13 +224,21 @@ export async function deductionDiscovery(
   const applicable = DEDUCTION_CATEGORIES.filter((c) => categoryApplies(facts, c));
   const deduped = dedupe(applicable);
 
-  let surfaced: SurfacedCategory[] = await Promise.all(
-    deduped.map(async (c): Promise<SurfacedCategory> => {
-      const citations = await resolveCitations({ store, embedder: deps.embedder }, c.seed_queries, {
+  // Bounded fan-out: dozens of concurrent hybrid searches overwhelmed the
+  // hosted database (statement timeouts observed live); 4-wide keeps latency
+  // reasonable without the burst. Per-category failures degrade explicitly.
+  let citationsDegraded = false;
+  let surfaced: SurfacedCategory[] = await mapWithConcurrency(
+    deduped,
+    4,
+    async (c): Promise<SurfacedCategory> => {
+      const resolved = await resolveCitationsSafe({ store, embedder: deps.embedder }, c.seed_queries, {
         k: args.k_citations,
         pit,
         pinnedDocIds: c.seed_doc_ids,
       });
+      if (resolved.degraded) citationsDegraded = true;
+      const citations = resolved.citations;
       const thresholds = (
         await Promise.all(c.thresholds.map((n) => store.getThreshold(n, pit)))
       ).filter((t): t is ThresholdRow => t !== null);
@@ -255,7 +263,7 @@ export async function deductionDiscovery(
           : {}),
         ...(c.fy_note ? { fy_note: c.fy_note } : {}),
       };
-    }),
+    },
   );
 
   if (!args.include_low_confidence) {
@@ -292,7 +300,12 @@ export async function deductionDiscovery(
     categories: surfaced,
     matched_activity,
     counts,
-    notes: buildNotes(facts),
+    notes: [
+      ...buildNotes(facts),
+      ...(citationsDegraded
+        ? ["Live citation resolution was partially degraded under load — some categories show fewer (or no) citations than usual. The categories themselves are unaffected; retry for full citations."]
+        : []),
+    ],
     disclaimer: DISCLAIMER,
   };
 }

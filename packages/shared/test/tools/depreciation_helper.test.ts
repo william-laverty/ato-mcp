@@ -182,3 +182,41 @@ describe("depreciationHelper", () => {
     expect(pc!.notes.join(" ")).toMatch(/cannot both be claimed|s 40-45/i);
   });
 });
+
+// ---------------------------------------------------------------------------
+// v1.0 gap-closure: sbe_pool / GST-note / car-limit-note driven end-to-end
+// through the tool wrapper, plus degraded-citation behaviour.
+// ---------------------------------------------------------------------------
+describe("depreciationHelper remaining branches", () => {
+  const bizFacts = { ...baseFacts, business_structure: "sole_trader" as const, has_abn: true, abn: "51824753556" };
+
+  it("sbe_pool eligible end-to-end when cost is at/above the IAWO threshold", async () => {
+    const out = await depreciationHelper(deps(bizFacts, 20000), { asset_cost: 45000, acquisition_date: "2025-07-01", business_use_pct: 100, effective_life_years: 8, is_small_business_entity: true, is_capital_works: false, method: "both" });
+    const pool = out.methods.find((m) => m.method === "sbe_pool")!;
+    expect(pool).toBeDefined();
+    expect(pool.schedule[0]!.deduction).toBeCloseTo(45000 * 0.15, 1);
+    expect(unav(out).has("instant_asset_write_off")).toBe(true); // at/above threshold → not IAWO
+  });
+
+  it("GST-registered taxpayers get the GST-exclusive cost note", async () => {
+    const facts = { ...bizFacts, gst_registered: true, gst_period: "quarterly" as const };
+    const out = await depreciationHelper(deps(facts, 20000), { asset_cost: 5000, acquisition_date: "2025-07-01", business_use_pct: 100, effective_life_years: 5, is_small_business_entity: true, is_capital_works: false, method: "both" });
+    expect(out.notes.join(" ")).toMatch(/GST-exclusive/i);
+  });
+
+  it("car asset_type triggers the car-limit note", async () => {
+    const out = await depreciationHelper(deps(bizFacts, 20000), { asset_cost: 70000, acquisition_date: "2025-07-01", business_use_pct: 100, effective_life_years: 8, asset_type: "passenger vehicle", is_small_business_entity: true, is_capital_works: false, method: "both" });
+    expect(out.notes.join(" ")).toMatch(/car limit/i);
+  });
+
+  it("degraded citation resolution keeps schedules and surfaces a note", async () => {
+    const d = deps(baseFacts);
+    d.store!.keywordSearch = async () => { throw new Error("statement timeout"); };
+    d.store!.vectorSearch = async () => { throw new Error("statement timeout"); };
+    const out = await depreciationHelper(d, { asset_cost: 1000, acquisition_date: "2025-07-01", business_use_pct: 100, effective_life_years: 5, is_capital_works: false, method: "both" });
+    const pc = out.methods.find((m) => m.method === "prime_cost")!;
+    expect(pc.schedule[0]!.deduction).toBe(200);   // maths unaffected
+    expect(pc.citations).toEqual([]);
+    expect(out.notes.join(" ")).toMatch(/degraded/i);
+  });
+});

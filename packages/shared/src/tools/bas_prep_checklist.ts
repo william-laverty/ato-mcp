@@ -47,7 +47,7 @@ export function periodLabel(periodType: PeriodType, quarter: number | undefined,
 import type { Store } from "../store/types.js";
 import type { Embedder } from "../embed/types.js";
 import type { BasPrepChecklistInput } from "../tools.js";
-import { resolveCitations, type Citation } from "../lib/citations.js";
+import { resolveCitationsSafe, mapWithConcurrency, type Citation } from "../lib/citations.js";
 
 export type BusinessStructure = UserFacts["business_structure"];
 export type BasTier = "core" | "confirmed" | "conditional";
@@ -242,11 +242,22 @@ export async function basPrepChecklist(
   const fy = args.fy ?? facts.current_fy;
   const pit = fyToPit(fy);
 
-  const toResult = async (def: BasSectionDef): Promise<BasSectionResult> => ({
-    id: def.id, label: def.label, tier: def.tier, applies_reason: def.appliesReason(facts),
-    bas_labels: def.bas_labels, what_to_gather: def.what_to_gather, gotchas: def.gotchas, legal_basis: def.legal_basis,
-    citations: await resolveCitations({ store, embedder: deps.embedder }, def.seed_queries, { k: 3, pit, pinnedDocIds: def.seed_doc_ids }),
-  });
+  // Per-section citation failures degrade explicitly instead of erroring the
+  // whole checklist (keyword-search statement timeouts were observed live).
+  let citationsDegraded = false;
+  const toResult = async (def: BasSectionDef): Promise<BasSectionResult> => {
+    const resolved = await resolveCitationsSafe({ store, embedder: deps.embedder }, def.seed_queries, { k: 3, pit, pinnedDocIds: def.seed_doc_ids });
+    if (resolved.degraded) citationsDegraded = true;
+    return {
+      id: def.id, label: def.label, tier: def.tier, applies_reason: def.appliesReason(facts),
+      bas_labels: def.bas_labels, what_to_gather: def.what_to_gather, gotchas: def.gotchas, legal_basis: def.legal_basis,
+      citations: resolved.citations,
+    };
+  };
+  const degradedNote = () =>
+    citationsDegraded
+      ? ["Live citation resolution was partially degraded under load — some sections show fewer (or no) citations than usual. The checklist itself is unaffected; retry for full citations."]
+      : [];
 
   // --- Not registered: IAS path or nothing-to-do ---
   if (!facts.gst_registered) {
@@ -263,7 +274,7 @@ export async function basPrepChecklist(
       registered: false,
       reporting: { period_type: "none", period_label: `FY${fy}`, form: formFor("none"), due_date: null, simpler_bas: true },
       taxpayer_context: { business_structure: facts.business_structure, gst_period: facts.gst_period, payg_instalments: facts.payg_instalments, fbt_payer: facts.fbt_payer },
-      sections, not_applicable_note: note, disclaimer: DISCLAIMER, notes: [],
+      sections, not_applicable_note: note, disclaimer: DISCLAIMER, notes: degradedNote(),
     };
   }
 
@@ -277,9 +288,10 @@ export async function basPrepChecklist(
     if (cc !== 0) return cc;
     return TIER_ORDER[a.tier] - TIER_ORDER[b.tier];
   });
-  const sections = await Promise.all(applicable.map(toResult));
+  // Bounded fan-out (see deduction_discovery) — 4-wide avoids DB bursts.
+  const sections = await mapWithConcurrency(applicable, 4, toResult);
 
-  const notes: string[] = [];
+  const notes: string[] = [...degradedNote()];
   if (!args.full_gst_method) notes.push("Most small businesses use Simpler BAS (report only G1, 1A and 1B). If you report the full GST method, labels G2, G3, G10 and G11 also apply — pass full_gst_method=true.");
   notes.push("Lodge a 'nil' activity statement even if you had no activity for the period.");
   if (periodType === "monthly") notes.push("Monthly BAS is due on the 21st day of the month after the period.");

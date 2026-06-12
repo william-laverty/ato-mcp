@@ -14,7 +14,8 @@ const MOCK_RPC_DATA: Record<string, unknown> = {
   ato_get_doc: null,
   ato_get_doc_anchors: { anchors: [], inbound: [], outbound: [] },
   ato_get_definition: [],
-  ato_get_threshold: null,
+  // SETOF RPC: PostgREST returns an array; empty array = not found (mirrors prod).
+  ato_get_threshold: [],
 };
 
 function mockSupabaseClient(): SupabaseClient {
