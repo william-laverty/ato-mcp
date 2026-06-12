@@ -91,13 +91,13 @@ SUPABASE_SECRET_KEY='sb_secret_...' \
 | GitHub | `william-laverty/ato-mcp` (private) | live |
 | Supabase | project `ato-mcp` (`pznbngklxhkyigmlvruk`), ap-southeast-2 | live; 4 migrations applied; pgvector enabled |
 | Vercel `ato-mcp-web` | Next.js app, root `packages/web` | live at `ato-mcp.com.au` (canonical) |
-| Vercel `ato-mcp-backend` | Functions, root `packages/backend` | live at `api.ato-mcp.com.au`; **16 serverless functions → requires Vercel Pro** (Hobby caps at 12) |
+| Vercel `ato-mcp-backend` | Functions, root `packages/backend` | live at `api.ato-mcp.com.au`; **4 serverless functions** (dynamic `api/[tool].ts` dispatcher + facts/usage_event/onboard_poll) |
 | Local corpus | `~/Library/Application Support/ato-mcp/live/ato.sqlite` | 29,180 docs / 224k chunks (stale v0.2 build locally) |
 | Supabase corpus | `docs` + `chunks` + `anchors` + `citations` + `definitions` + `thresholds` | 29,181 docs / 224,585 chunks (complete; 8 thresholds, 23,267 citations) |
 
 The Supabase team ID for the Vercel MCP is `team_UWCodSopgUHNhnJCAGNsJ1uA`. Project IDs: `prj_xREEymkcKg1VwkgvoTXbQjYJIjHt` (web), `prj_ok6AxQ6e1iH8NtV33zpgGoNiYh1t` (backend).
 
-**Operational requirement (v0.4+):** the backend ships **16 serverless functions**, so the `ato-mcp-backend` Vercel project **must be on the Pro plan** — Vercel Hobby caps a deployment at 12 functions, and a 16-function deploy fails at the "Deploying outputs" stage *after a clean build* (no code error, just the cap). Every new tool adds a function; the durable fix is to consolidate the per-tool `api/*.ts` handlers into one dynamic `api/[tool].ts` dispatcher (tracked as a v0.5 issue).
+**Operational note (v1.0):** the per-tool handlers were consolidated into one dynamic `api/[tool].ts` dispatcher, so the backend ships **4 functions** and no longer presses the Vercel Hobby 12-function cap (the project currently runs on Pro regardless). New tools are added to the dispatcher's `TOOLS` map, not as new files — keep it that way.
 
 ## MCP servers available
 
@@ -125,12 +125,11 @@ Both Supabase and Vercel MCPs are connected to this Claude Code session. Use the
 │    + tools from @ato-mcp/shared/tools                          │
 │                                                                │
 │  if mode === "hosted":                                         │
-│    RemoteStore(api.ato-mcp.com.au, bearer_token)               │
-│    forwards each Store call to backend (CURRENTLY BROKEN —     │
-│    path/name mismatch; see KNOWN ISSUES)                       │
+│    RemoteToolForwarder(api.ato-mcp.com.au, bearer_token)       │
+│    forwards each tool call by name to the backend dispatcher   │
 └────────────────────────────────────────────────────────────────┘
 
-Hosted path (the path RemoteStore should be talking to):
+Hosted path:
 
   ato-mcp.com.au         api.ato-mcp.com.au               Supabase
        (Next.js)              (Vercel functions)          (Postgres+pgvector)
@@ -157,42 +156,23 @@ Adapters:
 
 ### Backend handler convention
 
-Every `packages/backend/api/*.ts` follows this shape:
+All 13 tool endpoints are served by **one dynamic dispatcher**: `packages/backend/api/[tool].ts`.
+It mirrors `packages/mcp/src/server.ts` dispatch — a `TOOLS` map of `name → runner`, with a
+module-level `SupabaseStore`, a lazy `WasmEmbedder` (loaded only for tools that embed), and a
+single `lookupUserFacts(userId)` for facts-dependent tools. Unknown tool → 404; tool errors → 400
+`{kind:"error", message}`. To add a tool: schema in shared, entry in the dispatcher's map — do NOT
+create a new `api/*.ts` file (function-count and bundle-size both regress).
 
-```ts
-import { adapt } from "./_adapter.js";
-import { authMiddleware } from "./_middleware.js";
-import { someTool } from "@ato-mcp/shared/tools/some_tool";
-import { SupabaseStore } from "../src/supabase-store.js";
-
-const store = new SupabaseStore();
-
-async function handler(req: Request): Promise<Response> {
-  const auth = await authMiddleware(req);
-  if (auth instanceof Response) return auth;
-  try {
-    const args = SomeInputSchema.parse(await req.json());
-    return Response.json(await someTool({ store }, args));
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return new Response(JSON.stringify({ kind: "error", message: msg }), {
-      status: 500, headers: { "content-type": "application/json" },
-    });
-  }
-}
-
-export default adapt(handler);
-```
-
-The `adapt()` wrapper exists because Vercel's Node runtime defaults to legacy `(req, res)` style; the adapter converts to/from Web Standard. Do not try to use `export const config = { runtime: 'edge' }` — Edge can't bundle our transitive sharp/onnxruntime-node deps.
+Only non-tool endpoints have their own files: `facts.ts` (PUT), `usage_event.ts`, `onboard_poll.ts`.
+All handlers are written Web-Standard `(req: Request) => Response` and wrapped by `api/_adapter.ts`
+for Vercel's Node runtime. Do not use the Edge runtime — sharp/onnxruntime-node aren't compatible.
 
 ### URLs (Vercel `rewrites` in `packages/backend/vercel.json`)
 
 Public URLs strip the `/api` prefix:
 
-- `api.ato-mcp.com.au/stats` → `api/stats.ts`
-- `api.ato-mcp.com.au/search` → `api/search.ts`
-- etc.
+- `api.ato-mcp.com.au/<tool>` → `api/[tool].ts` (all 13 tools)
+- `api.ato-mcp.com.au/facts|usage_event|onboard_poll` → their own handlers
 
 There is **no `/v1/` versioning** — the spec was updated to drop it. Don't reintroduce versioned paths.
 

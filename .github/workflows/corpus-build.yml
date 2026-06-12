@@ -55,9 +55,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v0.2.$(date -u +%Y.%m)"
+          TAG="corpus-v$(date -u +%Y.%m)"
           gh release create "$TAG" \
             packages/pipeline/corpus-out/*.zst \
             packages/pipeline/corpus-out/manifest.json \
             --title "Corpus $TAG" \
-            --notes "Automated monthly corpus build."
+            --notes "Automated monthly corpus build. Install with: ato-mcp update" \
+            --latest=false

@@ -269,7 +269,7 @@ export async function runMcp(): Promise<void> {
   const mode: "local" | "hosted" = cfg.mode === "hosted" ? "hosted" : "local";
 
   const server = new Server(
-    { name: "ato-mcp", version: "0.3.0" },
+    { name: "ato-mcp", version: "1.0.0" },
     { capabilities: { tools: {} } },
   );
 

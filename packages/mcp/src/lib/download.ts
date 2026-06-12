@@ -9,7 +9,7 @@ import { dataDir as defaultDataDir } from "./paths.js";
 // ---------------------------------------------------------------------------
 
 const EXPECTED_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2";
-const DEFAULT_RELEASE_REPO = "williaml/ato-mcp";
+const DEFAULT_RELEASE_REPO = "william-laverty/ato-mcp";
 const CORPUS_ASSET_RE = /^ato-corpus-v.*\.sqlite\.zst$/;
 
 // ---------------------------------------------------------------------------
@@ -38,9 +38,23 @@ export interface ReleaseAssets {
   manifest: Record<string, unknown>;
 }
 
-/** Fetch the latest GitHub release and return corpus + manifest download URLs. */
+interface GithubRelease {
+  tag_name?: string;
+  draft?: boolean;
+  prerelease?: boolean;
+  assets: Array<{ name: string; browser_download_url: string }>;
+}
+
+/**
+ * Find the newest GitHub release that actually carries a corpus asset and
+ * return corpus + manifest download URLs.
+ *
+ * Deliberately NOT `releases/latest`: this repository also publishes software
+ * releases (v1.x.x) that carry no corpus, and corpus releases must keep
+ * resolving regardless of which release is marked "latest".
+ */
 export async function fetchLatestRelease(repo: string): Promise<ReleaseAssets> {
-  const apiUrl = `https://api.github.com/repos/${repo}/releases/latest`;
+  const apiUrl = `https://api.github.com/repos/${repo}/releases?per_page=30`;
   const headers: Record<string, string> = {
     "User-Agent": "ato-mcp",
     Accept: "application/vnd.github+json",
@@ -57,25 +71,24 @@ export async function fetchLatestRelease(repo: string): Promise<ReleaseAssets> {
     throw new Error(`GitHub API returned ${resp.status} for ${apiUrl}`);
   }
 
-  const release = (await resp.json()) as {
-    assets: Array<{ name: string; browser_download_url: string }>;
-  };
-
-  const corpusAsset = release.assets.find((a) => CORPUS_ASSET_RE.test(a.name));
-  const manifestAsset = release.assets.find((a) => a.name === "manifest.json");
-
-  if (!corpusAsset) {
+  const releases = (await resp.json()) as GithubRelease[];
+  // Releases are returned newest-first; take the first non-draft release with
+  // both a corpus asset and its manifest.
+  const release = releases.find(
+    (r) =>
+      !r.draft &&
+      r.assets.some((a) => CORPUS_ASSET_RE.test(a.name)) &&
+      r.assets.some((a) => a.name === "manifest.json"),
+  );
+  if (!release) {
     throw new Error(
-      `Release is missing a corpus asset matching ${CORPUS_ASSET_RE}. ` +
-        `Found: ${release.assets.map((a) => a.name).join(", ") || "(none)"}`,
+      `No release in ${repo} contains a corpus asset matching ${CORPUS_ASSET_RE} ` +
+        `plus manifest.json. Releases seen: ${releases.map((r) => r.tag_name).join(", ") || "(none)"}`,
     );
   }
-  if (!manifestAsset) {
-    throw new Error(
-      `Release is missing manifest.json. ` +
-        `Found: ${release.assets.map((a) => a.name).join(", ") || "(none)"}`,
-    );
-  }
+
+  const corpusAsset = release.assets.find((a) => CORPUS_ASSET_RE.test(a.name))!;
+  const manifestAsset = release.assets.find((a) => a.name === "manifest.json")!;
 
   const manifestResp = await fetch(manifestAsset.browser_download_url);
   if (!manifestResp.ok) {

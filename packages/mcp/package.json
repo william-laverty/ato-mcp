@@ -1,7 +1,30 @@
 {
   "name": "@ato-mcp/mcp",
-  "version": "0.1.0",
-  "description": "MCP server for the Australian Taxation Office corpus",
+  "version": "1.0.0",
+  "description": "MCP server for the Australian Taxation Office corpus — cited tax retrieval, personal context, and workflow tools for AI agents. Local or hosted.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ato",
+    "australian-tax",
+    "tax",
+    "australia",
+    "claude",
+    "ai-agent",
+    "rag",
+    "itaa-1997"
+  ],
+  "license": "MIT",
+  "author": "William Laverty",
+  "homepage": "https://ato-mcp.com.au",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/william-laverty/ato-mcp.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/william-laverty/ato-mcp/issues"
+  },
   "type": "module",
   "bin": {
     "ato-mcp": "./bin/ato-mcp.js"
@@ -9,8 +32,15 @@
   "main": "./dist/index.js",
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
