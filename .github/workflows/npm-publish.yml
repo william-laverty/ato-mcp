@@ -6,8 +6,9 @@ on:
 
 jobs:
   publish:
-    # Only software releases (v*), never corpus releases (corpus-v*)
-    if: startsWith(github.event.release.tag_name, 'v')
+    # Only software releases (v*), never corpus releases (corpus-v*).
+    # No-ops gracefully until the NPM_TOKEN secret is configured.
+    if: startsWith(github.event.release.tag_name, 'v') && vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
