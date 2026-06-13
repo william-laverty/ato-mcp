@@ -1,6 +1,6 @@
 // Integration tests for the Vercel function handlers using mock auth + mock store.
 // Tool endpoints are served by the single dynamic dispatcher (api/[tool].ts);
-// the non-tool endpoints (facts, usage_event, onboard_poll) keep their own files.
+// the non-tool endpoints (facts, usage_event) keep their own files.
 //
 // Each test:
 //   1. Sets MOCK_SUPABASE=1 so the handlers use mock clients
@@ -314,17 +314,3 @@ describe("PUT /facts", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// onboard_poll handler (separate function)
-// ---------------------------------------------------------------------------
-describe("GET /api/onboard_poll", () => {
-  it("handles an unknown code without crashing", async () => {
-    const { handler } = await import("../api/onboard_poll.js");
-    const req = new Request("https://api.ato-mcp.com.au/onboard_poll?code=nonexistent", {
-      method: "GET",
-      headers: { authorization: AUTH_HEADER },
-    });
-    const resp = await handler(req);
-    expect([200, 400, 404]).toContain(resp.status);
-  });
-});

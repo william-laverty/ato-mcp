@@ -3,7 +3,7 @@
 // One serverless function serves all 13 tools (api.ato-mcp.com.au/<tool> —
 // the vercel.json rewrite maps /<tool> → /api/<tool>, and Vercel's filesystem
 // router sends anything without an exact api/*.ts match here). Non-tool
-// endpoints (facts, usage_event, onboard_poll) keep their own files.
+// endpoints (facts, usage_event) keep their own files.
 //
 // Why one function instead of one file per tool:
 //   - a deployment previously shipped 16 functions, exceeding plan limits;
