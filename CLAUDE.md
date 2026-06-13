@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-`ato-mcp` is a local-first MCP server for the Australian Taxation Office corpus. It scrapes ATO website + ITAA 1997 legislation + ATO public rulings, embeds + indexes them, and exposes search/retrieval tools to AI agents over the MCP stdio protocol. The hosted variant runs the same tool code on Vercel functions against Supabase Postgres + pgvector.
+`ato-mcp` is a hosted MCP server for the Australian Taxation Office corpus. The client forwards every tool call to `api.ato-mcp.com.au` using a bearer token; the backend queries Supabase Postgres + pgvector. The corpus-building pipeline lives in the private `william-laverty/ato-mcp-engine` repo and auto-imports to Supabase monthly.
 
-npm package scope is `@ato-mcp/*`. Public-facing domain is **ato-mcp.com.au** (canonical) / **ato-mcp.com** (301 redirect).
+The MCP client is published as the unscoped `ato-mcp` npm package; the shared library is `@ato-mcp/shared`. Public-facing domain is **ato-mcp.com.au** (canonical) / **ato-mcp.com** (301 redirect).
 
 ## Monorepo layout (pnpm workspaces, pnpm@10.28.2)
 
@@ -17,15 +17,10 @@ packages/
 │                get_definition, get_doc, get_doc_anchors, get_threshold,
 │                get_user_facts) + ANZSIC code list + UserFactsSchema.
 │                Consumed by mcp, backend, and web.
-├── mcp/         Local MCP server (Node 22+). SqliteStore + OnnxEmbedder for
-│                local mode, RemoteToolForwarder for hosted mode. CLI dispatcher
-│                (`ato-mcp <subcommand>`). Hosts the import-corpus script
-│                under scripts/import-corpus.ts.
-├── pipeline/    Python (uv-managed) corpus builder. Sources: ato.gov.au
-│                sitemap, legislation.gov.au EPUB compilations, law.ato.gov.au
-│                public rulings via the browse API. Produces SQLite + FTS5 +
-│                sqlite-vec. Tested with pytest; `uv run pytest` from
-│                packages/pipeline/.
+├── mcp/         Hosted MCP client (Node 22+). RemoteToolForwarder forwards every
+│                tool call to api.ato-mcp.com.au using ATO_MCP_TOKEN.
+│                Published as unscoped `ato-mcp`. SqliteStore lives in
+│                test/helpers/ as a test-only fixture.
 ├── backend/     Vercel functions (api/*.ts) over Supabase Postgres. Each
 │                handler is `Web Standard Request → Response`, wrapped by
 │                api/_adapter.ts to expose Node-style (req, res) defaults.
@@ -35,12 +30,17 @@ packages/
                  @supabase/ssr.
 ```
 
+The Python corpus-building pipeline (`packages/pipeline` in the v1.0 tree) now lives in the
+private `william-laverty/ato-mcp-engine` repo. It builds the corpus and imports it to Supabase
+via a monthly GitHub Actions workflow.
+
 ## Toolchain and versions
 
 - **Node 22+** (Vercel deploys on 24; better-sqlite3 lacks prebuilts → see Gotchas)
 - **pnpm 10.28.2** (pinned via `packageManager`; CI/Vercel auto-pick this version)
-- **Python 3.12+** with **uv** for the pipeline package
 - **TypeScript 5.6.3** (root devDep, inherited by workspaces)
+
+Python/uv is used only in the private `ato-mcp-engine` repo (corpus pipeline).
 
 `pnpm.onlyBuiltDependencies` in root package.json whitelists `better-sqlite3`, `esbuild`, `onnxruntime-node`, `sharp` — pnpm 10 ignores postinstall scripts by default; this list opts them back in. Don't remove these entries without checking each consumer.
 
@@ -58,23 +58,13 @@ pnpm test:smoke                                  # end-to-end smoke (scripts/smo
 pnpm --filter @ato-mcp/shared test               # shared tests only
 pnpm --filter @ato-mcp/web dev                   # Next.js dev on :3001
 pnpm --filter @ato-mcp/backend build             # backend tsc
-pnpm --filter @ato-mcp/mcp build                 # mcp tsc + emit dist/
+pnpm --filter ato-mcp build                      # mcp tsc + emit dist/
 
-# Python pipeline
-cd packages/pipeline
-uv sync                                          # install deps
-uv run pytest -k "not slow"                      # fast tests
-uv run ato-pipeline build --out-dir corpus-out --sources ato_website,legislation,thresholds,law_ato
+# MCP client CLI (after building mcp)
+node packages/mcp/bin/ato-mcp.js mcp         # start stdio server (requires ATO_MCP_TOKEN)
+node packages/mcp/bin/ato-mcp.js help        # usage
 
-# MCP local CLI (after building mcp)
-node packages/mcp/bin/ato-mcp.js stats       # current installed corpus
-node packages/mcp/bin/ato-mcp.js update <path-to-ato.sqlite>
-node packages/mcp/bin/ato-mcp.js mcp         # start stdio server (Claude Code uses this)
-
-# One-shot corpus import to Supabase (requires env vars)
-SUPABASE_URL='https://<ref>.supabase.co' \
-SUPABASE_SECRET_KEY='sb_secret_...' \
-  pnpm --filter @ato-mcp/mcp exec tsx scripts/import-corpus.ts
+# Corpus refreshes happen in the private ato-mcp-engine repo, not here.
 ```
 
 ## Architecture: how the pieces fit
@@ -86,18 +76,12 @@ SUPABASE_SECRET_KEY='sb_secret_...' \
              │ stdio MCP protocol
              ▼
 ┌────────────────────────────────────────────────────────────────┐
-│  packages/mcp (Node CLI: ato-mcp)                          │
+│  packages/mcp (Node CLI: ato-mcp)                              │
 │                                                                │
-│  reads ~/.ato-mcp/config.json → { mode, ... }                  │
+│  reads ATO_MCP_TOKEN from env                                  │
 │                                                                │
-│  if mode === "local":                                          │
-│    SqliteStore(~/.ato-mcp/live/ato.sqlite)                     │
-│    + OnnxEmbedder (MiniLM via @xenova/transformers)            │
-│    + tools from @ato-mcp/shared/tools                          │
-│                                                                │
-│  if mode === "hosted":                                         │
-│    RemoteToolForwarder(api.ato-mcp.com.au, bearer_token)       │
-│    forwards each tool call by name to the backend dispatcher   │
+│  RemoteToolForwarder(api.ato-mcp.com.au, bearer_token)         │
+│  forwards each tool call by name to the backend dispatcher     │
 └────────────────────────────────────────────────────────────────┘
 
 Hosted path:
@@ -117,12 +101,12 @@ Hosted path:
 
 ### Shared tool core
 
-Every retrieval tool (search/get_chunks/stats/get_definition/get_doc/get_doc_anchors/get_threshold/fetch) lives in `packages/shared/src/tools/`. Each is a pure function `(deps: { store, embedder }, args) => result`. Both the local MCP and the hosted backend use the same code. The `Store` and `Embedder` interfaces (`packages/shared/src/store/types.ts`, `embed/types.ts`) are the contract — implement them and the tools work.
+Every retrieval tool (search/get_chunks/stats/get_definition/get_doc/get_doc_anchors/get_threshold/fetch) lives in `packages/shared/src/tools/`. Each is a pure function `(deps: { store, embedder }, args) => result`. The hosted backend uses these tools directly. The `Store` and `Embedder` interfaces (`packages/shared/src/store/types.ts`, `embed/types.ts`) are the contract — implement them and the tools work.
 
 Adapters:
 
-- `packages/mcp/src/store/sqlite.ts` — local SQLite + sqlite-vec
-- `packages/mcp/src/lib/remote-tools.ts` — HTTP tool forwarder for hosted mode
+- `packages/mcp/src/lib/remote-tools.ts` — HTTP tool forwarder (the shipped client)
+- `packages/mcp/test/helpers/sqlite-store.ts` — SqliteStore (test-only fixture for retrieval-tool integration tests)
 - `packages/backend/src/supabase-store.ts` — Supabase RPC calls
 
 ### Backend handler convention
@@ -134,7 +118,7 @@ single `lookupUserFacts(userId)` for facts-dependent tools. Unknown tool → 404
 `{kind:"error", message}`. To add a tool: schema in shared, entry in the dispatcher's map — do NOT
 create a new `api/*.ts` file (function-count and bundle-size both regress).
 
-Only non-tool endpoints have their own files: `facts.ts` (PUT), `usage_event.ts`, `onboard_poll.ts`.
+Only non-tool endpoints have their own files: `facts.ts` (PUT), `usage_event.ts`.
 All handlers are written Web-Standard `(req: Request) => Response` and wrapped by `api/_adapter.ts`
 for Vercel's Node runtime. Do not use the Edge runtime — sharp/onnxruntime-node aren't compatible.
 
@@ -143,7 +127,7 @@ for Vercel's Node runtime. Do not use the Edge runtime — sharp/onnxruntime-nod
 Public URLs strip the `/api` prefix:
 
 - `api.ato-mcp.com.au/<tool>` → `api/[tool].ts` (all 13 tools)
-- `api.ato-mcp.com.au/facts|usage_event|onboard_poll` → their own handlers
+- `api.ato-mcp.com.au/facts|usage_event` → their own handlers
 
 There is **no `/v1/` versioning** — don't reintroduce versioned paths.
 
@@ -155,6 +139,7 @@ There is **no `/v1/` versioning** — don't reintroduce versioned paths.
 - v0.4: four workflow tools — `deduction_discovery` (59-category cited taxonomy), `depreciation_helper` (deterministic PC/DV/IAWO/SBE-pool/Div 43 schedules), `bas_prep_checklist` (tiered, cited), `audit_risk_check` (~13 red-flag rules with risk bands). All reuse the `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`) and are registered in `packages/mcp/src/server.ts` + the backend dispatcher.
 - v1.0: public launch — backend consolidated to 4 serverless functions, citation graph populated (23,267 edges), authenticated production smoke green
 - 2026-06: website redesigned to the "Clinical" design system (Switzer + Geist Mono, zinc + vermillion accent, fully light)
+- v1.1: hosted-only client — dropped SQLite/ONNX runtime, `ato-mcp` now a pure `ATO_MCP_TOKEN` forwarder; corpus gated (no public download); pipeline + importer split to private `ato-mcp-engine` repo; backend reduced to 3 serverless functions
 
 ### Not yet implemented (v0.5 and beyond)
 
@@ -169,9 +154,8 @@ There is **no `/v1/` versioning** — don't reintroduce versioned paths.
 
 - **Sharp native binary** is patched via `pnpm.patchedDependencies` in `pnpm-workspace.yaml`. Don't `pnpm install --force` without the patch applied — the @xenova/transformers import chain fails when sharp's native binding can't load on Node 23+. The patch is `patches/sharp@0.32.6.patch`.
 - **Vercel Node runtime ≠ Web Standard handlers.** Vercel auto-dispatches `(req, res)` Node-legacy. To write `(req: Request) => Response`, you MUST go through `api/_adapter.ts`. Edge runtime would allow native Web Standard but transitively breaks on sharp/onnxruntime-node.
-- **pnpm filter on Vercel build.** Both `vercel.json` files use `pnpm install --filter "@ato-mcp/<x>..."` so deploys don't compile better-sqlite3 (it lives in @ato-mcp/mcp's deps, isn't needed by web/backend). Don't drop the filter.
-- **Typer CLI quirk in the Python pipeline.** The CLI requires `build` as the first arg: `uv run ato-pipeline build --out-dir ...`.
-- **The corpus is large.** Building locally takes ~45 min (scrape + embed + package) and produces a ~1 GB SQLite. Don't try to commit it; `*.sqlite` and `*.jsonl` are gitignored.
+- **pnpm filter on Vercel build.** Both `vercel.json` files use `pnpm install --filter "@ato-mcp/<x>..."` so deploys don't compile better-sqlite3 (it lives in `ato-mcp`'s devDeps as a test fixture, isn't needed by web/backend). Don't drop the filter.
 - **Tests must run with native bindings built.** If `pnpm install` skipped postinstalls, tests that use `SqliteStore` fail with "Could not locate the bindings file". Run `pnpm rebuild better-sqlite3` once (the `onlyBuiltDependencies` whitelist is already configured).
 - **Supabase Edge / Web Runtime conflicts.** The `@xenova/transformers` 2.x release used in the backend transitively pulls `onnxruntime-node` and `sharp`. Neither is Edge-compatible. Stay on Node runtime via `_adapter.ts`.
+- **Corpus importer lives in the private engine repo.** The one-shot `import-corpus.ts` script (previously at `packages/mcp/scripts/import-corpus.ts`) is now maintained in `william-laverty/ato-mcp-engine`. To trigger a corpus refresh, use `workflow_dispatch` on the engine repo's `corpus-build` workflow.
 - **Web fonts are self-hosted.** Switzer woff2/otf files live in `packages/web/app/fonts/` (Fontshare ITF Free Font License, see `FFL.txt`); the OTFs exist only for the OG-image renderer.
