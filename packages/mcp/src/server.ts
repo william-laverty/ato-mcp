@@ -190,7 +190,7 @@ export async function runMcp(): Promise<void> {
     }
   });
 
-  // Fire-and-forget; payload matches the backend usage_event schema once Phase 4.2 drops the mode field, so a transient 400 during rollout is harmless.
+  // Fire-and-forget connection ping so the web onboarding page can show "connected". Failures (network or transient backend) are intentionally ignored.
   void forwarder.call("usage_event", { event_type: "mcp_started" }).catch(() => {});
 
   const transport = new StdioServerTransport();

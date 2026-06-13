@@ -20,9 +20,9 @@ export async function GET(request: NextRequest) {
   const service = makeServiceClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data } = await (service.from("mcp_connections") as any)
-    .select("detected_at")
+    .select("last_seen_at")
     .eq("user_id", userId)
-    .order("detected_at", { ascending: false })
+    .order("last_seen_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
