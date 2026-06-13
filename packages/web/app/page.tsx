@@ -35,13 +35,13 @@ const HOW_IT_WORKS = [
     num: "1",
     title: "Install",
     body: "One global npm package.",
-    fragment: "npm i -g @ato-mcp/mcp",
+    fragment: "npx -y ato-mcp",
   },
   {
     num: "2",
     title: "Onboard",
-    body: "Local or hosted, about two minutes.",
-    fragment: "ato-mcp onboard",
+    body: "Sign in with email, about two minutes.",
+    fragment: "ato-mcp.com.au/onboard",
   },
   {
     num: "3",
@@ -98,11 +98,7 @@ const FAQS = [
     a: "No. ato-mcp is information infrastructure: it retrieves and structures published ATO material and computes deterministic schedules, always with citations. Confidence ratings and risk bands are heuristic indicators. Your agent does the reasoning, and material decisions should be verified with a registered tax agent.",
   },
   {
-    q: "What's the difference between local and hosted mode?",
-    a: "Local mode downloads a ~1 GB SQLite corpus and runs everything — including embeddings — on your machine; queries never leave your device. Hosted mode skips the download and queries api.ato-mcp.com.au over TLS with a personal bearer token. Both run the identical open-source tool code against the identical corpus snapshot.",
-  },
-  {
-    q: "What does hosted mode store about me?",
+    q: "What does ato-mcp store about me?",
     a: "Your onboarding facts (business structure, GST registration, and so on — about 25 fields you control), a hashed bearer token, and coarse usage events. Never tool names, never query content, never results: the schema physically has nowhere to store them, and the privacy page is generated from that schema so it can't drift.",
   },
   {
@@ -111,11 +107,11 @@ const FAQS = [
   },
   {
     q: "How current is the corpus?",
-    a: "The corpus is rebuilt from ato.gov.au, the Federal Register of Legislation and law.ato.gov.au on a monthly cycle, and every release is sha256-verified on install. The stats tool reports the installed snapshot and flags staleness.",
+    a: "The corpus is rebuilt from ato.gov.au, the Federal Register of Legislation and law.ato.gov.au on a monthly cycle and served fresh — the stats tool reports the live snapshot.",
   },
   {
     q: "Is it really open source?",
-    a: "MIT licensed, end to end — the MCP server, the corpus pipeline, the hosted backend and this website are all in the same public repository. For a tool that reads tax law to you, verifiability is the point.",
+    a: "The MCP client, the shared tool logic, the hosted backend and this website are MIT-licensed and public. The corpus-building pipeline is maintained privately. For a tool that reads tax law to you, the parts you run are verifiable.",
   },
 ];
 
@@ -132,8 +128,8 @@ const pageJsonLd = {
       description:
         "MCP server giving AI agents cited retrieval over 29,000+ ATO documents, ITAA 1997 and public rulings, with personal context and four tax workflow tools.",
       url: SITE,
-      downloadUrl: "https://www.npmjs.com/package/@ato-mcp/mcp",
-      softwareVersion: "1.0.0",
+      downloadUrl: "https://www.npmjs.com/package/ato-mcp",
+      softwareVersion: "1.1.0",
       offers: { "@type": "Offer", price: "0", priceCurrency: "AUD" },
       license: "https://github.com/william-laverty/ato-mcp/blob/main/LICENSE",
     },
@@ -227,7 +223,7 @@ export default function HomePage() {
                 style={{ "--reveal-delay": "0s" } as React.CSSProperties}
               >
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />
-                v1.0 · open source · MIT
+                v1.1 · open source · MIT
               </p>
               <h1
                 className="reveal mt-5 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
@@ -258,7 +254,7 @@ export default function HomePage() {
                 className="reveal mt-5 font-mono text-xs text-zinc-400"
                 style={{ "--reveal-delay": "0.3s" } as React.CSSProperties}
               >
-                npm i -g @ato-mcp/mcp · works with Claude Code, Claude Desktop
+                npx -y ato-mcp · works with Claude Code, Claude Desktop
                 &amp; any MCP host
               </p>
             </div>
@@ -341,7 +337,7 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-6 text-sm text-zinc-500">
-              Rebuilt monthly, verified on every install.{" "}
+              Rebuilt monthly, served fresh.{" "}
               <Link
                 href="/docs"
                 className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
@@ -436,59 +432,6 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-      </section>
-
-      {/* ------------------------------------------------ modes */}
-      <section
-        id="modes"
-        className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
-        aria-labelledby="modes-h"
-      >
-        <p className="eyebrow">Two ways to run it</p>
-        <h2
-          id="modes-h"
-          className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-        >
-          Your tax data, your terms
-        </h2>
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <div className="card reveal-scroll p-7">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium tracking-tight1">Local</h3>
-              <span className="badge">offline</span>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-500">
-              The whole corpus lives on your machine. Your questions never
-              leave it.
-            </p>
-            <pre className="code-block mt-5"><code>{`npm install -g @ato-mcp/mcp
-ato-mcp update   # download + verify corpus
-claude mcp add ato-mcp -- ato-mcp mcp`}</code></pre>
-            <p className="mt-3 text-xs text-zinc-400">
-              Free forever · updated monthly
-            </p>
-          </div>
-          <div className="card reveal-scroll p-7">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium tracking-tight1">Hosted</h3>
-              <span className="badge-accent">zero download</span>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-500">
-              Nothing to download — we serve the freshest corpus. Your
-              questions are never logged.
-            </p>
-            <pre className="code-block mt-5"><code>{`npm install -g @ato-mcp/mcp
-ato-mcp onboard  # browser onboarding, ~2 min
-claude mcp add ato-mcp -- ato-mcp mcp`}</code></pre>
-            <p className="mt-3 text-xs text-zinc-400">
-              Free · sign in with email · revoke any time
-            </p>
-          </div>
-        </div>
-        <p className="mt-6 text-sm text-zinc-500">
-          ✓ Same tools in both modes&nbsp;&nbsp;&nbsp;✓ Open source, MIT
-          licensed&nbsp;&nbsp;&nbsp;✓ Verified releases
-        </p>
       </section>
 
       {/* ------------------------------------------------ privacy */}

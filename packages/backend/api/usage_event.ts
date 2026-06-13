@@ -15,7 +15,6 @@ const UsageEventSchema = z.object({
     "update_applied",
     "facts_pulled",
   ]),
-  mode: z.enum(["local", "hosted"]),
 });
 
 export async function handler(req: Request): Promise<Response> {
@@ -31,14 +30,13 @@ export async function handler(req: Request): Promise<Response> {
 
   try {
     const body = await req.json() as unknown;
-    const { event_type, mode } = UsageEventSchema.parse(body);
+    const { event_type } = UsageEventSchema.parse(body);
     const svc = makeServiceClient();
 
     // Insert usage event
     const { error: evErr } = await svc.from("usage_events").insert({
       user_id: auth.user_id,
       event_type,
-      mode,
       event_time: new Date().toISOString(),
     });
     if (evErr) throw new Error((evErr as { message: string }).message);

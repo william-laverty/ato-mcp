@@ -6,8 +6,10 @@ on:
 
 jobs:
   publish:
-    # Only software releases (v*), never corpus releases (corpus-v*).
-    # No-ops gracefully until the NPM_TOKEN secret is configured.
+    # Only software releases (v*). No-ops gracefully until NPM_PUBLISH_ENABLED is
+    # set and the NPM_TOKEN secret is configured. Publishes the unscoped `ato-mcp`
+    # client only — it has no runtime dependency on @ato-mcp/shared (shared is a
+    # dev-only dependency used by tests), so shared is not published.
     if: startsWith(github.event.release.tag_name, 'v') && vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -22,13 +24,9 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @ato-mcp/shared build && pnpm --filter @ato-mcp/mcp build
-      - run: pnpm --filter @ato-mcp/shared test && pnpm --filter @ato-mcp/mcp test
-      - name: Publish @ato-mcp/shared
-        run: pnpm --filter @ato-mcp/shared publish --access public --no-git-checks --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish @ato-mcp/mcp
-        run: pnpm --filter @ato-mcp/mcp publish --access public --no-git-checks --provenance
+      - run: pnpm -r build
+      - run: pnpm --filter ato-mcp test
+      - name: Publish ato-mcp
+        run: pnpm --filter ato-mcp publish --access public --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

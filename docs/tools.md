@@ -1,7 +1,7 @@
 # ato-mcp tool reference
 
-ato-mcp exposes 13 MCP tools (identical surface in local and hosted mode). Every tool returns structured JSON; search hits and citations carry resolvable identifiers — pass a `chunk_id` to [`get_chunks`](#get_chunks) for the passage and its neighbours, or a `doc_id` to [`get_doc`](#get_doc) for the full document.
-The personal-context tool ([`get_user_facts`](#get_user_facts)) and the four workflow tools ([`deduction_discovery`](#deduction_discovery), [`depreciation_helper`](#depreciation_helper), [`bas_prep_checklist`](#bas_prep_checklist), [`audit_risk_check`](#audit_risk_check)) require completed onboarding (`ato-mcp onboard`); they throw until personal facts are set.
+ato-mcp exposes 13 MCP tools. Every tool returns structured JSON; search hits and citations carry resolvable identifiers — pass a `chunk_id` to [`get_chunks`](#get_chunks) for the passage and its neighbours, or a `doc_id` to [`get_doc`](#get_doc) for the full document.
+The personal-context tool ([`get_user_facts`](#get_user_facts)) and the four workflow tools ([`deduction_discovery`](#deduction_discovery), [`depreciation_helper`](#depreciation_helper), [`bas_prep_checklist`](#bas_prep_checklist), [`audit_risk_check`](#audit_risk_check)) require completed onboarding; they throw until personal facts are set.
 Tool failures are returned as MCP error content of the form `{"kind": "error", "message": "..."}`.
 
 ### Citations
@@ -100,7 +100,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus not installed. Run 'ato-mcp update' to download the latest corpus, then retry.` when no local corpus is present.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## get_chunks
 
@@ -135,7 +135,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus not installed. Run 'ato-mcp update'.` when no local corpus is present.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## get_doc
 
@@ -170,7 +170,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus not installed. Run 'ato-mcp update'.` when no local corpus is present; throws `Document not found: <doc_id>` for an unknown id.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available; throws `Document not found: <doc_id>` for an unknown id.
 
 ## get_doc_anchors
 
@@ -204,7 +204,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus not installed. Run 'ato-mcp update'.` when no local corpus is present.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## get_definition
 
@@ -247,7 +247,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus not installed. Run 'ato-mcp update'.` when no local corpus is present. A missing definition does not throw — it returns `kind: "ordinary"`.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available. A missing definition does not throw — it returns `kind: "ordinary"`.
 
 ## get_threshold
 
@@ -290,7 +290,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus not installed. Run 'ato-mcp update'.` when no local corpus is present; throws `Threshold not found: <name> at <pit>` when no row is effective at the date.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available; throws `Threshold not found: <name> at <pit>` when no row is effective at the date.
 
 ## fetch
 
@@ -453,7 +453,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Run 'ato-mcp onboard' to complete the web onboarding flow.` when onboarding has not been completed.
+**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding has not been completed.
 
 ---
 
@@ -532,7 +532,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Run 'ato-mcp onboard' …` when onboarding is incomplete; throws `Corpus not installed. Run 'ato-mcp update' …` when no corpus is present.
+**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## depreciation_helper
 
@@ -612,7 +612,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Run 'ato-mcp onboard' …` when onboarding is incomplete; throws `Corpus not installed. Run 'ato-mcp update' …` when no corpus is present. (A pre-9-May-2006 acquisition makes diminishing value `unavailable` — it does not throw.)
+**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available. (A pre-9-May-2006 acquisition makes diminishing value `unavailable` — it does not throw.)
 
 ## bas_prep_checklist
 
@@ -675,7 +675,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Run 'ato-mcp onboard' …` when onboarding is incomplete; throws `Corpus not installed. Run 'ato-mcp update' …` when no corpus is present.
+**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## audit_risk_check
 
@@ -751,7 +751,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Run 'ato-mcp onboard' …` when onboarding is incomplete; throws `Corpus not installed. Run 'ato-mcp update' …` when no corpus is present.
+**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ---
 

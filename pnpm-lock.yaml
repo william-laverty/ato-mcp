@@ -59,40 +59,28 @@ importers:
 
   packages/mcp:
     dependencies:
-      '@ato-mcp/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@modelcontextprotocol/sdk':
         specifier: 1.0.4
         version: 1.0.4
-      '@xenova/transformers':
-        specifier: 2.17.2
-        version: 2.17.2
-      better-sqlite3:
-        specifier: 11.5.0
-        version: 11.5.0
-      onnxruntime-node:
-        specifier: 1.20.1
-        version: 1.20.1
       open:
         specifier: ^11.0.0
         version: 11.0.0
-      sqlite-vec:
-        specifier: 0.1.6
-        version: 0.1.6
-      zod:
-        specifier: 3.23.8
-        version: 3.23.8
     devDependencies:
-      '@supabase/supabase-js':
-        specifier: ^2.106.2
-        version: 2.106.2
+      '@ato-mcp/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@types/better-sqlite3':
         specifier: 7.6.12
         version: 7.6.12
       '@types/node':
         specifier: 22.9.0
         version: 22.9.0
+      better-sqlite3:
+        specifier: 11.5.0
+        version: 11.5.0
+      sqlite-vec:
+        specifier: 0.1.6
+        version: 0.1.6
       tsx:
         specifier: 4.19.2
         version: 4.19.2
@@ -2148,15 +2136,8 @@ packages:
   onnxruntime-common@1.14.0:
     resolution: {integrity: sha512-3LJpegM2iMNRX2wUmtYfeX/ytfOzNwAWKSq1HbRrKc9+uqG/FsEA0bbKZl1btQeZaXhC26l44NWpNUeXPII7Ew==}
 
-  onnxruntime-common@1.20.1:
-    resolution: {integrity: sha512-YiU0s0IzYYC+gWvqD1HzLc46Du1sXpSiwzKb63PACIJr6LfL27VsXSXQvt68EzD3V0D5Bc0vyJTjmMxp0ylQiw==}
-
   onnxruntime-node@1.14.0:
     resolution: {integrity: sha512-5ba7TWomIV/9b6NH/1x/8QEeowsb+jBEvFzU6z0T4mNsFwdPqXeFUM7uxC6QeSRkEbWu3qEB0VMjrvzN/0S9+w==}
-    os: [win32, darwin, linux]
-
-  onnxruntime-node@1.20.1:
-    resolution: {integrity: sha512-di/I4HDXRw+FLgq+TyHmQEDd3cEp9iFFZm0r4uJ1Wd7b/WE1VXtKWo8yemex347c6GNF/3Pv86ZfPhIWxORr0w==}
     os: [win32, darwin, linux]
 
   onnxruntime-web@1.14.0:
@@ -4399,17 +4380,10 @@ snapshots:
 
   onnxruntime-common@1.14.0: {}
 
-  onnxruntime-common@1.20.1: {}
-
   onnxruntime-node@1.14.0:
     dependencies:
       onnxruntime-common: 1.14.0
     optional: true
-
-  onnxruntime-node@1.20.1:
-    dependencies:
-      onnxruntime-common: 1.20.1
-      tar: 7.5.15
 
   onnxruntime-web@1.14.0:
     dependencies:

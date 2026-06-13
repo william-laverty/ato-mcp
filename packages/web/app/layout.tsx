@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · ato-mcp",
   },
   description:
-    "Give Claude and any MCP agent cited, current retrieval over 29,000+ ATO documents, ITAA 1997 and public rulings — plus personal context and four tax workflow tools. Local or hosted. Open source.",
+    "Give Claude and any MCP agent cited, current retrieval over 29,000+ ATO documents, ITAA 1997 and public rulings — plus personal context and four tax workflow tools. Open source.",
   keywords: [
     "ATO MCP server",
     "Australian tax AI",
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
     siteName: "ato-mcp",
     title: "ato-mcp — The Australian tax knowledge base for AI agents",
     description:
-      "Cited retrieval over 29,000+ ATO documents, ITAA 1997 and rulings, with personal context and tax workflow tools for AI agents. Local or hosted. Open source.",
+      "Cited retrieval over 29,000+ ATO documents, ITAA 1997 and rulings, with personal context and tax workflow tools for AI agents. Open source.",
   },
   twitter: {
     card: "summary_large_image",
     title: "ato-mcp — The Australian tax knowledge base for AI agents",
     description:
-      "Cited ATO retrieval + tax workflow tools for AI agents over the Model Context Protocol. Local or hosted. Open source.",
+      "Cited ATO retrieval + tax workflow tools for AI agents over the Model Context Protocol. Open source.",
   },
   robots: {
     index: true,

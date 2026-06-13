@@ -3,15 +3,14 @@
 // One serverless function serves all 13 tools (api.ato-mcp.com.au/<tool> —
 // the vercel.json rewrite maps /<tool> → /api/<tool>, and Vercel's filesystem
 // router sends anything without an exact api/*.ts match here). Non-tool
-// endpoints (facts, usage_event, onboard_poll) keep their own files.
+// endpoints (facts, usage_event) keep their own files.
 //
 // Why one function instead of one file per tool:
 //   - a deployment previously shipped 16 functions, exceeding plan limits;
 //   - each per-tool bundle duplicated the heavy embedder stack;
 //   - the per-tool handlers duplicated the user-facts lookup six times.
 //
-// The dispatch table mirrors packages/mcp/src/server.ts so local and hosted
-// modes stay behaviourally identical.
+// The dispatch table mirrors packages/mcp/src/server.ts.
 
 import { adapt } from "./_adapter.js";
 import { authMiddleware } from "./_middleware.js";
@@ -77,10 +76,7 @@ const TOOLS: Record<string, ToolRunner> = {
   get_doc_anchors: (body) => getDocAnchors({ store }, GetDocAnchorsInputSchema.parse(body)),
   get_threshold: (body) => getThreshold({ store }, GetThresholdInputSchema.parse(body)),
   get_user_facts: async (_body, userId) =>
-    getUserFacts(
-      { facts: await lookupUserFacts(userId), fetchedFrom: "hosted_api", mode: "hosted" },
-      {},
-    ),
+    getUserFacts({ facts: await lookupUserFacts(userId) }, {}),
   deduction_discovery: async (body, userId) =>
     deductionDiscovery(
       { store, embedder: await getEmbedder(), userFacts: await lookupUserFacts(userId) },

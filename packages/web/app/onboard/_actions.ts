@@ -24,14 +24,6 @@ export async function saveFacts(userId: string, raw: unknown) {
   return { success: true };
 }
 
-export async function setMode(userId: string, mode: "hosted" | "local") {
-  const service = makeServiceClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (service.from("users") as any).update({ mode }).eq("id", userId);
-  if (error) return { error: (error as { message: string }).message };
-  redirect("/onboard/install");
-}
-
 export async function issueToken(
   userId: string,
 ): Promise<{ token: string; tokenHash: string }> {
@@ -40,12 +32,16 @@ export async function issueToken(
   const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
 
   const service = makeServiceClient();
+  // Persist into bearer_tokens — the table the API auth middleware reads.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await (service.from("api_tokens") as any).insert({
+  const { error } = await (service.from("bearer_tokens") as any).insert({
     user_id: userId,
     token_hash: tokenHash,
     created_at: new Date().toISOString(),
   });
+  if (error) {
+    throw new Error(`Failed to issue token: ${(error as { message: string }).message}`);
+  }
 
   return { token, tokenHash };
 }

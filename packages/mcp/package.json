@@ -1,7 +1,7 @@
 {
-  "name": "@ato-mcp/mcp",
-  "version": "1.0.0",
-  "description": "MCP server for the Australian Taxation Office corpus — cited tax retrieval, personal context, and workflow tools for AI agents. Local or hosted.",
+  "name": "ato-mcp",
+  "version": "1.1.0",
+  "description": "Hosted MCP server for the Australian Taxation Office corpus — cited tax retrieval, personal context, and workflow tools for AI agents.",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -42,25 +42,22 @@
     "access": "public"
   },
   "scripts": {
+    "prepack": "rm -rf dist && tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ato-mcp/shared": "workspace:*",
     "@modelcontextprotocol/sdk": "1.0.4",
-    "@xenova/transformers": "2.17.2",
-    "better-sqlite3": "11.5.0",
-    "onnxruntime-node": "1.20.1",
-    "open": "^11.0.0",
-    "sqlite-vec": "0.1.6",
-    "zod": "3.23.8"
+    "open": "^11.0.0"
   },
   "devDependencies": {
-    "@supabase/supabase-js": "^2.106.2",
+    "@ato-mcp/shared": "workspace:*",
     "@types/better-sqlite3": "7.6.12",
     "@types/node": "22.9.0",
+    "better-sqlite3": "11.5.0",
+    "sqlite-vec": "0.1.6",
     "tsx": "4.19.2",
     "typescript": "5.6.3",
     "vitest": "2.1.5"

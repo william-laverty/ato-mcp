@@ -12,7 +12,7 @@ export interface GetChunksOutput {
 
 export async function getChunks(deps: GetChunksDeps, args: GetChunksInput): Promise<GetChunksOutput> {
   if (!deps.store) {
-    throw new Error("Corpus not installed. Run `ato-mcp update`.");
+    throw new Error("Corpus unavailable. This is a server-side issue — please try again shortly.");
   }
   const chunks = await deps.store.getChunks(args.chunk_ids, args.neighbours, args.pit);
   return { chunks };

@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import Database from "better-sqlite3";
 import * as sqliteVec from "sqlite-vec";
-import { SqliteStore } from "../../src/store/sqlite.js";
+import { SqliteStore } from "./sqlite-store.js";
 
 const SCHEMA_SQL = `
   CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);

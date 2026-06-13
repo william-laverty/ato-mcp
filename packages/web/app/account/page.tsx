@@ -17,15 +17,6 @@ export default async function AccountPage() {
   const email = session.user.email ?? "Unknown";
   const service = makeServiceClient();
 
-  // Fetch user row
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: userData } = await (service.from("users") as any)
-    .select("mode, created_at")
-    .eq("id", userId)
-    .maybeSingle();
-
-  const mode = (userData as { mode?: string } | null)?.mode ?? "local";
-
   // Fetch user_facts row
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: factsData } = await (service.from("user_facts") as any)
@@ -48,14 +39,10 @@ export default async function AccountPage() {
         {/* Account details */}
         <section className="card p-6 space-y-4">
           <h2 className="font-medium text-zinc-900">Account details</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="text-sm">
             <div>
               <span className="text-xs text-zinc-400">Email</span>
               <p className="text-sm font-medium text-zinc-900">{email}</p>
-            </div>
-            <div>
-              <span className="text-xs text-zinc-400">Mode</span>
-              <p className="text-sm font-medium text-zinc-900 capitalize">{mode}</p>
             </div>
           </div>
         </section>

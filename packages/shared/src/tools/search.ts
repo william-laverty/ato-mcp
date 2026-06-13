@@ -10,7 +10,7 @@ export interface SearchOutput { query: string; mode: SearchInput["mode"]; hits: 
 export async function search(deps: SearchDeps, args: SearchInput): Promise<SearchOutput> {
   if (!deps.store) {
     throw new Error(
-      "Corpus not installed. Run `ato-mcp update` to download the latest corpus, then retry.",
+      "Corpus unavailable. This is a server-side issue — please try again shortly.",
     );
   }
   const k = args.k ?? 10;

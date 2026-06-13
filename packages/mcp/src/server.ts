@@ -1,60 +1,9 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import fs from "node:fs";
-import {
-  SearchInputSchema,
-  GetChunksInputSchema,
-  FetchInputSchema,
-  GetDefinitionInputSchema,
-  GetDocInputSchema,
-  GetDocAnchorsInputSchema,
-  GetThresholdInputSchema,
-  DeductionDiscoveryInputSchema,
-  DepreciationHelperInputSchema,
-  BasPrepChecklistInputSchema,
-  AuditRiskCheckInputSchema,
-  UserFactsSchema,
-} from "@ato-mcp/shared";
-import type { Store, Embedder, UserFacts } from "@ato-mcp/shared";
-import { SqliteStore } from "./store/sqlite.js";
-import { OnnxEmbedder } from "./embed/onnx.js";
 import { RemoteToolForwarder } from "./lib/remote-tools.js";
-import { stats } from "@ato-mcp/shared/tools/stats";
-import { search } from "@ato-mcp/shared/tools/search";
-import { getChunks } from "@ato-mcp/shared/tools/get_chunks";
-import { fetchUri } from "@ato-mcp/shared/tools/fetch";
-import { getDefinition } from "@ato-mcp/shared/tools/get_definition";
-import { getDoc } from "@ato-mcp/shared/tools/get_doc";
-import { getDocAnchors } from "@ato-mcp/shared/tools/get_doc_anchors";
-import { getThreshold } from "@ato-mcp/shared/tools/get_threshold";
-import { getUserFacts } from "@ato-mcp/shared/tools/get_user_facts";
-import { deductionDiscovery } from "@ato-mcp/shared/tools/deduction_discovery";
-import { depreciationHelper } from "@ato-mcp/shared/tools/depreciation_helper";
-import { basPrepChecklist } from "@ato-mcp/shared/tools/bas_prep_checklist";
-import { auditRiskCheck } from "@ato-mcp/shared/tools/audit_risk_check";
-import { corpusPath, dataDir, configPath } from "./lib/paths.js";
 
-interface ServerDeps {
-  store: Store | null;
-  embedder: Embedder;
-  wordnetLookup?: (term: string) => Promise<string | null>;
-  facts?: UserFacts | null;
-  mode?: "local" | "hosted";
-}
-
-interface Config {
-  mode?: "local" | "hosted";
-  api_endpoint?: string;
-  bearer_token?: string;
-  facts?: unknown;
-}
-
-function readConfig(): Config {
-  const p = configPath();
-  if (!fs.existsSync(p)) return {};
-  return JSON.parse(fs.readFileSync(p, "utf-8")) as Config;
-}
+const DEFAULT_API = "https://api.ato-mcp.com.au";
 
 const TOOLS = {
   stats: {
@@ -186,90 +135,36 @@ const TOOLS = {
   },
 } as const;
 
-async function dispatch(name: string, args: unknown, deps: ServerDeps): Promise<unknown> {
-  switch (name) {
-    case "stats":
-      return stats({ store: deps.store, data_dir: dataDir(), corpus_path: corpusPath() });
-    case "search":
-      return search(deps, SearchInputSchema.parse(args));
-    case "get_chunks":
-      return getChunks(deps, GetChunksInputSchema.parse(args));
-    case "fetch":
-      return fetchUri(FetchInputSchema.parse(args));
-    case "get_definition":
-      return getDefinition({ store: deps.store, wordnetLookup: deps.wordnetLookup }, GetDefinitionInputSchema.parse(args));
-    case "get_doc":
-      return getDoc({ store: deps.store }, GetDocInputSchema.parse(args));
-    case "get_doc_anchors":
-      return getDocAnchors({ store: deps.store }, GetDocAnchorsInputSchema.parse(args));
-    case "get_threshold":
-      return getThreshold({ store: deps.store }, GetThresholdInputSchema.parse(args));
-    case "get_user_facts":
-      return getUserFacts(
-        {
-          facts: deps.facts ?? null,
-          fetchedFrom: deps.mode === "hosted" ? "hosted_api" : "config_file",
-          mode: deps.mode ?? "local",
-        },
-        {},
-      );
-    case "deduction_discovery":
-      return deductionDiscovery(
-        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
-        DeductionDiscoveryInputSchema.parse(args),
-      );
-    case "depreciation_helper":
-      return depreciationHelper(
-        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
-        DepreciationHelperInputSchema.parse(args),
-      );
-    case "bas_prep_checklist":
-      return basPrepChecklist(
-        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
-        BasPrepChecklistInputSchema.parse(args),
-      );
-    case "audit_risk_check":
-      return auditRiskCheck(
-        { store: deps.store, embedder: deps.embedder, userFacts: deps.facts ?? null },
-        AuditRiskCheckInputSchema.parse(args),
-      );
-    default:
-      throw new Error(`Unknown tool: ${name}`);
-  }
+interface Forwarder {
+  call(toolName: string, args: unknown): Promise<unknown>;
 }
 
-export function buildServerForTesting(deps: ServerDeps) {
+/** Test seam: inject a fake forwarder to exercise listing + dispatch. */
+export function buildServerForTesting(deps: { forwarder: Forwarder }) {
   return {
     listToolNames(): string[] {
       return Object.keys(TOOLS);
     },
     async callTool(name: string, args: unknown): Promise<any> {
-      return dispatch(name, args, deps);
-    },
-    close(): void {
-      deps.store?.close();
+      return deps.forwarder.call(name, args ?? {});
     },
   };
 }
 
-function readFactsFromConfig(cfg: Config): UserFacts | null {
-  if (!cfg.facts) return null;
-  const parsed = UserFactsSchema.safeParse(cfg.facts);
-  if (!parsed.success) {
-    process.stderr.write(
-      `[ato-mcp] Warning: facts in config.json failed validation: ${parsed.error.message}\n`,
-    );
-    return null;
-  }
-  return parsed.data;
-}
-
 export async function runMcp(): Promise<void> {
-  const cfg = readConfig();
-  const mode: "local" | "hosted" = cfg.mode === "hosted" ? "hosted" : "local";
+  const token = process.env.ATO_MCP_TOKEN;
+  if (!token) {
+    process.stderr.write(
+      "ato-mcp: ATO_MCP_TOKEN is not set.\n" +
+        "Get your token and config snippet at https://ato-mcp.com.au/onboard\n",
+    );
+    process.exit(1);
+  }
+  const endpoint = process.env.ATO_MCP_API ?? DEFAULT_API;
+  const forwarder = new RemoteToolForwarder(endpoint, token);
 
   const server = new Server(
-    { name: "ato-mcp", version: "1.0.0" },
+    { name: "ato-mcp", version: "1.1.0" },
     { capabilities: { tools: {} } },
   );
 
@@ -281,53 +176,22 @@ export async function runMcp(): Promise<void> {
     })),
   }));
 
-  if (mode === "hosted") {
-    // Hosted mode: every tool call is forwarded over HTTPS. No local
-    // Store/Embedder/SQLite. The backend runs the shared tool code
-    // server-side against Supabase.
-    if (!cfg.api_endpoint || !cfg.bearer_token) {
-      throw new Error("Hosted mode configured but api_endpoint/bearer_token missing in config");
+  server.setRequestHandler(CallToolRequestSchema, async (req) => {
+    const { name, arguments: args } = req.params;
+    try {
+      const result = await forwarder.call(name, args ?? {});
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        isError: true,
+        content: [{ type: "text", text: JSON.stringify({ kind: "error", message }, null, 2) }],
+      };
     }
-    const forwarder = new RemoteToolForwarder(cfg.api_endpoint, cfg.bearer_token);
+  });
 
-    server.setRequestHandler(CallToolRequestSchema, async (req) => {
-      const { name, arguments: args } = req.params;
-      try {
-        const result = await forwarder.call(name, args ?? {});
-        return {
-          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-        };
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        return {
-          isError: true,
-          content: [{ type: "text", text: JSON.stringify({ kind: "error", message }, null, 2) }],
-        };
-      }
-    });
-  } else {
-    // Local mode: open SQLite + ONNX, dispatch tools locally.
-    const dbPath = corpusPath();
-    const store: Store | null = fs.existsSync(dbPath) ? new SqliteStore(dbPath) : null;
-    const facts = readFactsFromConfig(cfg);
-    const embedder = await OnnxEmbedder.load();
-
-    server.setRequestHandler(CallToolRequestSchema, async (req) => {
-      const { name, arguments: args } = req.params;
-      try {
-        const result = await dispatch(name, args ?? {}, { store, embedder, facts, mode });
-        return {
-          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-        };
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        return {
-          isError: true,
-          content: [{ type: "text", text: JSON.stringify({ kind: "error", message }, null, 2) }],
-        };
-      }
-    });
-  }
+  // Fire-and-forget connection ping so the web onboarding page can show "connected". Failures (network or transient backend) are intentionally ignored.
+  void forwarder.call("usage_event", { event_type: "mcp_started" }).catch(() => {});
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

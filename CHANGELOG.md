@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.1.0
+
+- **Removed local mode.** The `ato-mcp` client is now hosted-only: it forwards
+  every tool call to api.ato-mcp.com.au using `ATO_MCP_TOKEN`. Dropped the
+  SQLite/ONNX runtime deps — the package installs instantly via `npx`.
+- **Renamed** the npm package `@ato-mcp/mcp` → `ato-mcp` (unscoped).
+- **Gated the corpus.** The downloadable corpus release is withdrawn; the corpus
+  is served only from the hosted backend.
+- **Split the corpus engine** (pipeline + importer + build CI) into a private repo
+  that auto-refreshes the live Supabase corpus.
+
 ## 1.0.0 — 2026-06
 
 First public release.
