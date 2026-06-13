@@ -36,10 +36,10 @@ export default async function InstallPage() {
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-normal tracking-tight1 text-zinc-900">
             {mode === "hosted" ? "Connect your AI client" : "Install ato-mcp"}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[15px] text-zinc-500">
             {mode === "hosted"
               ? "Add this config to your AI client to start using ato-mcp."
               : "Run this command to install ato-mcp locally, then add the config below."}
@@ -51,7 +51,7 @@ export default async function InstallPage() {
         <div className="text-center">
           <a
             href="/account"
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
           >
             Go to your account dashboard
           </a>

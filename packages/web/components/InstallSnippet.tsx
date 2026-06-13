@@ -84,24 +84,20 @@ export default function InstallSnippet({ mode, token, userId }: InstallSnippetPr
     <div className="space-y-4">
       {mode === "local" && (
         <div className="space-y-2">
-          <h3 className="font-medium text-gray-900">1. Install the package</h3>
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm text-green-400">
-            npm install -g ato-mcp
-          </div>
+          <h3 className="text-sm font-medium text-zinc-900">1. Install the package</h3>
+          <div className="code-block">npm install -g ato-mcp</div>
         </div>
       )}
 
       <div className="space-y-2">
-        <h3 className="font-medium text-gray-900">
+        <h3 className="text-sm font-medium text-zinc-900">
           {mode === "local" ? "2. Add to your AI client config" : "Add to your AI client config"}
         </h3>
         <div className="relative">
-          <pre className="bg-gray-900 rounded-lg p-4 font-mono text-sm text-gray-200 overflow-x-auto whitespace-pre-wrap">
-            {snippet}
-          </pre>
+          <pre className="code-block whitespace-pre-wrap">{snippet}</pre>
           <button
             onClick={handleCopy}
-            className="absolute top-2 right-2 px-2.5 py-1 text-xs font-medium bg-gray-700 hover:bg-gray-600 text-gray-200 rounded transition-colors"
+            className="btn btn-fill absolute right-2 top-2 px-2.5 py-1 text-[11px]"
           >
             {copied ? "Copied!" : "Copy"}
           </button>
@@ -109,20 +105,20 @@ export default function InstallSnippet({ mode, token, userId }: InstallSnippetPr
       </div>
 
       {mode === "hosted" && token && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
-          <strong>Save your token now.</strong> It will not be shown again.
-          Token: <code className="font-mono">{token}</code>
+        <div className="rounded-[10px] border border-brand-200 bg-brand-50 p-3 text-[13px] text-brand-text">
+          <span className="font-medium">Save your token now.</span> It will not
+          be shown again. Token: <code className="font-mono">{token}</code>
         </div>
       )}
 
       {detected ? (
-        <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
-          <span className="text-lg">✓</span>
-          <span className="font-medium">Connection detected! ato-mcp is running.</span>
+        <div className="flex items-center gap-2 rounded-[10px] border border-zinc-200 bg-zinc-50 px-4 py-3 text-[13px] text-zinc-900">
+          <span aria-hidden="true">✓</span>
+          <span className="font-medium">Connection detected — ato-mcp is running.</span>
         </div>
       ) : (
-        <div className="flex items-center gap-2 text-gray-500 text-sm">
-          <span className="animate-pulse">⬤</span>
+        <div className="flex items-center gap-2 font-mono text-xs text-zinc-400">
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand" aria-hidden="true" />
           <span>Waiting for connection…</span>
         </div>
       )}

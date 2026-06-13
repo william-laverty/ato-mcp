@@ -5,7 +5,18 @@ export const alt = "ato-mcp — The Australian tax knowledge base for AI agents"
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OgImage() {
+const CHIPS = ["ITAA 1997 · s 8-1", "PCG 2023/1", "TR 93/30"];
+
+export default async function OgImage() {
+  const [regular, medium] = await Promise.all([
+    fetch(new URL("./fonts/Switzer-Regular.otf", import.meta.url)).then((r) =>
+      r.arrayBuffer(),
+    ),
+    fetch(new URL("./fonts/Switzer-Medium.otf", import.meta.url)).then((r) =>
+      r.arrayBuffer(),
+    ),
+  ]);
+
   return new ImageResponse(
     (
       <div
@@ -16,38 +27,50 @@ export default function OgImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 72,
-          backgroundColor: "#05030f",
-          backgroundImage:
-            "radial-gradient(60% 50% at 12% 24%, rgba(255,138,60,0.22) 0%, transparent 64%)," +
-            "radial-gradient(70% 55% at 55% 0%, rgba(122,92,255,0.3) 0%, transparent 70%)," +
-            "radial-gradient(46% 38% at 85% 90%, rgba(80,57,189,0.28) 0%, transparent 66%)",
-          color: "#f4f2f7",
-          fontFamily: "sans-serif",
+          backgroundColor: "#ffffff",
+          color: "#18181b",
+          fontFamily: "Switzer",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 16,
-              backgroundColor: "#5039bd",
+              width: 52,
+              height: 52,
+              borderRadius: 14,
+              backgroundColor: "#fa520f",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 30,
-              color: "#f4f2f7",
+              gap: 7,
             }}
           >
-            ◈
+            <div
+              style={{
+                width: 9,
+                height: 9,
+                borderRadius: 9999,
+                backgroundColor: "#ffffff",
+              }}
+            />
+            <div
+              style={{
+                width: 13,
+                height: 7,
+                borderRadius: 9999,
+                backgroundColor: "#ffffff",
+              }}
+            />
           </div>
-          <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: -1 }}>ato-mcp</div>
+          <div style={{ fontSize: 32, fontWeight: 500, letterSpacing: -0.5 }}>
+            ato-mcp
+          </div>
           <div
             style={{
               marginLeft: 8,
-              fontSize: 18,
-              color: "rgba(244,242,247,0.65)",
-              border: "1px solid rgba(255,255,255,0.2)",
+              fontSize: 17,
+              color: "#71717a",
+              border: "1px solid #e4e4e7",
               borderRadius: 999,
               padding: "6px 16px",
             }}
@@ -57,34 +80,70 @@ export default function OgImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          <div style={{ fontSize: 64, fontWeight: 600, letterSpacing: -2, lineHeight: 1.05, maxWidth: 980 }}>
-            Your AI agent just became fluent in Australian tax.
+          <div
+            style={{
+              fontSize: 64,
+              fontWeight: 500,
+              letterSpacing: -1.6,
+              lineHeight: 1.06,
+              maxWidth: 950,
+              color: "#18181b",
+            }}
+          >
+            Your AI agent, fluent in Australian tax
           </div>
-          <div style={{ fontSize: 26, color: "rgba(244,242,247,0.7)", maxWidth: 900 }}>
-            Cited retrieval over 29,000+ ATO documents, ITAA 1997 & rulings — plus tax
-            workflow tools that know your situation. Local or hosted.
+          <div
+            style={{
+              fontSize: 25,
+              fontWeight: 400,
+              color: "#71717a",
+              maxWidth: 880,
+              lineHeight: 1.4,
+            }}
+          >
+            Cited retrieval over 29,000+ ATO documents, the ITAA 1997 and 2,127
+            public rulings — plus tax workflow tools that know your situation.
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 12 }}>
-          {["ITAA 1997 · s 8-1", "TR 97/12", "PCG 2023/1", "Div 40", "GSTR 2000/27"].map((c) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {CHIPS.map((c) => (
             <div
               key={c}
               style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 9,
                 fontSize: 18,
-                color: "#d8cdf7",
-                backgroundColor: "rgba(122,92,255,0.14)",
-                border: "1px solid rgba(199,148,255,0.35)",
-                borderRadius: 999,
-                padding: "8px 18px",
+                color: "#c2410c",
+                backgroundColor: "#fff3ec",
+                borderRadius: 8,
+                padding: "9px 18px",
               }}
             >
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 9999,
+                  backgroundColor: "#fa520f",
+                }}
+              />
               {c}
             </div>
           ))}
+          <div style={{ marginLeft: "auto", fontSize: 18, color: "#a1a1aa" }}>
+            ato-mcp.com.au
+          </div>
         </div>
       </div>
     ),
-    { ...size },
+    {
+      ...size,
+      fonts: [
+        { name: "Switzer", data: regular, weight: 400, style: "normal" },
+        { name: "Switzer", data: medium, weight: 500, style: "normal" },
+      ],
+    },
   );
 }

@@ -26,11 +26,11 @@ export default async function EditFactsPage() {
   const initialValues = (factsData as { facts?: UserFacts } | null)?.facts ?? undefined;
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4">
+    <main className="min-h-screen bg-white px-4 py-14">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Edit tax profile</h1>
-          <Link href="/account" className="text-sm text-gray-500 hover:text-gray-700">
+          <h1 className="text-2xl font-normal tracking-tight1 text-zinc-900">Edit tax profile</h1>
+          <Link href="/account" className="text-sm text-zinc-500 transition-colors hover:text-zinc-900">
             ← Back to account
           </Link>
         </div>

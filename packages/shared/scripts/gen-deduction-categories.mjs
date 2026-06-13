@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const SPEC = new URL("../../../docs/superpowers/specs/2026-06-03-deduction-discovery-taxonomy.json", import.meta.url);
+const SPEC = new URL("./deduction-taxonomy.json", import.meta.url);
 const OUT = new URL("../src/data/deduction-categories.ts", import.meta.url);
 
 const KIND = {
@@ -55,7 +55,7 @@ const rows = raw.map((c) => ({
 }));
 
 const header = `// GENERATED FILE — do not edit by hand.
-// Source: docs/superpowers/specs/2026-06-03-deduction-discovery-taxonomy.json
+// Source: packages/shared/scripts/deduction-taxonomy.json
 // Regenerate: pnpm --filter @ato-mcp/shared gen:deductions
 import type { DeductionCategory } from "../tools/deduction_discovery.js";
 

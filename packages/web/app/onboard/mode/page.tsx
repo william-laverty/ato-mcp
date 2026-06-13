@@ -15,8 +15,8 @@ export default async function ModePage() {
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
       <div className="max-w-3xl w-full space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">Choose your setup</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-normal tracking-tight1 text-zinc-900">Choose your setup</h1>
+          <p className="text-[15px] text-zinc-500">
             How do you want to run the ato-mcp server?
           </p>
         </div>

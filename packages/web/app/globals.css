@@ -3,22 +3,14 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------------------
-   ato-mcp design system — NOX-family aesthetic.
-   Dark hero cards over layered radial meshes; light bento sections with a
-   dot-grid texture; glass pill navigation; pill CTAs with a shine sweep;
-   oversized fluid type with italic serif accents.
+   ato-mcp design system — "Clinical".
+   One grotesque (Switzer) at regular weight, zinc neutrals on white, a single
+   vermillion accent used sparingly (citation chips, dots, the logo). Flat pill
+   buttons, hairline borders, light code blocks. Hierarchy from size + space.
 --------------------------------------------------------------------------- */
 
 :root {
-  --ink: #0b0b14;
-  --paper: #f5f5f7;
-  --night: #05030f;
-  --brand: #5039bd;
-  --brand-bright: #7a5cff;
-  --brand-soft: #c794ff;
-  --ember: #ff9a3c;
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -32,279 +24,96 @@ body {
 }
 
 ::selection {
-  background: var(--brand);
+  background: #fa520f;
   color: #fff;
 }
 
-/* --- Hero mesh: warm ember + cool violet radials over near-black ---------- */
-.mesh-night {
-  background-color: var(--night);
-  background-image:
-    radial-gradient(60% 50% at 12% 24%, rgba(255, 138, 60, 0.2) 0%, transparent 64%),
-    radial-gradient(52% 44% at 88% 86%, rgba(255, 160, 90, 0.14) 0%, transparent 60%),
-    radial-gradient(70% 55% at 52% 10%, rgba(122, 92, 255, 0.26) 0%, transparent 70%),
-    radial-gradient(46% 38% at 30% 78%, rgba(80, 57, 189, 0.22) 0%, transparent 66%);
-}
+@layer components {
+  /* --- Buttons: pill, flat, weight 400 -------------------------------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-normal transition-colors duration-200;
+  }
+  .btn-primary {
+    @apply bg-zinc-900 text-white hover:bg-zinc-700;
+  }
+  .btn-outline {
+    @apply border border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400;
+  }
+  .btn-fill {
+    @apply bg-zinc-100 text-zinc-900 hover:bg-zinc-200;
+  }
 
-.mesh-dark-band {
-  background-color: #07051a;
-  background-image:
-    radial-gradient(55% 60% at 80% 10%, rgba(122, 92, 255, 0.18) 0%, transparent 65%),
-    radial-gradient(50% 55% at 8% 90%, rgba(255, 138, 60, 0.1) 0%, transparent 60%);
-}
+  /* --- Cards: superpower chrome — soft border, layered shadow ----------- */
+  .card {
+    @apply rounded-[15px] border border-black/5 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.1)];
+  }
+  .card-hover {
+    @apply transition-shadow duration-300 hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_16px_40px_-16px_rgba(0,0,0,0.16)];
+  }
 
-/* Fine noise so the meshes never band */
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+  /* --- Tile: visual-first area inside/as a card (image-card pattern) ---- */
+  .tile {
+    @apply relative overflow-hidden rounded-[15px] border border-black/[0.04] bg-zinc-50;
+  }
 
-/* --- Dot-grid texture for light cards (masked to the lower third) -------- */
-.dotgrid {
-  position: relative;
-}
-.dotgrid::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.55) 1px, transparent 1.4px);
-  background-size: 0.8rem 0.8rem;
-  -webkit-mask-image: linear-gradient(to top, #000, transparent 72%);
-  mask-image: linear-gradient(to top, #000, transparent 72%);
-}
+  /* --- Citation chip: the one place the accent lives ------------------- */
+  .chip {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-[5px] bg-brand-50 px-2 py-0.5 font-mono text-[0.6875rem] text-brand-text;
+  }
+  .chip-dot {
+    @apply h-[5px] w-[5px] rounded-full bg-brand;
+  }
 
-/* --- Cards -------------------------------------------------------------- */
-.card-light {
-  background: var(--paper);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 1.1rem;
-  transition:
-    translate 0.3s var(--ease-smooth),
-    border-color 0.3s var(--ease-smooth),
-    box-shadow 0.3s var(--ease-smooth);
-}
-.card-light:hover {
-  translate: 0 -0.18rem;
-  border-color: rgba(0, 0, 0, 0.11);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.05),
-    0 6px 12px -6px rgba(0, 0, 0, 0.1),
-    0 18px 36px -18px rgba(0, 0, 0, 0.22);
-}
+  /* --- Code: light, never black ---------------------------------------- */
+  .code-block {
+    @apply overflow-x-auto rounded-[10px] border border-zinc-200 bg-zinc-50 p-4 font-mono text-xs leading-relaxed text-zinc-700;
+  }
 
-.card-night {
-  background: rgba(10, 7, 30, 0.78);
-  border: 1px solid rgba(199, 148, 255, 0.16);
-  border-radius: 1.1rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(14px);
-  transition:
-    translate 0.3s var(--ease-smooth),
-    border-color 0.3s var(--ease-smooth),
-    box-shadow 0.3s var(--ease-smooth);
-}
-.card-night:hover {
-  translate: 0 -0.18rem;
-  border-color: rgba(199, 148, 255, 0.34);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(216, 205, 247, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
+  /* --- Micro label ------------------------------------------------------ */
+  .eyebrow {
+    @apply font-mono text-[0.6875rem] font-normal uppercase tracking-[0.08em] text-zinc-400;
+  }
 
-/* --- Pill buttons with shine sweep --------------------------------------- */
-.btn {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition:
-    transform 0.3s var(--ease-smooth),
-    box-shadow 0.3s var(--ease-smooth),
-    background-color 0.3s var(--ease-smooth),
-    border-color 0.3s var(--ease-smooth);
-}
-.btn:hover {
-  transform: translateY(-1px);
-}
-.btn:active {
-  transform: translateY(0);
-}
-.btn::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  height: 100%;
-  width: 60%;
-  transform: skewX(-18deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
-  transition: none;
-}
-.btn:hover::after {
-  animation: btnShine 1.1s var(--ease-smooth);
-}
-@keyframes btnShine {
-  from { left: -120%; }
-  to { left: 160%; }
-}
+  /* --- Forms ------------------------------------------------------------ */
+  .label {
+    @apply mb-1 block text-[13px] font-medium text-zinc-900;
+  }
+  .input {
+    @apply block w-full rounded-[10px] border border-zinc-300 bg-white px-3 py-2 text-[15px] text-zinc-900 placeholder-zinc-400 outline-none transition-shadow focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10;
+  }
 
-.btn-solid {
-  background: linear-gradient(180deg, #6a4fe8 0%, var(--brand) 100%);
-  color: #fff;
-  box-shadow: 0 8px 20px rgba(33, 4, 104, 0.35);
-}
-.btn-solid:hover {
-  box-shadow: 0 12px 28px rgba(33, 4, 104, 0.45);
-}
-
-.btn-ghost-dark {
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #f4f2f7;
-  background: rgba(255, 255, 255, 0.04);
-}
-.btn-ghost-dark:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.45);
-}
-
-.btn-ghost-light {
-  border: 1px solid rgba(11, 11, 20, 0.16);
-  color: var(--ink);
-  background: #fff;
-}
-.btn-ghost-light:hover {
-  border-color: rgba(11, 11, 20, 0.34);
-}
-
-/* --- Micro label (uppercase eyebrow) ------------------------------------- */
-.eyebrow {
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-}
-
-/* --- Gradient number / text ---------------------------------------------- */
-.grad-text {
-  background: linear-gradient(180deg, #1d1d1f 0%, var(--brand) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.grad-text-night {
-  background: linear-gradient(180deg, #f4f2f7 10%, var(--brand-soft) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* --- Badges ------------------------------------------------------------ */
+  .badge {
+    @apply inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.05em] text-zinc-700;
+  }
+  .badge-accent {
+    @apply inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.05em] text-brand-text;
+  }
 }
 
 /* --- Entrance reveals (staggered via --reveal-delay) ---------------------- */
 @keyframes revealUp {
   from {
     opacity: 0;
-    transform: translateY(22px);
-    filter: blur(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 .reveal {
-  animation: revealUp 0.8s var(--ease-spring) both;
+  animation: revealUp 0.5s var(--ease-out) both;
   animation-delay: var(--reveal-delay, 0s);
 }
 
 /* Scroll-triggered reveals for below-the-fold sections (no JS) */
 @supports (animation-timeline: view()) {
   .reveal-scroll {
-    animation: revealUp 0.9s var(--ease-spring) both;
+    animation: revealUp 0.6s var(--ease-out) both;
     animation-timeline: view();
-    animation-range: entry 0% entry 38%;
+    animation-range: entry 0% entry 30%;
   }
-}
-
-/* --- Citation chips ------------------------------------------------------- */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(199, 148, 255, 0.3);
-  background: rgba(122, 92, 255, 0.12);
-  color: #d8cdf7;
-  padding: 0.3rem 0.75rem;
-  font-size: 0.72rem;
-  white-space: nowrap;
-}
-.chip-dot {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 9999px;
-  background: var(--brand-soft);
-  box-shadow: 0 0 8px rgba(199, 148, 255, 0.9);
-}
-
-/* --- Marquee ---------------------------------------------------------------
-   The track holds two copies of the chip row; translating -50% loops it. */
-.marquee {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  gap: 0.75rem;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-/* --- Terminal mock -------------------------------------------------------- */
-.term {
-  background: rgba(5, 3, 15, 0.9);
-  border: 1px solid rgba(199, 148, 255, 0.22);
-  border-radius: 1rem;
-  box-shadow:
-    0 24px 60px -24px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-}
-.term-cursor::after {
-  content: "▋";
-  margin-left: 2px;
-  color: var(--brand-soft);
-  animation: blink 1.1s steps(1) infinite;
-}
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* --- Footer wordmark ------------------------------------------------------ */
-.wordmark {
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.82;
-  background: linear-gradient(180deg, rgba(244, 242, 247, 0.22) 0%, rgba(244, 242, 247, 0.05) 90%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  user-select: none;
 }
 
 /* --- Reduced motion -------------------------------------------------------- */
@@ -313,18 +122,7 @@ body {
     scroll-behavior: auto;
   }
   .reveal,
-  .reveal-scroll,
-  .btn::after,
-  .term-cursor::after {
+  .reveal-scroll {
     animation: none !important;
-  }
-  .marquee-track {
-    animation: none !important;
-  }
-  .card-light:hover,
-  .card-night:hover,
-  .btn:hover {
-    translate: none;
-    transform: none;
   }
 }

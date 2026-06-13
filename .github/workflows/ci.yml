@@ -16,6 +16,13 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The OnnxEmbedder test downloads MiniLM from Hugging Face at test time;
+      # cache the model so CI isn't exposed to HF rate limiting (429s).
+      # Placed after install so pnpm's node_modules relinking can't wipe it.
+      - uses: actions/cache@v4
+        with:
+          path: node_modules/.pnpm/**/@xenova/transformers/.cache
+          key: hf-models-${{ runner.os }}-minilm-l6-v2
       - run: pnpm -r build
       - run: pnpm -r typecheck
       - run: pnpm -r test

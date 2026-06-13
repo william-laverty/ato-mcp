@@ -52,62 +52,69 @@ const notStored = [
   "Information from third-party services",
 ];
 
+const linkCls =
+  "text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900";
+
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto min-h-screen max-w-3xl px-5 pb-24 pt-10">
-      <div className="max-w-3xl mx-auto space-y-10">
-        <div className="space-y-2">
-          <Link href="/" className="text-sm text-blue-600 hover:underline">
+    <main className="mx-auto min-h-screen max-w-3xl px-5 pb-24 pt-14">
+      <div className="space-y-10">
+        <div className="space-y-3">
+          <Link href="/" className="text-sm text-zinc-500 transition-colors hover:text-zinc-900">
             ← Home
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Privacy Policy</h1>
-          <p className="text-gray-500 text-sm">Last updated: 26 May 2026</p>
+          <h1 className="text-3xl font-normal tracking-tight1 text-zinc-900">Privacy Policy</h1>
+          <p className="text-sm text-zinc-400">Last updated: 26 May 2026</p>
         </div>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">1. Overview</h2>
-          <p className="text-gray-700">
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">1. Overview</h2>
+          <p className="text-[15px] leading-relaxed text-zinc-700">
             ato-mcp.com.au (&quot;we&quot;, &quot;our&quot;, &quot;the service&quot;) is an independent tool that
             provides access to publicly available Australian Taxation Office
             information via the Model Context Protocol. We collect minimal
             personal information to deliver a personalised experience.
           </p>
-          <p className="text-gray-700">
+          <p className="text-[15px] leading-relaxed text-zinc-700">
             We are not affiliated with the Australian Taxation Office. This
             service operates under Australian privacy law principles.
           </p>
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">
             2. Information we collect
           </h2>
-          <p className="text-gray-700">
+          <p className="text-[15px] leading-relaxed text-zinc-700">
             When you create an account, we collect your email address and the
             following tax profile fields. All fields are{" "}
-            <strong>optional</strong> — you can use the service without
-            completing your profile.
+            <span className="font-medium">optional</span> — you can use the
+            service without completing your profile.
           </p>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
+          <div className="card overflow-hidden p-0">
+            <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left px-4 py-2 border border-gray-200 font-semibold text-gray-700">
+                <tr className="border-b border-zinc-200 bg-zinc-50">
+                  <th className="eyebrow px-4 py-2.5 text-left">
                     Field
                   </th>
-                  <th className="text-left px-4 py-2 border border-gray-200 font-semibold text-gray-700">
+                  <th className="eyebrow px-4 py-2.5 text-left">
                     Description
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {schemaKeys.map((key: string) => (
-                  <tr key={key} data-field={key} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border border-gray-200 font-mono text-xs text-gray-600">
+                {schemaKeys.map((key: string, idx: number) => (
+                  <tr
+                    key={key}
+                    data-field={key}
+                    className={idx % 2 === 1 ? "bg-zinc-50/70" : "bg-white"}
+                  >
+                    <td className="px-4 py-2 font-mono text-xs text-zinc-900">
                       {key}
                     </td>
-                    <td className="px-4 py-2 border border-gray-200 text-gray-700">
+                    <td className="px-4 py-2 text-[13px] text-zinc-500">
                       {(fieldDescriptions as Record<string, string>)[key] ?? key}
                     </td>
                   </tr>
@@ -118,10 +125,10 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">
             3. What we do not store
           </h2>
-          <ul className="list-disc pl-5 space-y-1 text-gray-700">
+          <ul className="list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-zinc-700">
             {notStored.map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -129,14 +136,14 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">
             4. Event types logged
           </h2>
-          <p className="text-gray-700">
+          <p className="text-[15px] leading-relaxed text-zinc-700">
             We log the following events for security and debugging purposes.
             Logs are retained for 90 days.
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-gray-700">
+          <ul className="list-disc space-y-1 pl-5 text-[15px] leading-relaxed text-zinc-700">
             {eventTypes.map((event) => (
               <li key={event}>{event}</li>
             ))}
@@ -144,12 +151,12 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">
             5. Data retention &amp; deletion
           </h2>
-          <p className="text-gray-700">
+          <p className="text-[15px] leading-relaxed text-zinc-700">
             You can delete your account at any time from your{" "}
-            <Link href="/account" className="text-blue-600 hover:underline">
+            <Link href="/account" className={linkCls}>
               account page
             </Link>
             . Deletion is permanent and cascades to all associated records
@@ -158,21 +165,18 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">6. Contact</h2>
-          <p className="text-gray-700">
+          <h2 className="text-lg font-medium tracking-tight1 text-zinc-900">6. Contact</h2>
+          <p className="text-[15px] leading-relaxed text-zinc-700">
             For privacy enquiries, contact us at{" "}
-            <a
-              href="mailto:privacy@ato-mcp.com.au"
-              className="text-blue-600 hover:underline"
-            >
+            <a href="mailto:privacy@ato-mcp.com.au" className={linkCls}>
               privacy@ato-mcp.com.au
             </a>
             .
           </p>
         </section>
 
-        <div className="border-t border-gray-100 pt-6 text-xs text-gray-400">
-          <Link href="/terms" className="hover:text-gray-600">
+        <div className="border-t border-zinc-100 pt-6 text-xs text-zinc-400">
+          <Link href="/terms" className="transition-colors hover:text-zinc-900">
             Terms of Service
           </Link>
         </div>

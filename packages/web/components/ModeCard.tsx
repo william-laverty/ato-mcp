@@ -30,27 +30,27 @@ export default function ModeCard({
 
   return (
     <div
-      className={`relative flex flex-col rounded-xl border-2 p-6 transition-colors cursor-pointer hover:border-blue-400 ${
-        recommended ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white"
+      className={`card card-hover relative flex cursor-pointer flex-col p-6 ${
+        recommended ? "!border-zinc-900" : ""
       }`}
       onClick={handleSelect}
     >
       {recommended && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+          <span className="rounded-full bg-zinc-900 px-3 py-1 font-mono text-[0.625rem] uppercase tracking-[0.05em] text-white">
             Recommended
           </span>
         </div>
       )}
 
-      <div className="space-y-3 flex-1">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-600">{description}</p>
+      <div className="flex-1 space-y-3">
+        <h3 className="text-lg font-medium tracking-tight1 text-zinc-900">{title}</h3>
+        <p className="text-sm text-zinc-500">{description}</p>
 
         <ul className="space-y-2">
           {features.map((feature) => (
-            <li key={feature} className="flex items-start gap-2 text-sm text-gray-700">
-              <span className="text-green-500 mt-0.5">✓</span>
+            <li key={feature} className="flex items-start gap-2 text-sm text-zinc-700">
+              <span className="mt-0.5 text-zinc-400">✓</span>
               <span>{feature}</span>
             </li>
           ))}
@@ -59,11 +59,7 @@ export default function ModeCard({
 
       <button
         disabled={loading}
-        className={`mt-6 w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 ${
-          recommended
-            ? "bg-blue-600 text-white hover:bg-blue-500"
-            : "bg-gray-900 text-white hover:bg-gray-700"
-        }`}
+        className="btn btn-primary mt-6 w-full px-4 py-2.5 text-sm disabled:opacity-50"
       >
         {loading ? "Setting up…" : `Choose ${title}`}
       </button>

@@ -1,26 +1,22 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk, Instrument_Serif, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Nav } from "../components/site/Nav";
 import { Footer } from "../components/site/Footer";
 import "./globals.css";
 
-const sans = Hanken_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+// Switzer is self-hosted (Fontshare / ITF Free Font License — see app/fonts/FFL.txt).
+const sans = localFont({
+  src: [
+    { path: "./fonts/Switzer-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/Switzer-Medium.woff2", weight: "500", style: "normal" },
+  ],
   variable: "--font-sans",
   display: "swap",
 });
 
-const serif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
-const mono = IBM_Plex_Mono({
+const mono = Geist_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
@@ -101,14 +97,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en-AU" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
-      <body className="min-h-screen bg-white font-sans text-ink antialiased">
+    <html lang="en-AU" className={`${sans.variable} ${mono.variable}`}>
+      <body className="min-h-screen bg-white font-sans text-zinc-900 antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
         <Nav />
-        <div className="pt-[4.2rem]">{children}</div>
+        <div className="pt-16">{children}</div>
         <Footer />
         <Analytics />
       </body>

@@ -6,14 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `ato-mcp` is a local-first MCP server for the Australian Taxation Office corpus. It scrapes ATO website + ITAA 1997 legislation + ATO public rulings, embeds + indexes them, and exposes search/retrieval tools to AI agents over the MCP stdio protocol. The hosted variant runs the same tool code on Vercel functions against Supabase Postgres + pgvector.
 
-Working name in the repo is `@ato-mcp/*` for npm package scopes. Public-facing domain is **ato-mcp.com.au** (canonical) / **ato-mcp.com** (301 redirect). The two are wired up in the Vercel `ato-mcp-web` project.
-
-Always read these before making structural decisions:
-
-- `HANDOFF.md` — running log of what's done, what's broken, what's deferred. Update it when finishing a phase.
-- `RUNBOOK.md` — deployment steps for the user (Supabase / Vercel setup).
-- `docs/superpowers/specs/` — design docs per phase (v0.1, v0.2, v0.3). The v0.2/v0.3 specs are the source of truth for non-goals as well as goals.
-- `docs/superpowers/plans/` — implementation plans per phase.
+npm package scope is `@ato-mcp/*`. Public-facing domain is **ato-mcp.com.au** (canonical) / **ato-mcp.com** (301 redirect).
 
 ## Monorepo layout (pnpm workspaces, pnpm@10.28.2)
 
@@ -25,7 +18,7 @@ packages/
 │                get_user_facts) + ANZSIC code list + UserFactsSchema.
 │                Consumed by mcp, backend, and web.
 ├── mcp/         Local MCP server (Node 22+). SqliteStore + OnnxEmbedder for
-│                local mode, RemoteStore for hosted mode. CLI dispatcher
+│                local mode, RemoteToolForwarder for hosted mode. CLI dispatcher
 │                (`ato-mcp <subcommand>`). Hosts the import-corpus script
 │                under scripts/import-corpus.ts.
 ├── pipeline/    Python (uv-managed) corpus builder. Sources: ato.gov.au
@@ -44,7 +37,7 @@ packages/
 
 ## Toolchain and versions
 
-- **Node 22+** (Vercel deploys on 24; better-sqlite3 lacks prebuilts → see "Native deps")
+- **Node 22+** (Vercel deploys on 24; better-sqlite3 lacks prebuilts → see Gotchas)
 - **pnpm 10.28.2** (pinned via `packageManager`; CI/Vercel auto-pick this version)
 - **Python 3.12+** with **uv** for the pipeline package
 - **TypeScript 5.6.3** (root devDep, inherited by workspaces)
@@ -84,28 +77,6 @@ SUPABASE_SECRET_KEY='sb_secret_...' \
   pnpm --filter @ato-mcp/mcp exec tsx scripts/import-corpus.ts
 ```
 
-## Current deployment state
-
-| Where | What | Status |
-|---|---|---|
-| GitHub | `william-laverty/ato-mcp` (private) | live |
-| Supabase | project `ato-mcp` (`pznbngklxhkyigmlvruk`), ap-southeast-2 | live; 4 migrations applied; pgvector enabled |
-| Vercel `ato-mcp-web` | Next.js app, root `packages/web` | live at `ato-mcp.com.au` (canonical) |
-| Vercel `ato-mcp-backend` | Functions, root `packages/backend` | live at `api.ato-mcp.com.au`; **4 serverless functions** (dynamic `api/[tool].ts` dispatcher + facts/usage_event/onboard_poll) |
-| Local corpus | `~/Library/Application Support/ato-mcp/live/ato.sqlite` | 29,180 docs / 224k chunks (stale v0.2 build locally) |
-| Supabase corpus | `docs` + `chunks` + `anchors` + `citations` + `definitions` + `thresholds` | 29,181 docs / 224,585 chunks (complete; 8 thresholds, 23,267 citations) |
-
-The Supabase team ID for the Vercel MCP is `team_UWCodSopgUHNhnJCAGNsJ1uA`. Project IDs: `prj_xREEymkcKg1VwkgvoTXbQjYJIjHt` (web), `prj_ok6AxQ6e1iH8NtV33zpgGoNiYh1t` (backend).
-
-**Operational note (v1.0):** the per-tool handlers were consolidated into one dynamic `api/[tool].ts` dispatcher, so the backend ships **4 functions** and no longer presses the Vercel Hobby 12-function cap (the project currently runs on Pro regardless). New tools are added to the dispatcher's `TOOLS` map, not as new files — keep it that way.
-
-## MCP servers available
-
-Both Supabase and Vercel MCPs are connected to this Claude Code session. Use them directly instead of asking the user to run dashboards.
-
-- **Supabase MCP** (`mcp__plugin_supabase_supabase__*`): `list_projects`, `list_tables`, `list_extensions`, `execute_sql` (DML — for iteration), `apply_migration` (DDL — writes migration history), `get_advisors`, `get_publishable_keys`, `get_project_url`. Project ID: `pznbngklxhkyigmlvruk`. Service role / secret key is NOT exposed via MCP; the user must paste it or run the import locally.
-- **Vercel MCP** (`mcp__plugin_vercel_vercel__*`): `list_projects`, `list_deployments`, `get_deployment`, `get_deployment_build_logs`, `get_runtime_logs`, `get_project`. Use `get_runtime_logs` with `level=["error","fatal"]` to debug live function crashes.
-
 ## Architecture: how the pieces fit
 
 ```
@@ -121,7 +92,7 @@ Both Supabase and Vercel MCPs are connected to this Claude Code session. Use the
 │                                                                │
 │  if mode === "local":                                          │
 │    SqliteStore(~/.ato-mcp/live/ato.sqlite)                     │
-│    + OnnxEmbedder (Granite/MiniLM via @xenova/transformers)    │
+│    + OnnxEmbedder (MiniLM via @xenova/transformers)            │
 │    + tools from @ato-mcp/shared/tools                          │
 │                                                                │
 │  if mode === "hosted":                                         │
@@ -151,7 +122,7 @@ Every retrieval tool (search/get_chunks/stats/get_definition/get_doc/get_doc_anc
 Adapters:
 
 - `packages/mcp/src/store/sqlite.ts` — local SQLite + sqlite-vec
-- `packages/mcp/src/store/remote.ts` — HTTP forwarder for hosted mode (needs refactor; see KNOWN ISSUES)
+- `packages/mcp/src/lib/remote-tools.ts` — HTTP tool forwarder for hosted mode
 - `packages/backend/src/supabase-store.ts` — Supabase RPC calls
 
 ### Backend handler convention
@@ -174,28 +145,16 @@ Public URLs strip the `/api` prefix:
 - `api.ato-mcp.com.au/<tool>` → `api/[tool].ts` (all 13 tools)
 - `api.ato-mcp.com.au/facts|usage_event|onboard_poll` → their own handlers
 
-There is **no `/v1/` versioning** — the spec was updated to drop it. Don't reintroduce versioned paths.
+There is **no `/v1/` versioning** — don't reintroduce versioned paths.
 
 ## Implementation status
 
-### Done (v0.1 → v0.3 Phases A–D)
-
-- v0.1 scaffolding: monorepo, ATO sitemap scrape, sqlite-vec corpus, MCP `search`/`get_chunks`/`fetch`/`stats`
-- v0.2 wider corpus: ITAA 1997 EPUB ingest (4638 sections + 1929 statutory definitions), 8 threshold extractors, law.ato.gov.au public rulings (2127 docs across 10 ruling types), GitHub release flow scaffolding
-- v0.3 Phase A: shared-core refactor (tools moved out of mcp into shared, Store/Embedder interfaces)
-- v0.3 Phase B: UserFactsSchema (25 fields, ABN checksum, ANZSIC validation), `get_user_facts` tool, bundled ANZSIC list
-- v0.3 Phase C: Next.js web app, 5-step onboarding flow, schema-driven privacy page, `ato-mcp onboard` CLI
-- v0.3 Phase D: Vercel functions (12 handlers), SupabaseStore, 4 SQL migrations (corpus, users, RPC functions, RLS), Web→Node adapter
-- Live deployment: web + backend on Vercel, Supabase project with corpus + RLS, real bearer-token auth works end-to-end (verified via `curl /stats`)
-
-### Known issues — all v0.3 issues resolved
-
-1. ~~RemoteStore endpoint name mismatch~~ — fixed. `packages/mcp/src/lib/remote-tools.ts` (RemoteToolForwarder) now forwards tool calls (not Store calls) to backend endpoints. Verified end-to-end.
-2. ~~Vector / hybrid search on the backend is untested~~ — fixed. WasmEmbedder writes to `/tmp/transformers-cache` (Vercel's only writable dir) so the model download succeeds, and the silent `!SUPABASE_URL` mock fallback was removed (only `MOCK_SUPABASE=1` triggers the stub now). Pure-vector mode returns ~0.99 cosine matches in production.
-3. ~~Definitions reference non-existent dictionary doc~~ — fixed. `_extract_definitions` in the legislation pipeline now emits a synthetic parent Doc for `legis:{series}/dictionary`, and a regression test asserts every definition references an emitted doc. A one-off SQL insert handled the in-flight Supabase corpus.
-4. ~~Backend handler unit tests reference old `api/v1/` paths~~ — fixed. URL paths stripped of `/v1/` prefix in `packages/backend/test/handlers.test.ts`; 40/40 tests pass.
-5. ~~Schema-version label drift between pipeline / manifest / Supabase~~ — fixed. Single `CORPUS_SCHEMA_VERSION = "0.3.0"` constant in `packages/pipeline/src/ato_pipeline/package.py`, consumed by both `cli.py` and `manifest.py`. The existing local SQLite's `meta.schema_version` was patched in place.
-6. ~~3 of 8 threshold extractors fail against live ATO pages~~ — fixed. All 8 now extract correctly (8/8 verified against live ATO 2026-05-26). Three URLs migrated (`instant_asset_write_off`, `super_concessional_cap`, `low_income_tax_offset_max`, `small_business_income_tax_offset_cap`) and patterns tightened for `gst_registration_threshold_nonprofit`, LITO max (was matching the $66,667 income cutoff instead of the $700 offset), and SBITO cap. Bump the literal in `super_concessional_cap` when rolling the catalogue forward each FY.
+- v0.1: monorepo, ATO sitemap scrape, sqlite-vec corpus, MCP `search`/`get_chunks`/`fetch`/`stats`
+- v0.2: ITAA 1997 EPUB ingest (4,638 sections + 1,929 statutory definitions), 8 threshold extractors, law.ato.gov.au public rulings (2,127 docs across 10 ruling series), GitHub release flow
+- v0.3: shared-core refactor, UserFactsSchema (25 fields, ABN checksum, ANZSIC validation) + `get_user_facts`, Next.js web app + onboarding, Vercel functions + SupabaseStore + 4 SQL migrations, live deployment
+- v0.4: four workflow tools — `deduction_discovery` (59-category cited taxonomy), `depreciation_helper` (deterministic PC/DV/IAWO/SBE-pool/Div 43 schedules), `bas_prep_checklist` (tiered, cited), `audit_risk_check` (~13 red-flag rules with risk bands). All reuse the `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`) and are registered in `packages/mcp/src/server.ts` + the backend dispatcher.
+- v1.0: public launch — backend consolidated to 4 serverless functions, citation graph populated (23,267 edges), authenticated production smoke green
+- 2026-06: website redesigned to the "Clinical" design system (Switzer + Geist Mono, zinc + vermillion accent, fully light)
 
 ### Not yet implemented (v0.5 and beyond)
 
@@ -203,31 +162,16 @@ There is **no `/v1/` versioning** — the spec was updated to drop it. Don't rei
 - AAT/Federal Court case summaries
 - State revenue offices (8 jurisdictions)
 - WordNet ordinary-meaning fallback for `get_definition`
-- Real RLS verification test in CI
-- **Better embedding model than MiniLM-L6-v2**. Granite r2 small (ModernBERT) was attempted and reverted — the only transformers.js release with ModernBERT support (`@huggingface/transformers` v3+) bundles onnxruntime-node with too many platform binaries to fit under Vercel's 250MB function size limit. Architectural options to explore: (a) external embedding API (Together AI / Cohere) so the function bundle stays small, (b) bundle slimming via tight excludeFiles + only the linux/x64 onnxruntime binary, (c) move inference off Vercel functions to a Cloudflare Worker / Fly.io / etc. with a larger size budget.
-
-### Done since v0.3 ship
-
-- Citation graph populated: 23,267 outbound refs (13,388 ITAA 1997 sections + 9,879 ATO rulings) extracted by `packages/pipeline/src/ato_pipeline/extractors/citations.py`. Pipeline emits them inline now; one-shot `scripts/populate_citations.py` filled the in-flight Supabase corpus.
-- **`deduction_discovery` (v0.4 tool 1 of 4) shipped.** Curated 59-row taxonomy (`packages/shared/src/data/deduction-categories.ts`, generated from the verified spec JSON) filtered by user facts → fresh citations via the new shared `resolveCitations()` spine (`packages/shared/src/lib/citations.ts`) → live thresholds → discrete confidence. Branches across all taxpayer structures, tags personal vs business_entity returns, types categories by `kind` (deduction/offset/cgt_event/disallowance/precondition/strategy). Registered in `mcp/src/server.ts`; backend handler `backend/api/deduction_discovery.ts`. Spec: `docs/superpowers/specs/2026-06-03-deduction-discovery-design.md`.
-- **`depreciation_helper` (v0.4 tool 2 of 4) shipped.** Deterministic prime-cost / diminishing-value / IAWO / $300-immediate / SBE-pool / Div 43 schedules (`packages/shared/src/tools/depreciation_helper.ts`), branched by `business_structure` + SBE eligibility, reusing the `resolveCitations()` spine and the live `instant_asset_write_off` threshold. effective_life_years is optional (PC/DV degrade gracefully). Registered in `mcp/src/server.ts`; backend handler `backend/api/depreciation_helper.ts`. Spec: `docs/superpowers/specs/2026-06-03-depreciation-helper-design.md`.
-- **`bas_prep_checklist` (v0.4 tool 3 of 4) shipped.** Tiered (core/confirmed/conditional), cited BAS checklist (`packages/shared/src/tools/bas_prep_checklist.ts`) filtered by gst_registered/gst_period/payg_instalments/fbt_payer, reusing the `resolveCitations()` spine. Simpler-BAS default with full-method labels behind `full_gst_method`; not-registered users get an IAS/no-BAS cited note. Registered in `mcp/src/server.ts`; backend handler `backend/api/bas_prep_checklist.ts`. Spec: `docs/superpowers/specs/2026-06-03-bas-prep-checklist-design.md`.
-- **`audit_risk_check` (v0.4 tool 4 of 4) shipped — v0.4 hero tools COMPLETE.** Qualitative, cited red-flag detector (`packages/shared/src/tools/audit_risk_check.ts`): ~13 pure rules over facts + a draft return summary (high WRE-to-income, deductions>income, round numbers, WFH/phone double-dip, rental-no-income, unreported crypto, etc.), each with a risk band + ATO guidance citations, reusing the `resolveCitations()` spine. Heuristic indicator, not numeric benchmarking (per-ANZSIC/occupation benchmark numbers + a `benchmarks` table remain a v0.5 lift). Registered in `mcp/src/server.ts`; backend handler `backend/api/audit_risk_check.ts`. Spec: `docs/superpowers/specs/2026-06-03-audit-risk-check-design.md`.
+- Per-ANZSIC/occupation numeric benchmarking (needs a `benchmarks` table)
+- **Better embedding model than MiniLM-L6-v2.** Granite r2 small (ModernBERT) was attempted and reverted — the only transformers.js release with ModernBERT support (`@huggingface/transformers` v3+) bundles onnxruntime-node with too many platform binaries to fit under Vercel's 250MB function size limit. Architectural options: (a) external embedding API so the function bundle stays small, (b) bundle slimming via tight excludeFiles + only the linux/x64 onnxruntime binary, (c) move inference off Vercel functions to a host with a larger size budget.
 
 ## Gotchas
 
 - **Sharp native binary** is patched via `pnpm.patchedDependencies` in `pnpm-workspace.yaml`. Don't `pnpm install --force` without the patch applied — the @xenova/transformers import chain fails when sharp's native binding can't load on Node 23+. The patch is `patches/sharp@0.32.6.patch`.
 - **Vercel Node runtime ≠ Web Standard handlers.** Vercel auto-dispatches `(req, res)` Node-legacy. To write `(req: Request) => Response`, you MUST go through `api/_adapter.ts`. Edge runtime would allow native Web Standard but transitively breaks on sharp/onnxruntime-node.
 - **pnpm filter on Vercel build.** Both `vercel.json` files use `pnpm install --filter "@ato-mcp/<x>..."` so deploys don't compile better-sqlite3 (it lives in @ato-mcp/mcp's deps, isn't needed by web/backend). Don't drop the filter.
-- **Typer CLI quirk in the Python pipeline.** A single-command Typer app accepts options directly: `uv run ato-pipeline build --out-dir ...` works, but multi-command apps (after Phase E added `package` subcommand) require the subcommand name. The current CLI requires `build` as the first arg.
+- **Typer CLI quirk in the Python pipeline.** The CLI requires `build` as the first arg: `uv run ato-pipeline build --out-dir ...`.
 - **The corpus is large.** Building locally takes ~45 min (scrape + embed + package) and produces a ~1 GB SQLite. Don't try to commit it; `*.sqlite` and `*.jsonl` are gitignored.
-- **Tests must run with native bindings built.** If `pnpm install` skipped postinstalls (e.g. dry-run mode), tests that use `SqliteStore` will fail with "Could not locate the bindings file". Run `pnpm rebuild better-sqlite3` once or use the `onlyBuiltDependencies` whitelist (already configured).
+- **Tests must run with native bindings built.** If `pnpm install` skipped postinstalls, tests that use `SqliteStore` fail with "Could not locate the bindings file". Run `pnpm rebuild better-sqlite3` once (the `onlyBuiltDependencies` whitelist is already configured).
 - **Supabase Edge / Web Runtime conflicts.** The `@xenova/transformers` 2.x release used in the backend transitively pulls `onnxruntime-node` and `sharp`. Neither is Edge-compatible. Stay on Node runtime via `_adapter.ts`.
-
-## When debugging deploys
-
-1. `mcp__plugin_vercel_vercel__list_deployments` for the project — get the latest `id`
-2. `get_deployment` to confirm `state` (BUILDING → READY → ERROR)
-3. `get_deployment_build_logs` if ERROR
-4. `get_runtime_logs` with `level=["error","fatal"]` and a recent `since` window if the function is deployed but crashing at runtime
-5. The build logs are huge; use `limit: 20` first and scan for `##[error]` markers
+- **Web fonts are self-hosted.** Switzer woff2/otf files live in `packages/web/app/fonts/` (Fontshare ITF Free Font License, see `FFL.txt`); the OTFs exist only for the OG-image renderer.

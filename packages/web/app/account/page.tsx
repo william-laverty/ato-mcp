@@ -36,37 +36,37 @@ export default async function AccountPage() {
   const facts = (factsData as { facts?: UserFacts } | null)?.facts ?? null;
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4">
+    <main className="min-h-screen bg-white px-4 py-14">
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Account</h1>
-          <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+          <h1 className="text-2xl font-normal tracking-tight1 text-zinc-900">Account</h1>
+          <Link href="/" className="text-sm text-zinc-500 transition-colors hover:text-zinc-900">
             ← Home
           </Link>
         </div>
 
         {/* Account details */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Account details</h2>
+        <section className="card p-6 space-y-4">
+          <h2 className="font-medium text-zinc-900">Account details</h2>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-500">Email</span>
-              <p className="font-medium text-gray-900">{email}</p>
+              <span className="text-xs text-zinc-400">Email</span>
+              <p className="text-sm font-medium text-zinc-900">{email}</p>
             </div>
             <div>
-              <span className="text-gray-500">Mode</span>
-              <p className="font-medium text-gray-900 capitalize">{mode}</p>
+              <span className="text-xs text-zinc-400">Mode</span>
+              <p className="text-sm font-medium text-zinc-900 capitalize">{mode}</p>
             </div>
           </div>
         </section>
 
         {/* Tax profile */}
-        <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <section className="card p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">Tax profile</h2>
+            <h2 className="font-medium text-zinc-900">Tax profile</h2>
             <Link
               href="/account/facts/edit"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
             >
               Edit facts
             </Link>
@@ -89,10 +89,10 @@ export default async function AccountPage() {
             </div>
           ) : (
             <div className="text-center py-6 space-y-3">
-              <p className="text-gray-500 text-sm">No tax profile saved yet.</p>
+              <p className="text-sm text-zinc-500">No tax profile saved yet.</p>
               <Link
                 href="/onboard/facts"
-                className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 transition-colors"
+                className="btn btn-primary px-4 py-2 text-sm"
               >
                 Complete your tax profile
               </Link>
@@ -101,23 +101,23 @@ export default async function AccountPage() {
         </section>
 
         {/* Danger zone */}
-        <section className="bg-white rounded-xl border border-red-200 p-6 space-y-4">
-          <h2 className="font-semibold text-red-800">Danger zone</h2>
-          <p className="text-sm text-gray-600">
+        <section className="card border-[#dc2626]/25 p-6 space-y-4">
+          <h2 className="font-medium text-[#dc2626]">Danger zone</h2>
+          <p className="text-sm text-zinc-500">
             Deleting your account will permanently remove all your data including
             your tax profile and any issued tokens.
           </p>
           <Link
             href="/account/delete"
-            className="inline-flex items-center justify-center rounded-lg border border-red-300 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 transition-colors"
+            className="btn rounded-full border border-[#dc2626]/40 px-4 py-2 text-sm text-[#dc2626] hover:border-[#dc2626]"
           >
             Delete account
           </Link>
         </section>
 
-        <div className="flex gap-4 text-xs text-gray-400">
-          <Link href="/privacy" className="hover:text-gray-600">Privacy policy</Link>
-          <Link href="/terms" className="hover:text-gray-600">Terms of service</Link>
+        <div className="flex gap-4 text-xs text-zinc-400">
+          <Link href="/privacy" className="transition-colors hover:text-zinc-900">Privacy policy</Link>
+          <Link href="/terms" className="transition-colors hover:text-zinc-900">Terms of service</Link>
         </div>
       </div>
     </main>
@@ -127,8 +127,8 @@ export default async function AccountPage() {
 function FactItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-gray-500">{label}</span>
-      <p className="font-medium text-gray-900 capitalize">{value}</p>
+      <span className="text-xs text-zinc-400">{label}</span>
+      <p className="text-sm font-medium text-zinc-900 capitalize">{value}</p>
     </div>
   );
 }
