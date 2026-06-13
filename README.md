@@ -10,7 +10,7 @@ plus a personal-facts layer and four tax workflow tools that know *your* situati
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Self-hosting](docs/self-hosting.md) · [Changelog](CHANGELOG.md)
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/%40ato-mcp%2Fmcp)](https://www.npmjs.com/package/@ato-mcp/mcp)
+[![npm](https://img.shields.io/npm/v/ato-mcp)](https://www.npmjs.com/package/ato-mcp)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node 22+](https://img.shields.io/badge/node-%E2%89%A522-brightgreen)](https://nodejs.org)
 
@@ -58,92 +58,53 @@ own voice**. See the [full tool reference](docs/tools.md).
 
 ## Quick start
 
-### Hosted mode (recommended — no download)
-
-1. Onboard at **[ato-mcp.com.au/onboard](https://ato-mcp.com.au/onboard)** — magic-link sign-in,
-   a 2-minute facts wizard, and you get a bearer token + install snippet.
-2. Add to Claude Code:
-
-```bash
-npm install -g @ato-mcp/mcp
-ato-mcp onboard        # opens the browser, writes ~/.ato-mcp/config.json
-claude mcp add ato-mcp -- ato-mcp mcp
-```
-
-Queries run against `api.ato-mcp.com.au` over TLS. Tool calls are **never logged** — see the
-[privacy policy](https://ato-mcp.com.au/privacy) (it's generated from the database schema, so it
-can't drift from reality).
-
-### Local mode (private, offline)
-
-Everything on your machine: the corpus is a ~1 GB SQLite file, embeddings run locally via ONNX,
-and no query ever leaves your device.
-
-```bash
-npm install -g @ato-mcp/mcp
-ato-mcp update         # downloads + sha256-verifies the latest corpus release
-claude mcp add ato-mcp -- ato-mcp mcp
-```
-
-> Requires Node 22+ and `zstd` (`brew install zstd` / `apt install zstd`). The corpus snapshot is
-> identical to the one hosted mode serves.
-
-### Any other MCP host
+Get your token at **https://ato-mcp.com.au/onboard**, then add to your MCP client config:
 
 ```json
-{
-  "mcpServers": {
-    "ato-mcp": { "command": "ato-mcp", "args": ["mcp"] }
-  }
-}
+{ "mcpServers": { "ato-mcp": { "command": "npx", "args": ["-y", "ato-mcp"],
+    "env": { "ATO_MCP_TOKEN": "<your-token>" } } } }
 ```
+
+The client forwards every tool call to `api.ato-mcp.com.au` over TLS. There is no
+local corpus to download.
 
 ## How it works
 
 ```mermaid
 flowchart LR
     A[Claude Code / MCP host] -- stdio --> B[ato-mcp CLI]
-    B -- "local mode" --> C[(SQLite + sqlite-vec\n+ ONNX embeddings)]
-    B -- "hosted mode (HTTPS + bearer)" --> D[api.ato-mcp.com.au]
+    B --> D[api.ato-mcp.com.au]
     D --> E[(Supabase Postgres\n+ pgvector, RLS)]
-    F[Python pipeline\nmonthly rebuild] --> C
-    F --> E
 ```
-
-One shared TypeScript tool core (`packages/shared`) runs identically in both modes — the only
-difference is the storage adapter (`SqliteStore` vs `SupabaseStore`) and the embedder. Behaviour
-cannot drift between local and hosted.
 
 ```
 packages/
 ├── shared/    Types, Zod schemas, Store/Embedder interfaces, all 13 tool implementations
-├── mcp/       The npm package: stdio MCP server + CLI (update / onboard / stats / mcp)
-├── backend/   Hosted mode: Vercel functions over Supabase Postgres + pgvector
-├── web/       ato-mcp.com.au — Next.js onboarding, account, schema-driven privacy policy
-└── pipeline/  Python (uv) corpus builder: scrape → clean → chunk → embed → package
+├── mcp/       The npm package: stdio MCP server + CLI (npx -y ato-mcp)
+├── backend/   Vercel functions over Supabase Postgres + pgvector
+└── web/       ato-mcp.com.au — Next.js onboarding, account, schema-driven privacy policy
 ```
 
 ## Privacy, by construction
 
-- **Local mode:** queries never leave your machine. Full stop.
-- **Hosted mode:** no tool names, no query content, no results are ever stored — the analytics
-  schema physically has nowhere to put them. The [privacy page](https://ato-mcp.com.au/privacy)
-  is rendered from `UserFactsSchema` at build time and a contract test fails if any stored field
-  is undocumented.
-- Per-user rows are isolated with Postgres row-level security; bearer tokens are stored as
-  SHA-256 hashes and revocable from the account page.
-- The entire stack — including the hosted backend — is in this repository. Verify, don't trust.
+No tool names, no query content, no results are ever stored — the analytics schema physically has
+nowhere to put them. The [privacy page](https://ato-mcp.com.au/privacy) is rendered from
+`UserFactsSchema` at build time and a contract test fails if any stored field is undocumented.
+Per-user rows are isolated with Postgres row-level security; bearer tokens are stored as SHA-256
+hashes and revocable from the account page. The client, shared tool logic, hosted backend and
+this website are in this repository — verify, don't trust.
 
 ## Development
 
 ```bash
 pnpm install && pnpm -r build
 pnpm -r test            # TypeScript suites (shared, mcp, backend, web)
-cd packages/pipeline && uv sync && uv run pytest -k "not slow"
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions, [docs/self-hosting.md](docs/self-hosting.md)
-to run your own hosted stack, and [RELEASING.md](RELEASING.md) for the release process.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions, [RELEASING.md](RELEASING.md) for the
+release process, and [docs/self-hosting.md](docs/self-hosting.md) to run your own serving stack.
+Note: the corpus-building pipeline is maintained privately — to self-host, obtain a corpus
+snapshot from the hosted service.
 
 ## Important disclaimer
 
