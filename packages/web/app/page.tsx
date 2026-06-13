@@ -18,16 +18,16 @@ const HERO_STATS = [
 ];
 
 const CORPUS_STATS = [
-  { n: "224,585", label: "indexed chunks", sub: "hybrid BM25 + vector" },
-  { n: "4,638", label: "ITAA 1997 sections", sub: "+ 1,929 statutory definitions" },
-  { n: "23,267", label: "citation edges", sub: "rulings ⇄ legislation graph" },
+  { n: "224,585", label: "passages", sub: "every paragraph, searchable" },
+  { n: "4,638", label: "ITAA 1997 sections", sub: "+ 1,929 legal definitions" },
+  { n: "23,267", label: "citation links", sub: "rulings tied to legislation" },
 ];
 
 const CORPUS_INDEX = [
-  { num: "01", title: "Guidance", sub: "ato.gov.au, scraped monthly" },
-  { num: "02", title: "Statute", sub: "ITAA 1997 from the Federal Register" },
-  { num: "03", title: "Rulings", sub: "law.ato.gov.au, 10 ruling series" },
-  { num: "04", title: "Citation graph", sub: "every reference resolved both ways" },
+  { num: "01", title: "Guidance", sub: "ato.gov.au" },
+  { num: "02", title: "Legislation", sub: "ITAA 1997, in full" },
+  { num: "03", title: "Rulings", sub: "law.ato.gov.au" },
+  { num: "04", title: "Citation graph", sub: "everything cross-linked" },
 ];
 
 const HOW_IT_WORKS = [
@@ -61,35 +61,35 @@ const WORKFLOWS = [
   {
     name: "deduction_discovery",
     title: "Every deduction that fits your shape",
-    body: "A 59-category curated taxonomy filtered by your facts — sole trader, company, trust, partnership, investor or SMSF member — each category cited and confidence-rated.",
+    body: "Checks 59 deduction categories and keeps the ones that match your situation — each cited and confidence-rated.",
   },
   {
     name: "depreciation_helper",
     title: "Depreciation, computed not guessed",
-    body: "Prime cost vs diminishing value vs instant write-off vs small-business pool vs Div 43 — deterministic year-by-year schedules with the live IAWO threshold.",
+    body: "Compares every method — instant write-off, prime cost, diminishing value and more — with year-by-year schedules.",
   },
   {
     name: "bas_prep_checklist",
     title: "BAS prep without the scramble",
-    body: "A tiered checklist for your reporting period: which labels apply, what evidence to gather, the gotchas — every section backed by ATO guidance.",
+    body: "A checklist for your reporting period: which labels apply, what evidence to gather, and the gotchas.",
   },
   {
     name: "audit_risk_check",
     title: "Know what the ATO looks at",
-    body: "Heuristic red-flags over a draft return — WRE vs income, rental anomalies, unreported crypto — each with a risk band and the guidance behind it.",
+    body: "Reviews a draft return for the red flags the ATO watches, with the guidance behind each one.",
   },
 ];
 
 const RETRIEVAL_TOOLS = [
-  { name: "search", desc: "Hybrid BM25 + vector search, rank-fused, point-in-time aware" },
-  { name: "get_chunks", desc: "Resolve chunk ids to full passages with neighbouring context" },
-  { name: "get_doc", desc: "A whole document — metadata plus its anchor list" },
-  { name: "get_doc_anchors", desc: "The citation graph around a document, inbound and outbound" },
-  { name: "get_definition", desc: "Statutory definitions, point-in-time selectable" },
-  { name: "get_threshold", desc: "Time-keyed thresholds with live current values" },
-  { name: "fetch", desc: "Any corpus document by id, as clean markdown" },
-  { name: "stats", desc: "Installed corpus snapshot, freshness and coverage" },
-  { name: "get_user_facts", desc: "Your onboarded taxpayer profile, for tools and agents" },
+  { name: "search", desc: "Search the whole corpus by keyword and meaning" },
+  { name: "get_chunks", desc: "Pull full passages with surrounding context" },
+  { name: "get_doc", desc: "Fetch a whole document" },
+  { name: "get_doc_anchors", desc: "See what a document cites, and what cites it" },
+  { name: "get_definition", desc: "Look up legal definitions" },
+  { name: "get_threshold", desc: "Current thresholds, caps and rates" },
+  { name: "fetch", desc: "Any document as clean markdown" },
+  { name: "stats", desc: "Corpus freshness and coverage" },
+  { name: "get_user_facts", desc: "Your saved tax profile" },
 ];
 
 const FAQS = [
@@ -239,11 +239,9 @@ export default function HomePage() {
                 className="reveal mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-500"
                 style={{ "--reveal-delay": "0.16s" } as React.CSSProperties}
               >
-                ato-mcp gives Claude — and any MCP agent — cited, current
-                retrieval over 29,000+ ATO documents, the ITAA 1997 and 2,127
-                public rulings, plus workflow tools that already know your
-                taxpayer shape. Answers come with the section, the ruling and
-                the page.
+                Connect Claude — or any MCP agent — to 29,000+ ATO documents,
+                the ITAA 1997 and 2,127 public rulings. Every answer comes with
+                the section, the ruling and the page.
               </p>
               <div
                 className="reveal mt-8 flex flex-wrap items-center gap-3"
@@ -343,8 +341,7 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-6 text-sm text-zinc-500">
-              Rebuilt monthly. Point-in-time aware. Every release
-              sha256-verified.{" "}
+              Rebuilt monthly, verified on every install.{" "}
               <Link
                 href="/docs"
                 className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
@@ -391,10 +388,9 @@ export default function HomePage() {
             Not a search box. Workflows that know who&apos;s asking
           </h2>
           <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-zinc-500">
-            Onboard once — business structure, GST status, investments, super —
-            and the four hero tools branch for your exact taxpayer shape. Every
-            output is structured data plus resolvable ATO citations: your agent
-            reasons, you verify.
+            Tell it about yourself once — your business, GST, investments,
+            super — and four built-in tools tailor their answers to you. All of
+            it backed by ATO citations.
           </p>
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             {WORKFLOWS.map((w) => (
@@ -429,8 +425,8 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-4 text-sm text-zinc-500">
-              Hybrid search, a 23,267-edge citation graph, statutory definitions
-              and time-keyed thresholds — the substrate the workflows stand on.{" "}
+              Nine retrieval tools the workflows are built on — and your agent
+              can use directly.{" "}
               <Link
                 href="/docs"
                 className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
@@ -462,15 +458,14 @@ export default function HomePage() {
               <span className="badge">offline</span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-zinc-500">
-              A ~1 GB SQLite corpus on your disk, embeddings via ONNX on your
-              CPU. Queries never leave the machine — there is nothing to trust
-              because nothing is sent.
+              The whole corpus lives on your machine. Your questions never
+              leave it.
             </p>
             <pre className="code-block mt-5"><code>{`npm install -g @ato-mcp/mcp
 ato-mcp update   # download + verify corpus
 claude mcp add ato-mcp -- ato-mcp mcp`}</code></pre>
             <p className="mt-3 text-xs text-zinc-400">
-              Free forever · monthly corpus releases · sha256-verified
+              Free forever · updated monthly
             </p>
           </div>
           <div className="card reveal-scroll p-7">
@@ -479,23 +474,20 @@ claude mcp add ato-mcp -- ato-mcp mcp`}</code></pre>
               <span className="badge-accent">zero download</span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-zinc-500">
-              Same tools, served from api.ato-mcp.com.au over TLS with a
-              personal bearer token. Always the freshest corpus; tool calls are
-              never logged — and the server code is open source, so you can
-              check.
+              Nothing to download — we serve the freshest corpus. Your
+              questions are never logged.
             </p>
             <pre className="code-block mt-5"><code>{`npm install -g @ato-mcp/mcp
 ato-mcp onboard  # browser onboarding, ~2 min
 claude mcp add ato-mcp -- ato-mcp mcp`}</code></pre>
             <p className="mt-3 text-xs text-zinc-400">
-              Magic-link sign-in · revocable tokens · row-level security
+              Free · sign in with email · revoke any time
             </p>
           </div>
         </div>
         <p className="mt-6 text-sm text-zinc-500">
-          ✓ Identical shared tool core&nbsp;&nbsp;&nbsp;✓ MIT
-          licensed&nbsp;&nbsp;&nbsp;✓ sha256-verified releases — behaviour
-          can&apos;t drift between modes, because it&apos;s the same code.
+          ✓ Same tools in both modes&nbsp;&nbsp;&nbsp;✓ Open source, MIT
+          licensed&nbsp;&nbsp;&nbsp;✓ Verified releases
         </p>
       </section>
 
@@ -517,12 +509,9 @@ claude mcp add ato-mcp -- ato-mcp mcp`}</code></pre>
             can&apos;t lie
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-zinc-500">
-            Hosted mode has no table for queries, tool calls or results — the
-            data model physically can&apos;t retain them. The privacy page
-            renders every stored field straight from the schema, and a contract
-            test fails the build if a field goes undocumented. Personal rows are
-            isolated with Postgres row-level security, and one button deletes
-            everything.
+            There&apos;s nowhere to store your questions — the database has no
+            table for them. Everything we do store is listed on the privacy
+            page, straight from the schema. One button deletes it all.
           </p>
           <Link href="/privacy" className="btn btn-outline mt-7 px-5 py-2.5 text-sm">
             Read the privacy policy
