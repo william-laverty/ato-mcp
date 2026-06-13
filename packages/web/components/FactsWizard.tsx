@@ -172,7 +172,7 @@ export default function FactsWizard({ userId, initialValues, onComplete }: Facts
           Tax profile saved
         </h2>
         <p className="text-[15px] text-zinc-500">Your facts have been saved securely.</p>
-        <a href="/onboard/mode" className="btn btn-primary px-6 py-2.5 text-sm">
+        <a href="/onboard/install" className="btn btn-primary px-6 py-2.5 text-sm">
           Continue to setup
         </a>
       </div>

@@ -24,14 +24,6 @@ export async function saveFacts(userId: string, raw: unknown) {
   return { success: true };
 }
 
-export async function setMode(userId: string, mode: "hosted" | "local") {
-  const service = makeServiceClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (service.from("users") as any).update({ mode }).eq("id", userId);
-  if (error) return { error: (error as { message: string }).message };
-  redirect("/onboard/install");
-}
-
 export async function issueToken(
   userId: string,
 ): Promise<{ token: string; tokenHash: string }> {
