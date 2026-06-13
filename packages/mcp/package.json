@@ -1,6 +1,6 @@
 {
   "name": "ato-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Hosted MCP server for the Australian Taxation Office corpus — cited tax retrieval, personal context, and workflow tools for AI agents.",
   "keywords": [
     "mcp",
@@ -49,8 +49,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.0.4",
-    "open": "^11.0.0",
-    "zod": "3.23.8"
+    "open": "^11.0.0"
   },
   "devDependencies": {
     "@ato-mcp/shared": "workspace:*",

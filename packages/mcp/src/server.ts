@@ -5,7 +5,6 @@ import { RemoteToolForwarder } from "./lib/remote-tools.js";
 
 const DEFAULT_API = "https://api.ato-mcp.com.au";
 
-// ----- TOOLS map preserved verbatim from the previous server.ts -----
 const TOOLS = {
   stats: {
     description: "Report corpus installation status, version, and counts.",
@@ -135,7 +134,6 @@ const TOOLS = {
     },
   },
 } as const;
-// --------------------------------------------------------------------
 
 interface Forwarder {
   call(toolName: string, args: unknown): Promise<unknown>;
@@ -192,9 +190,7 @@ export async function runMcp(): Promise<void> {
     }
   });
 
-  // Fire-and-forget connection ping so the web onboarding page can show "connected".
-  // usage_event is a backend endpoint (not a dispatcher tool); the forwarder POSTs
-  // to {endpoint}/usage_event with the bearer token. Failures are ignored.
+  // Fire-and-forget; payload matches the backend usage_event schema once Phase 4.2 drops the mode field, so a transient 400 during rollout is harmless.
   void forwarder.call("usage_event", { event_type: "mcp_started" }).catch(() => {});
 
   const transport = new StdioServerTransport();
