@@ -10,7 +10,7 @@ export function Footer() {
             <p className="mt-2 max-w-sm text-sm leading-relaxed">
               The Australian tax knowledge base for AI agents — cited retrieval,
               personal context, and tax workflow tools over the Model Context
-              Protocol. Open source, local or hosted.
+              Protocol. Open source.
             </p>
             <p className="mt-4 text-xs text-zinc-400">
               Information infrastructure, not tax advice. Verify material
@@ -29,7 +29,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a className="transition-colors hover:text-zinc-900" href="https://www.npmjs.com/package/@ato-mcp/mcp" target="_blank" rel="noopener noreferrer">
+                <a className="transition-colors hover:text-zinc-900" href="https://www.npmjs.com/package/ato-mcp" target="_blank" rel="noopener noreferrer">
                   npm ↗
                 </a>
               </li>

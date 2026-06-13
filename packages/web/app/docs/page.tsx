@@ -5,7 +5,7 @@ import { TOOLS_META } from "../../lib/tools-meta";
 export const metadata: Metadata = {
   title: "Documentation — install, quick start & the 13 tools",
   description:
-    "Install ato-mcp in two minutes (hosted or fully local), connect it to Claude Code or any MCP host, and explore the 13 tools: cited ATO retrieval, personal context and tax workflows.",
+    "Install ato-mcp in two minutes (hosted), connect it to Claude Code or any MCP host, and explore the 13 tools: cited ATO retrieval, personal context and tax workflows.",
   alternates: { canonical: "/docs" },
 };
 
@@ -36,37 +36,27 @@ export default function DocsPage() {
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-zinc-500">
         ato-mcp is an MCP server: it plugs into Claude Code, Claude Desktop or any
         Model Context Protocol host and exposes the Australian tax corpus as tools.
-        Pick a mode, connect, done.
+        Get a token, connect, done.
       </p>
 
       {/* ----------------------------------------------- install */}
       <section className="mt-14" aria-labelledby="install-h">
         <h2 id="install-h" className="text-xl font-medium tracking-tight1">1 · Install</h2>
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="mt-5">
           <div className="card p-6">
             <div className="flex items-center justify-between">
-              <h3 className="font-medium">Hosted <span className="ml-1 text-xs font-normal text-zinc-400">recommended</span></h3>
-              <span className="badge-accent">no download</span>
+              <h3 className="font-medium">Hosted <span className="ml-1 text-xs font-normal text-zinc-400">no download required</span></h3>
+              <span className="badge-accent">zero download</span>
             </div>
-            <pre className="code-block mt-4"><code>{`npm install -g @ato-mcp/mcp
-ato-mcp onboard`}</code></pre>
+            <pre className="code-block mt-4"><code>{`npx -y ato-mcp`}</code></pre>
             <p className="mt-3 text-xs leading-relaxed text-zinc-500">
-              Opens <Link href="/onboard" className="text-zinc-900 underline decoration-zinc-300 underline-offset-2 hover:decoration-zinc-900">the onboarding flow</Link> —
-              magic-link sign-in, a short facts wizard, and your config is written to
-              <code className="font-mono"> ~/.ato-mcp/config.json</code> automatically.
-            </p>
-          </div>
-          <div className="card p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="font-medium">Local</h3>
-              <span className="badge">offline</span>
-            </div>
-            <pre className="code-block mt-4"><code>{`npm install -g @ato-mcp/mcp
-ato-mcp update`}</code></pre>
-            <p className="mt-3 text-xs leading-relaxed text-zinc-500">
-              Downloads the latest corpus release (~1 GB SQLite), verifies its sha256
-              and installs atomically. Needs Node 22+ and <code className="font-mono">zstd</code>.
-              Queries never leave your machine.
+              Get your token and config snippet at{" "}
+              <Link href="/onboard" className="text-zinc-900 underline decoration-zinc-300 underline-offset-2 hover:decoration-zinc-900">
+                ato-mcp.com.au/onboard
+              </Link>{" "}
+              — sign in with email, complete a short facts wizard, and paste the config into your MCP host.
+              Set <code className="font-mono">ATO_MCP_TOKEN</code> in the{" "}
+              <code className="font-mono">env</code> block of your config.
             </p>
           </div>
         </div>
@@ -76,12 +66,14 @@ ato-mcp update`}</code></pre>
       <section className="mt-14" aria-labelledby="connect-h">
         <h2 id="connect-h" className="text-xl font-medium tracking-tight1">2 · Connect your agent</h2>
         <div className="card mt-5 p-6">
-          <p className="text-sm font-medium">Claude Code</p>
-          <pre className="code-block mt-3"><code>claude mcp add ato-mcp -- ato-mcp mcp</code></pre>
-          <p className="mt-5 text-sm font-medium">Claude Desktop / any MCP host</p>
+          <p className="text-sm font-medium">Claude Desktop / any MCP host</p>
           <pre className="code-block mt-3"><code>{`{
   "mcpServers": {
-    "ato-mcp": { "command": "ato-mcp", "args": ["mcp"] }
+    "ato-mcp": {
+      "command": "npx",
+      "args": ["-y", "ato-mcp"],
+      "env": { "ATO_MCP_TOKEN": "<your-token>" }
+    }
   }
 }`}</code></pre>
           <p className="mt-4 text-xs text-zinc-500">
@@ -134,7 +126,7 @@ ato-mcp update`}</code></pre>
           {
             href: "https://github.com/william-laverty/ato-mcp/blob/main/docs/self-hosting.md",
             title: "Self-hosting",
-            body: "Run your own hosted stack on your own Supabase + Vercel.",
+            body: "Run the serving stack on your own Supabase + Vercel. The corpus is served from the hosted backend.",
             ext: true,
           },
           { href: "/privacy", title: "Privacy", body: "Schema-generated policy — see exactly what's stored.", ext: false },

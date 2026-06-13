@@ -4,23 +4,23 @@
 > Protocol) server giving cited retrieval over 29,000+ ATO documents, the Income Tax
 > Assessment Act 1997 and 2,127 public rulings, plus a personal-facts layer and four
 > tax workflow tools (deduction_discovery, depreciation_helper, bas_prep_checklist,
-> audit_risk_check). Runs fully local (SQLite + ONNX, offline) or hosted
-> (api.ato-mcp.com.au). MIT licensed. Not tax advice: every tool returns structured
+> audit_risk_check). Hosted: connect your AI client with a bearer token.
+> MIT licensed. Not tax advice: every tool returns structured
 > data plus resolvable ATO citations for an agent to reason over.
 
 ## Docs
 
-- [Documentation](https://ato-mcp.com.au/docs): install (hosted or local), connect to Claude Code / any MCP host, all 13 tools
+- [Documentation](https://ato-mcp.com.au/docs): install, connect to Claude Code / any MCP host, all 13 tools
 - [Full tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md): input/output schemas, examples, errors
 - [README](https://github.com/william-laverty/ato-mcp/blob/main/README.md): corpus contents, architecture, privacy model
 - [Self-hosting](https://github.com/william-laverty/ato-mcp/blob/main/docs/self-hosting.md): run your own Supabase + Vercel stack
 
 ## Install
 
-- npm package: @ato-mcp/mcp (Node 22+). Hosted: `ato-mcp onboard`. Local: `ato-mcp update` (sha256-verified ~1 GB corpus).
+- npm package: ato-mcp (Node 22+). Onboard at ato-mcp.com.au to get your ATO_MCP_TOKEN.
 - Claude Code: `claude mcp add ato-mcp -- ato-mcp mcp`
 
 ## Policies
 
-- [Privacy](https://ato-mcp.com.au/privacy): generated from the database schema; hosted mode never stores queries, tool names or results
+- [Privacy](https://ato-mcp.com.au/privacy): generated from the database schema; never stores queries, tool names or results
 - [Terms](https://ato-mcp.com.au/terms)
