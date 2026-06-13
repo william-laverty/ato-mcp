@@ -26,3 +26,8 @@ packages/pipeline/corpus-*/
 
 # brainstorming visual companion sessions
 .superpowers/
+
+# internal process docs — kept locally, not part of the public repo
+/HANDOFF.md
+/docs/superpowers/
+CLAUDE.local.md

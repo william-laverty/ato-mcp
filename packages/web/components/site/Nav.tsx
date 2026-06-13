@@ -29,11 +29,11 @@ function Mark({ size = 20 }: { size?: number }) {
 }
 
 /**
- * Superpower-style scroll-aware nav (ported from the heynox Header, light
- * treatment only): at the top of the page it reads as a full-width transparent
- * bar — links left, logo centre, CTA right. Scrolling collapses it into a
- * centred floating glass pill (white/80 + blur + hairline + soft shadow).
- * On mobile the pill is always painted and expands downward to reveal the menu.
+ * Scroll-aware nav: at the top of the page it reads as a full-width
+ * transparent bar — links left, logo centre, CTA right. Scrolling collapses
+ * it into a centred floating glass pill (white/80 + blur + hairline + soft
+ * shadow). On mobile the pill is always painted and expands downward to
+ * reveal the menu.
  */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
