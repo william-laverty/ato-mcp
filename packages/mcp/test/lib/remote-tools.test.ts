@@ -48,7 +48,7 @@ describe("RemoteToolForwarder", () => {
       new Response(null, { status: 204 }),
     );
     const f = new RemoteToolForwarder("https://api.example.com", "tok");
-    const result = await f.call("usage_event", { event_type: "mcp_started", mode: "hosted" });
+    const result = await f.call("usage_event", { event_type: "mcp_started" });
     expect(result).toBeNull();
   });
 
