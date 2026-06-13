@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { makeStore } from "./helpers/make-store.js";
-import type { SqliteStore } from "../src/store/sqlite.js";
+import type { SqliteStore } from "./helpers/sqlite-store.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SEED = path.join(__dirname, "fixtures", "seed.sql");
