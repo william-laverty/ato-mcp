@@ -123,12 +123,6 @@ export default function DocsPage() {
             body: "The whole stack — server, backend, this site — MIT licensed.",
             ext: true,
           },
-          {
-            href: "https://github.com/william-laverty/ato-mcp/blob/main/docs/self-hosting.md",
-            title: "Self-hosting",
-            body: "Run the serving stack on your own Supabase + Vercel. The corpus is served from the hosted backend.",
-            ext: true,
-          },
           { href: "/privacy", title: "Privacy", body: "Schema-generated policy — see exactly what's stored.", ext: false },
         ].map((c) =>
           c.ext ? (

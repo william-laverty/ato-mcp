@@ -42,6 +42,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepack": "rm -rf dist && tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",

@@ -7,7 +7,7 @@
 Give Claude (or any MCP host) cited, current retrieval over 29,000+ ATO documents —
 plus a personal-facts layer and four tax workflow tools that know *your* situation.
 
-[ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Self-hosting](docs/self-hosting.md) · [Changelog](CHANGELOG.md)
+[ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/ato-mcp)](https://www.npmjs.com/package/ato-mcp)
@@ -101,10 +101,8 @@ pnpm install && pnpm -r build
 pnpm -r test            # TypeScript suites (shared, mcp, backend, web)
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions, [RELEASING.md](RELEASING.md) for the
-release process, and [docs/self-hosting.md](docs/self-hosting.md) to run your own serving stack.
-Note: the corpus-building pipeline is maintained privately — to self-host, obtain a corpus
-snapshot from the hosted service.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and [RELEASING.md](RELEASING.md) for the
+release process.
 
 ## Important disclaimer
 

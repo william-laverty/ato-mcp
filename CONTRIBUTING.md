@@ -6,7 +6,6 @@ Thanks for helping make Australian tax legible to AI agents. Issues and PRs are 
 
 ```bash
 pnpm install && pnpm -r build      # Node 22+, pnpm 10 (pinned via packageManager)
-cd packages/pipeline && uv sync    # Python 3.12+ with uv (pipeline only)
 ```
 
 ## Before you open a PR
@@ -14,7 +13,6 @@ cd packages/pipeline && uv sync    # Python 3.12+ with uv (pipeline only)
 ```bash
 pnpm -r typecheck
 pnpm -r test                                   # TypeScript suites
-cd packages/pipeline && uv run pytest -k "not slow"   # if you touched the pipeline
 ```
 
 All four TS workspaces must be green. CI runs the same commands.

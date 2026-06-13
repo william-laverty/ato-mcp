@@ -244,7 +244,7 @@ export async function auditRiskCheck(
     throw new Error("Personal facts not set. Run `ato-mcp onboard` to complete the web onboarding flow.");
   }
   if (!deps.store) {
-    throw new Error("Corpus not installed. Run `ato-mcp update` to download the latest corpus, then retry.");
+    throw new Error("Corpus unavailable. This is a server-side issue — please try again shortly.");
   }
   const facts = deps.userFacts;
   const store = deps.store;

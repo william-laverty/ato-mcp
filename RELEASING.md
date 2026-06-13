@@ -2,8 +2,8 @@
 
 ## Software releases (npm)
 
-The publishable packages are `@ato-mcp/shared` and `ato-mcp` (mcp depends on shared;
-publish shared first — `pnpm publish` rewrites the `workspace:*` range automatically).
+The publishable package is `ato-mcp`. `@ato-mcp/shared` is a dev-only dependency of the
+client and is **not published** to npm.
 
 One-time setup (repo owner):
 1. Create an npm automation token.
@@ -12,14 +12,13 @@ One-time setup (repo owner):
 
 Cutting a release:
 ```bash
-# bump versions in packages/shared/package.json + packages/mcp/package.json (keep in lockstep)
+# bump version in packages/mcp/package.json
 pnpm -r build && pnpm -r test
 git tag v1.1.0 && git push origin v1.1.0
 gh release create v1.1.0 --title "v1.1.0" --notes-file <(sed -n '/^## v1.1.0/,/^## /p' CHANGELOG.md)
 ```
-The `npm-publish` workflow publishes both packages on the `v*` release. Manual fallback:
+The `npm-publish` workflow publishes `ato-mcp` on the `v*` release. Manual fallback:
 ```bash
-pnpm --filter @ato-mcp/shared publish --access public --no-git-checks
 pnpm --filter ato-mcp publish --access public --no-git-checks
 ```
 

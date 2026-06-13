@@ -13,7 +13,6 @@
 - [Documentation](https://ato-mcp.com.au/docs): install, connect to Claude Code / any MCP host, all 13 tools
 - [Full tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md): input/output schemas, examples, errors
 - [README](https://github.com/william-laverty/ato-mcp/blob/main/README.md): corpus contents, architecture, privacy model
-- [Self-hosting](https://github.com/william-laverty/ato-mcp/blob/main/docs/self-hosting.md): run your own Supabase + Vercel stack
 
 ## Install
 

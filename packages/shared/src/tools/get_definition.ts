@@ -21,7 +21,7 @@ export async function getDefinition(
   args: GetDefinitionInput,
 ): Promise<GetDefinitionOutput> {
   if (!deps.store) {
-    throw new Error("Corpus not installed. Run `ato-mcp update`.");
+    throw new Error("Corpus unavailable. This is a server-side issue — please try again shortly.");
   }
   const pit = args.pit ?? new Date().toISOString().slice(0, 10);
   const matches = await deps.store.getDefinition(args.term, pit);
