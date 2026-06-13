@@ -1,33 +1,24 @@
 #!/usr/bin/env node
-import { dataDir } from "./lib/paths.js";
 
 function main() {
-  const cmd = process.argv[2] ?? "help";
+  // Default action is to start the server, so `npx -y ato-mcp` just works.
+  const cmd = process.argv[2] ?? "mcp";
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {
-    process.stdout.write(`ato-mcp - MCP server for the Australian Taxation Office corpus
+    process.stdout.write(`ato-mcp - hosted MCP server for the Australian Taxation Office corpus
 
 Usage:
-  ato-mcp mcp       # start the MCP stdio server (used by Claude Code)
-  ato-mcp onboard   # set up your account and get a config snippet
-  ato-mcp update    # download/update the local corpus
-  ato-mcp stats     # print corpus stats and exit
-  ato-mcp help      # this message
+  ato-mcp            # start the MCP stdio server (default; reads ATO_MCP_TOKEN)
+  ato-mcp mcp        # same as above, explicit
+  ato-mcp onboard    # open the browser to get your token + config snippet
+  ato-mcp help       # this message
 
-Data directory: ${dataDir()}
+Set ATO_MCP_TOKEN in your MCP client config.
+Get a token at https://ato-mcp.com.au/onboard
 `);
     return;
   }
   if (cmd === "mcp") {
     return import("./server.js").then((m) => m.runMcp());
-  }
-  if (cmd === "update") {
-    return import("./lib/download.js").then((m) => m.runUpdate());
-  }
-  if (cmd === "stats") {
-    return import("./lib/stats-cli.js").then(async (m) => {
-      const out = await m.statsCli();
-      process.stdout.write(JSON.stringify(out, null, 2) + "\n");
-    });
   }
   if (cmd === "onboard") {
     return import("./lib/onboard.js").then((m) => m.runOnboard());
