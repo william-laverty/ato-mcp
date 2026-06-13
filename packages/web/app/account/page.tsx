@@ -17,14 +17,6 @@ export default async function AccountPage() {
   const email = session.user.email ?? "Unknown";
   const service = makeServiceClient();
 
-  // Fetch user row
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: userData } = await (service.from("users") as any)
-    .select("created_at")
-    .eq("id", userId)
-    .maybeSingle();
-  void userData;
-
   // Fetch user_facts row
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: factsData } = await (service.from("user_facts") as any)

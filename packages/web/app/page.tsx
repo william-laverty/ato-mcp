@@ -41,7 +41,7 @@ const HOW_IT_WORKS = [
     num: "2",
     title: "Onboard",
     body: "Sign in with email, about two minutes.",
-    fragment: "ato-mcp onboard",
+    fragment: "ato-mcp.com.au/onboard",
   },
   {
     num: "3",
@@ -223,7 +223,7 @@ export default function HomePage() {
                 style={{ "--reveal-delay": "0s" } as React.CSSProperties}
               >
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />
-                v1.0 · open source · MIT
+                v1.1 · open source · MIT
               </p>
               <h1
                 className="reveal mt-5 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
@@ -337,7 +337,7 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-6 text-sm text-zinc-500">
-              Rebuilt monthly, verified on every install.{" "}
+              Rebuilt monthly, served fresh.{" "}
               <Link
                 href="/docs"
                 className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"

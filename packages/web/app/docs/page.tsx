@@ -120,7 +120,7 @@ export default function DocsPage() {
           {
             href: "https://github.com/william-laverty/ato-mcp",
             title: "GitHub",
-            body: "The whole stack — server, pipeline, backend, this site — MIT licensed.",
+            body: "The whole stack — server, backend, this site — MIT licensed.",
             ext: true,
           },
           {

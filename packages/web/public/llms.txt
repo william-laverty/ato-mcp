@@ -18,7 +18,7 @@
 ## Install
 
 - npm package: ato-mcp (Node 22+). Onboard at ato-mcp.com.au to get your ATO_MCP_TOKEN.
-- Claude Code: `claude mcp add ato-mcp -- ato-mcp mcp`
+- Claude Code: `claude mcp add ato-mcp --env ATO_MCP_TOKEN=<token> -- npx -y ato-mcp`
 
 ## Policies
 
