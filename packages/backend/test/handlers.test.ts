@@ -246,13 +246,13 @@ describe("POST /usage_event", () => {
 
   it("returns 204 for valid event", async () => {
     const { handler } = await import("../api/usage_event.js");
-    const resp = await handler(usageRequest({ event_type: "mcp_started", mode: "hosted" }));
+    const resp = await handler(usageRequest({ event_type: "mcp_started" }));
     expect(resp.status).toBe(204);
   });
 
   it("returns 400 for unknown event_type", async () => {
     const { handler } = await import("../api/usage_event.js");
-    const resp = await handler(usageRequest({ event_type: "unknown_event", mode: "hosted" }));
+    const resp = await handler(usageRequest({ event_type: "unknown_event" }));
     expect(resp.status).toBe(400);
   });
 

@@ -10,8 +10,7 @@
 //   - each per-tool bundle duplicated the heavy embedder stack;
 //   - the per-tool handlers duplicated the user-facts lookup six times.
 //
-// The dispatch table mirrors packages/mcp/src/server.ts so local and hosted
-// modes stay behaviourally identical.
+// The dispatch table mirrors packages/mcp/src/server.ts.
 
 import { adapt } from "./_adapter.js";
 import { authMiddleware } from "./_middleware.js";
@@ -77,10 +76,7 @@ const TOOLS: Record<string, ToolRunner> = {
   get_doc_anchors: (body) => getDocAnchors({ store }, GetDocAnchorsInputSchema.parse(body)),
   get_threshold: (body) => getThreshold({ store }, GetThresholdInputSchema.parse(body)),
   get_user_facts: async (_body, userId) =>
-    getUserFacts(
-      { facts: await lookupUserFacts(userId), fetchedFrom: "hosted_api", mode: "hosted" },
-      {},
-    ),
+    getUserFacts({ facts: await lookupUserFacts(userId) }, {}),
   deduction_discovery: async (body, userId) =>
     deductionDiscovery(
       { store, embedder: await getEmbedder(), userFacts: await lookupUserFacts(userId) },
