@@ -237,7 +237,10 @@ export default function HomePage() {
       />
 
       {/* ------------------------------------------------ hero */}
-      <section className="relative">
+      {/* -mt-16 cancels the layout's global `pt-16` (which clears the fixed nav
+          for every other page) so the hero card goes full-bleed to the top and
+          the nav floats *over* the card — content is centred well clear of it. */}
+      <section className="relative -mt-16">
         <div className="px-3 pb-3 pt-3">
           <div className="hero-card flex min-h-[600px] items-center lg:min-h-[calc(100svh-24px)]">
             <span className="hero-glow" aria-hidden="true" />
