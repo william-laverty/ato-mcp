@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -11,10 +12,10 @@ export const metadata: Metadata = {
    citation chips and small markers. The product demo card is the hero image.
 --------------------------------------------------------------------------- */
 
-const HERO_STATS = [
-  { n: "29,181", label: "ATO documents" },
-  { n: "2,127", label: "public rulings" },
-  { n: "13", label: "MCP tools" },
+const HERO_TRUST = [
+  { title: "Cited retrieval", sub: "every answer sourced" },
+  { title: "29,000+ documents", sub: "refreshed monthly" },
+  { title: "Any MCP host", sub: "Claude Code & Desktop" },
 ];
 
 const CORPUS_STATS = [
@@ -205,6 +206,28 @@ function HeroDemo() {
   );
 }
 
+/** heynox-style trust strip, light: title/subtitle pairs split by hairlines. */
+function HeroTrust({ className = "" }: { className?: string }) {
+  return (
+    <dl className={`flex w-fit flex-wrap items-center gap-x-6 gap-y-4 ${className}`}>
+      {HERO_TRUST.map((t, i) => (
+        <Fragment key={t.title}>
+          {i > 0 && (
+            <span
+              className="hidden h-9 w-px shrink-0 bg-zinc-200 sm:block"
+              aria-hidden="true"
+            />
+          )}
+          <div>
+            <dt className="text-sm text-zinc-900">{t.title}</dt>
+            <dd className="text-sm text-zinc-400">{t.sub}</dd>
+          </div>
+        </Fragment>
+      ))}
+    </dl>
+  );
+}
+
 export default function HomePage() {
   return (
     <main>
@@ -214,66 +237,64 @@ export default function HomePage() {
       />
 
       {/* ------------------------------------------------ hero */}
-      <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-5 pb-14 pt-16 sm:pt-24">
-          <div className="relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-            <div>
-              <p
-                className="reveal inline-flex items-center gap-2 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-zinc-500"
-                style={{ "--reveal-delay": "0s" } as React.CSSProperties}
-              >
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />
-                v1.1 · open source · MIT
-              </p>
-              <h1
-                className="reveal mt-5 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
-                style={{ "--reveal-delay": "0.08s" } as React.CSSProperties}
-              >
-                Your AI agent, fluent in Australian tax
-              </h1>
-              <p
-                className="reveal mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-500"
-                style={{ "--reveal-delay": "0.16s" } as React.CSSProperties}
-              >
-                Connect Claude — or any MCP agent — to 29,000+ ATO documents,
-                the ITAA 1997 and 2,127 public rulings. Every answer comes with
-                the section, the ruling and the page.
-              </p>
-              <div
-                className="reveal mt-8 flex flex-wrap items-center gap-3"
-                style={{ "--reveal-delay": "0.24s" } as React.CSSProperties}
-              >
-                <Link href="/onboard" className="btn btn-primary px-6 py-3 text-sm">
-                  Get started free
-                </Link>
-                <Link href="/docs" className="btn btn-outline px-6 py-3 text-sm">
-                  Read the docs
-                </Link>
-              </div>
-              <p
-                className="reveal mt-5 font-mono text-xs text-zinc-400"
-                style={{ "--reveal-delay": "0.3s" } as React.CSSProperties}
-              >
-                npx -y ato-mcp · works with Claude Code, Claude Desktop
-                &amp; any MCP host
-              </p>
-            </div>
-            <div className="relative">
-              <CitationGraphMotif />
-              <HeroDemo />
-            </div>
-          </div>
-
-          {/* stat strip */}
-          <div className="mt-16 flex flex-wrap gap-x-12 gap-y-6 border-t border-zinc-100 pt-7">
-            {HERO_STATS.map((s) => (
-              <div key={s.label}>
-                <p className="text-xl tracking-tight1 text-zinc-900">{s.n}</p>
-                <p className="mt-0.5 font-mono text-[0.6875rem] text-zinc-400">
-                  {s.label}
+      <section className="relative">
+        <div className="px-3 pb-3 pt-3">
+          <div className="hero-card flex min-h-[600px] items-center lg:min-h-[calc(100svh-24px)]">
+            <span className="hero-glow" aria-hidden="true" />
+            <div className="relative grid w-full items-center gap-12 px-[clamp(28px,6vw,88px)] py-28 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
+              <div>
+                <span
+                  className="reveal inline-flex items-center gap-2 rounded-full border border-black/5 bg-white px-3 py-1 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-zinc-500 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                  style={{ "--reveal-delay": "0s" } as React.CSSProperties}
+                >
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />
+                  v1.1 · open source · MIT
+                </span>
+                <h1
+                  className="reveal mt-5 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
+                  style={{ "--reveal-delay": "0.08s" } as React.CSSProperties}
+                >
+                  Your AI agent, fluent in Australian tax
+                </h1>
+                <p
+                  className="reveal mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-500"
+                  style={{ "--reveal-delay": "0.16s" } as React.CSSProperties}
+                >
+                  Connect Claude — or any MCP agent — to 29,000+ ATO documents,
+                  the ITAA 1997 and 2,127 public rulings. Every answer comes with
+                  the section, the ruling and the page.
                 </p>
+                <div
+                  className="reveal mt-8 flex flex-wrap items-center gap-3"
+                  style={{ "--reveal-delay": "0.24s" } as React.CSSProperties}
+                >
+                  <Link href="/onboard" className="btn btn-primary px-6 py-3 text-sm">
+                    Get started free
+                  </Link>
+                  <Link href="/docs" className="btn btn-outline px-6 py-3 text-sm">
+                    Read the docs
+                  </Link>
+                </div>
+                <p
+                  className="reveal mt-5 font-mono text-xs text-zinc-400"
+                  style={{ "--reveal-delay": "0.3s" } as React.CSSProperties}
+                >
+                  npx -y ato-mcp · works with Claude Code, Claude Desktop
+                  &amp; any MCP host
+                </p>
+
+                {/* Mobile trust strip — in-flow (the desktop one is pinned below) */}
+                <HeroTrust className="reveal mt-10 lg:hidden" />
               </div>
-            ))}
+
+              <div className="relative">
+                <CitationGraphMotif />
+                <HeroDemo />
+              </div>
+            </div>
+
+            {/* Desktop trust strip — pinned to the card's bottom-left */}
+            <HeroTrust className="absolute bottom-[clamp(28px,5vh,56px)] left-[clamp(28px,6vw,88px)] hidden lg:flex" />
           </div>
         </div>
       </section>
