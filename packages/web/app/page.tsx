@@ -209,7 +209,7 @@ function HeroDemo() {
 /** heynox-style trust strip, light: title/subtitle pairs split by hairlines. */
 function HeroTrust({ className = "" }: { className?: string }) {
   return (
-    <dl className={`flex w-fit flex-wrap items-center gap-x-6 gap-y-4 ${className}`}>
+    <dl className={`flex flex-wrap items-center gap-x-6 gap-y-4 ${className}`}>
       {HERO_TRUST.map((t, i) => (
         <Fragment key={t.title}>
           {i > 0 && (
@@ -243,13 +243,13 @@ export default function HomePage() {
             <span className="hero-glow" aria-hidden="true" />
             <div className="relative grid w-full items-center gap-12 px-[clamp(28px,6vw,88px)] py-28 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
               <div>
-                <span
+                <p
                   className="reveal inline-flex items-center gap-2 rounded-full border border-black/5 bg-white px-3 py-1 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-zinc-500 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                   style={{ "--reveal-delay": "0s" } as React.CSSProperties}
                 >
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />
                   v1.1 · open source · MIT
-                </span>
+                </p>
                 <h1
                   className="reveal mt-5 text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
                   style={{ "--reveal-delay": "0.08s" } as React.CSSProperties}
@@ -284,7 +284,7 @@ export default function HomePage() {
                 </p>
 
                 {/* Mobile trust strip — in-flow (the desktop one is pinned below) */}
-                <HeroTrust className="reveal mt-10 lg:hidden" />
+                <HeroTrust className="reveal mt-10 w-full border-t border-zinc-100 pt-6 lg:hidden" />
               </div>
 
               <div className="relative">
