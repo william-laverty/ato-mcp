@@ -74,6 +74,10 @@ body {
   .footer-card {
     @apply rounded-[24px] border border-black/5 bg-zinc-50 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_50px_-28px_rgba(0,0,0,0.1)];
   }
+  /* --- Footer link: 14px, muted → ink on hover (pluck footer pattern) --- */
+  .footer-link {
+    @apply text-sm text-zinc-500 transition-colors hover:text-zinc-900;
+  }
 
   /* --- Citation chip: the one place the accent lives ------------------- */
   .chip {
