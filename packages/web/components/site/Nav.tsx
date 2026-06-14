@@ -29,7 +29,7 @@ function Mark({ size = 20 }: { size?: number }) {
 
 /**
  * Scroll-aware nav: at the top of the page it reads as a full-width
- * transparent bar — links left, logo centre, CTA right. Scrolling collapses
+ * transparent bar — logo left, links centre, CTA right. Scrolling collapses
  * it into a centred floating glass pill (white/80 + blur + hairline + soft
  * shadow). On mobile the pill is always painted and expands downward to
  * reveal the menu.
@@ -84,7 +84,7 @@ export function Nav() {
           scrolled ? "max-w-3xl" : "max-w-6xl",
         ].join(" ")}
       >
-        {/* Nav pill — links | logo | CTA. Transparent at top, glass on scroll. */}
+        {/* Nav pill — logo | links | CTA. Transparent at top, glass on scroll. */}
         <nav
           aria-label="Main"
           className={[
@@ -97,8 +97,18 @@ export function Nav() {
         >
           {/* Top row: contents on desktop so the grid owns layout; flex row on mobile. */}
           <div className="[display:contents] max-md:flex max-md:w-full max-md:items-center max-md:justify-between">
-            {/* Left — links */}
-            <div className="group flex items-center gap-1 justify-self-start max-md:hidden">
+            {/* Left — logo */}
+            <Link
+              href="/"
+              className="flex items-center gap-2 justify-self-start px-2 py-1 text-[15px] font-medium tracking-tight1 text-zinc-900 max-md:px-0"
+              aria-label="ato-mcp home"
+            >
+              <Mark />
+              ato-mcp
+            </Link>
+
+            {/* Centre — links */}
+            <div className="group flex items-center gap-1 justify-self-center max-md:hidden">
               {LINKS.map((l) => (
                 <Link
                   key={l.href}
@@ -110,26 +120,8 @@ export function Nav() {
               ))}
             </div>
 
-            {/* Centre — logo */}
-            <Link
-              href="/"
-              className="flex items-center gap-2 justify-self-center px-2 py-1 text-[15px] font-medium tracking-tight1 text-zinc-900 max-md:px-0"
-              aria-label="ato-mcp home"
-            >
-              <Mark />
-              ato-mcp
-            </Link>
-
-            {/* Right — GitHub + CTA */}
+            {/* Right — CTA */}
             <div className="flex items-center gap-1 justify-self-end">
-              <a
-                href="https://github.com/william-laverty/ato-mcp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full px-3 py-1.5 text-[13px] text-zinc-700 transition-colors hover:text-zinc-900 max-md:hidden"
-              >
-                GitHub
-              </a>
               <Link
                 href="/onboard"
                 className="btn btn-primary px-4 py-2 text-[13px] max-md:hidden"
@@ -182,15 +174,6 @@ export function Nav() {
                     {l.label}
                   </Link>
                 ))}
-                <a
-                  href="https://github.com/william-laverty/ato-mcp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  tabIndex={open ? 0 : -1}
-                  className="rounded-lg px-3 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50"
-                >
-                  GitHub
-                </a>
                 <Link
                   href="/onboard"
                   onClick={() => setOpen(false)}

@@ -56,6 +56,25 @@ body {
     @apply relative overflow-hidden rounded-[15px] border border-black/[0.04] bg-zinc-50;
   }
 
+  /* --- Hero card: large rounded framing on warm paper ------------------- */
+  .hero-card {
+    @apply relative overflow-hidden rounded-[24px] border border-black/5 bg-[#fcfbf9] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_60px_-28px_rgba(0,0,0,0.12)];
+  }
+  /* Subtle warm vermillion glow bleeding from the upper-left (decorative). */
+  .hero-glow {
+    @apply pointer-events-none absolute inset-0;
+    background: radial-gradient(
+      60% 55% at 12% 22%,
+      rgba(250, 82, 15, 0.07) 0%,
+      transparent 60%
+    );
+  }
+
+  /* --- Footer card: rounded inset block (superpower section_footer3) ---- */
+  .footer-card {
+    @apply rounded-[24px] border border-black/5 bg-zinc-50 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_50px_-28px_rgba(0,0,0,0.1)];
+  }
+
   /* --- Citation chip: the one place the accent lives ------------------- */
   .chip {
     @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-[5px] bg-brand-50 px-2 py-0.5 font-mono text-[0.6875rem] text-brand-text;
