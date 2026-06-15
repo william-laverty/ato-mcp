@@ -58,41 +58,6 @@ const HOW_IT_WORKS = [
   },
 ];
 
-const WORKFLOWS = [
-  {
-    name: "deduction_discovery",
-    title: "Every deduction that fits your shape",
-    body: "Checks 59 deduction categories and keeps the ones that match your situation — each cited and confidence-rated.",
-  },
-  {
-    name: "depreciation_helper",
-    title: "Depreciation, computed not guessed",
-    body: "Compares every method — instant write-off, prime cost, diminishing value and more — with year-by-year schedules.",
-  },
-  {
-    name: "bas_prep_checklist",
-    title: "BAS prep without the scramble",
-    body: "A checklist for your reporting period: which labels apply, what evidence to gather, and the gotchas.",
-  },
-  {
-    name: "audit_risk_check",
-    title: "Know what the ATO looks at",
-    body: "Reviews a draft return for the red flags the ATO watches, with the guidance behind each one.",
-  },
-];
-
-const RETRIEVAL_TOOLS = [
-  { name: "search", desc: "Search the whole corpus by keyword and meaning" },
-  { name: "get_chunks", desc: "Pull full passages with surrounding context" },
-  { name: "get_doc", desc: "Fetch a whole document" },
-  { name: "get_doc_anchors", desc: "See what a document cites, and what cites it" },
-  { name: "get_definition", desc: "Look up legal definitions" },
-  { name: "get_threshold", desc: "Current thresholds, caps and rates" },
-  { name: "fetch", desc: "Any document as clean markdown" },
-  { name: "stats", desc: "Corpus freshness and coverage" },
-  { name: "get_user_facts", desc: "Your saved tax profile" },
-];
-
 const FAQS = [
   {
     q: "Is this tax advice?",
@@ -271,14 +236,6 @@ export default function HomePage() {
                     Read the docs
                   </Link>
                 </div>
-                <p
-                  className="reveal mt-5 font-mono text-xs text-zinc-400"
-                  style={{ "--reveal-delay": "0.3s" } as React.CSSProperties}
-                >
-                  npx -y ato-mcp · works with Claude Code, Claude Desktop
-                  &amp; any MCP host
-                </p>
-
                 {/* Mobile trust strip — in-flow (the desktop one is pinned below) */}
                 <HeroTrust className="reveal mt-10 w-full border-t border-zinc-100 pt-6 lg:hidden" />
               </div>
@@ -295,41 +252,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ how it works */}
-      <section className="mx-auto max-w-6xl px-5 py-20 sm:py-24" aria-labelledby="how-h">
-        <div className="text-center">
-          <p className="eyebrow">How it works</p>
-          <h2
-            id="how-h"
-            className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-          >
-            From npm to a tax-fluent agent in two minutes
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-          {HOW_IT_WORKS.map((s) => (
-            <div key={s.num} className="reveal-scroll">
-              {/* Visual-first tile (superpower image-card pattern), caption below */}
-              <div className="tile flex h-36 items-center justify-center px-5">
-                <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white font-mono text-[0.6875rem] text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-                  {s.num}
-                </span>
-                <p className="overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-700">
-                  {s.fragment}
-                </p>
-              </div>
-              <h3 className="mt-4 text-base font-medium tracking-tight1">
-                {s.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-500">{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ------------------------------------------------ corpus */}
       <section
-        className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24"
+        className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
         aria-labelledby="corpus-h"
       >
         <div className="grid gap-12 lg:grid-cols-[1fr_260px]">
@@ -386,96 +311,35 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ workflows */}
-      <section
-        id="tools"
-        className="border-y border-zinc-100 bg-zinc-50"
-        aria-labelledby="tools-h"
-      >
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-          <p className="eyebrow">Workflow tools</p>
+      {/* ------------------------------------------------ how it works */}
+      <section className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24" aria-labelledby="how-h">
+        <div className="text-center">
+          <p className="eyebrow">How it works</p>
           <h2
-            id="tools-h"
-            className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
+            id="how-h"
+            className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
           >
-            Not a search box. Workflows that know who&apos;s asking
+            From npm to a tax-fluent agent in two minutes
           </h2>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-zinc-500">
-            Tell it about yourself once — your business, GST, investments,
-            super — and four built-in tools tailor their answers to you. All of
-            it backed by ATO citations.
-          </p>
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {WORKFLOWS.map((w) => (
-              <article key={w.name} className="card reveal-scroll p-6">
-                <p className="font-mono text-xs text-brand-text">{w.name}</p>
-                <h3 className="mt-2 text-lg font-medium tracking-tight1">
-                  {w.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-500">
-                  {w.body}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          {/* retrieval layer */}
-          <div className="mt-12">
-            <p className="eyebrow">Plus the retrieval layer</p>
-            <div className="card mt-4 overflow-hidden p-0">
-              {RETRIEVAL_TOOLS.map((t, idx) => (
-                <div
-                  key={t.name}
-                  className={`flex flex-col gap-0.5 px-5 py-3 sm:flex-row sm:items-baseline sm:gap-6 ${
-                    idx % 2 === 1 ? "bg-zinc-50/70" : "bg-white"
-                  }`}
-                >
-                  <span className="w-40 shrink-0 font-mono text-[0.8125rem] text-zinc-900">
-                    {t.name}
-                  </span>
-                  <span className="text-[0.8125rem] text-zinc-500">{t.desc}</span>
-                </div>
-              ))}
-            </div>
-            <p className="mt-4 text-sm text-zinc-500">
-              Nine retrieval tools the workflows are built on — and your agent
-              can use directly.{" "}
-              <Link
-                href="/docs"
-                className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
-              >
-                Full tool reference
-              </Link>
-            </p>
-          </div>
         </div>
-      </section>
-
-      {/* ------------------------------------------------ privacy */}
-      <section
-        className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24"
-        aria-labelledby="privacy-h"
-      >
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow inline-flex items-center gap-2">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand" />
-            Privacy, by construction
-          </p>
-          <h2
-            id="privacy-h"
-            className="mt-4 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.15] tracking-tight1"
-          >
-            The privacy policy is generated from the database schema — so it
-            can&apos;t lie
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-zinc-500">
-            There&apos;s nowhere to store your questions — the database has no
-            table for them. Everything we do store is listed on the privacy
-            page, straight from the schema. One button deletes it all.
-          </p>
-          <Link href="/privacy" className="btn btn-outline mt-7 px-5 py-2.5 text-sm">
-            Read the privacy policy
-          </Link>
+        <div className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          {HOW_IT_WORKS.map((s) => (
+            <div key={s.num} className="reveal-scroll">
+              {/* Visual-first tile (superpower image-card pattern), caption below */}
+              <div className="tile flex h-36 items-center justify-center px-5">
+                <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white font-mono text-[0.6875rem] text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  {s.num}
+                </span>
+                <p className="overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-700">
+                  {s.fragment}
+                </p>
+              </div>
+              <h3 className="mt-4 text-base font-medium tracking-tight1">
+                {s.title}
+              </h3>
+              <p className="mt-1 text-sm text-zinc-500">{s.body}</p>
+            </div>
+          ))}
         </div>
       </section>
 
