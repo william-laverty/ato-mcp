@@ -370,18 +370,20 @@ export default function HomePage() {
           the nav floats *over* the card — content is centred well clear of it. */}
       <section className="relative -mt-16">
         <div className="px-3 pb-3 pt-3">
-          <div className="hero-card flex min-h-[600px] items-center lg:min-h-[calc(100svh-24px)]">
+          <div className="hero-card flex min-h-[calc(100svh-24px)] flex-col lg:flex-row lg:items-center">
             <span className="hero-glow" aria-hidden="true" />
-            <div className="relative grid w-full items-center gap-12 px-[clamp(28px,6vw,88px)] py-28 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
-              <div>
+            <div className="relative flex w-full flex-1 flex-col px-[clamp(24px,7vw,88px)] py-16 sm:py-20 lg:grid lg:flex-none lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:py-24">
+              {/* Main hero block — centred stack on mobile (heynox-style),
+                  left-aligned beside the demo on desktop. */}
+              <div className="flex flex-1 flex-col items-center justify-center text-center lg:block lg:flex-none lg:text-left">
                 <h1
-                  className="reveal text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
+                  className="reveal max-w-[16ch] text-[clamp(2.25rem,8.5vw,3.5rem)] font-normal leading-[1.08] tracking-tight2 text-zinc-900 sm:max-w-none sm:leading-[1.04]"
                   style={{ "--reveal-delay": "0s" } as React.CSSProperties}
                 >
                   Your AI agent, fluent in Australian tax
                 </h1>
                 <p
-                  className="reveal mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-500"
+                  className="reveal mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-zinc-500 sm:max-w-xl lg:mx-0"
                   style={{ "--reveal-delay": "0.16s" } as React.CSSProperties}
                 >
                   Connect Claude — or any MCP agent — to 29,000+ ATO documents,
@@ -389,24 +391,47 @@ export default function HomePage() {
                   the section, the ruling and the page.
                 </p>
                 <div
-                  className="reveal mt-8 flex flex-wrap items-center gap-3"
+                  className="reveal mt-9 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:justify-center lg:justify-start"
                   style={{ "--reveal-delay": "0.24s" } as React.CSSProperties}
                 >
-                  <Link href="/onboard" className="btn btn-primary px-6 py-3 text-sm">
+                  <Link
+                    href="/onboard"
+                    className="btn btn-primary w-full max-w-xs px-7 py-3.5 text-sm sm:w-auto sm:py-3"
+                  >
                     Get started free
                   </Link>
-                  <Link href="/docs" className="btn btn-outline px-6 py-3 text-sm">
+                  <Link
+                    href="/docs"
+                    className="btn btn-outline hidden w-full max-w-xs px-7 py-3.5 text-sm sm:inline-flex sm:w-auto sm:py-3"
+                  >
                     Read the docs
                   </Link>
                 </div>
-                {/* Mobile trust strip — in-flow (the desktop one is pinned below) */}
-                <HeroTrust className="reveal mt-10 w-full border-t border-zinc-100 pt-6 lg:hidden" />
               </div>
 
-              <div className="relative">
+              {/* Hero demo card — desktop only. On mobile the hero is the
+                  centred headline + CTAs + trust strip, so the demo (and its
+                  motif) are hidden to keep the first screen tight and fast. */}
+              <div className="relative hidden lg:block">
                 <CitationGraphMotif />
                 <HeroDemo />
               </div>
+
+              {/* Mobile trust strip — pinned to the foot of the full-height hero
+                  as a compact 3-up grid (the desktop one, a single row, is
+                  absolutely pinned bottom-left). */}
+              <dl className="reveal mt-10 grid w-full grid-cols-3 gap-x-3 border-t border-zinc-100 pt-6 text-center lg:hidden">
+                {HERO_TRUST.map((t) => (
+                  <div key={t.title}>
+                    <dt className="text-[13px] font-medium leading-tight text-zinc-900">
+                      {t.title}
+                    </dt>
+                    <dd className="mt-1 text-[11px] leading-snug text-zinc-400">
+                      {t.sub}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             {/* Desktop trust strip — pinned to the card's bottom-left */}
@@ -434,18 +459,20 @@ export default function HomePage() {
 
         {/* Alternating wide rows: plain-language turn on one side, a graphic
             of what the tool did on the other. Sides swap each turn. */}
-        <div className="mt-14 space-y-14 sm:space-y-20">
+        <div className="mt-12 space-y-12 sm:mt-14 sm:space-y-20">
           {SESSION_TURNS.map((turn, i) => (
             <div
               key={turn.question}
-              className="reveal-scroll grid items-center gap-8 sm:gap-14 lg:grid-cols-2"
+              className="reveal-scroll grid items-center gap-6 sm:gap-14 lg:grid-cols-2"
             >
-              <div className={i % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="tile flex min-h-[230px] items-center justify-center p-8 sm:min-h-[280px] sm:p-12">
+              {/* Graphic always follows the question on mobile (order-2); on
+                  desktop the sides alternate each turn. */}
+              <div className={`order-2 ${i % 2 === 1 ? "lg:order-2" : "lg:order-1"}`}>
+                <div className="tile flex min-h-[180px] items-center justify-center p-6 sm:min-h-[280px] sm:p-12">
                   <SessionGraphic kind={turn.graphic} />
                 </div>
               </div>
-              <div className={i % 2 === 1 ? "lg:order-1" : ""}>
+              <div className={`order-1 ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}>
                 <p className="eyebrow">{turn.eyebrow}</p>
                 <h3 className="mt-3 max-w-md text-[clamp(1.25rem,2.2vw,1.6rem)] font-normal leading-[1.15] tracking-tight1 text-zinc-900">
                   {turn.question}
@@ -475,8 +502,8 @@ export default function HomePage() {
           (24px radius, hairline border, warm paper, layered shadow) and its
           12px edge inset (px-3); content stays centred at max-w-6xl inside. */}
       <section className="px-3 py-12 sm:py-16" aria-labelledby="corpus-h">
-        <div className="hero-card px-[clamp(28px,6vw,88px)] py-16 sm:py-20">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_260px]">
+        <div className="hero-card px-[clamp(24px,6vw,88px)] py-14 sm:py-20">
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_260px] lg:gap-12">
             <div>
               <p className="eyebrow">The corpus</p>
               <h2
@@ -507,7 +534,7 @@ export default function HomePage() {
                 </Link>
               </p>
             </div>
-            <div className="border-zinc-200 lg:border-l lg:pl-10">
+            <div className="border-t border-zinc-200 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
               <ol>
                 {CORPUS_INDEX.map((i, idx) => (
                   <li
@@ -532,7 +559,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------ FAQ */}
-      <section className="mx-auto max-w-3xl px-5 pb-24" aria-labelledby="faq-h">
+      <section className="mx-auto max-w-3xl px-5 pb-20 sm:pb-24" aria-labelledby="faq-h">
         <p className="eyebrow text-center">FAQ</p>
         <h2
           id="faq-h"
@@ -561,21 +588,24 @@ export default function HomePage() {
       {/* ------------------------------------------------ final CTA */}
       <section className="border-t border-zinc-100 bg-zinc-50">
         <div className="mx-auto max-w-2xl px-5 py-20 text-center sm:py-24">
-          <h2 className="text-[clamp(1.8rem,3.6vw,2.5rem)] font-normal leading-[1.1] tracking-tight2 text-zinc-900">
+          <h2 className="text-[clamp(1.65rem,6vw,2.5rem)] font-normal leading-[1.1] tracking-tight2 text-zinc-900">
             Two minutes to a tax-fluent agent
           </h2>
           <p className="mt-4 text-[15px] text-zinc-500">
             Onboard, paste one config line, ask better questions.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/onboard" className="btn btn-primary px-7 py-3 text-sm">
+          <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/onboard"
+              className="btn btn-primary w-full px-7 py-3.5 text-sm sm:w-auto sm:py-3"
+            >
               Get started free
             </Link>
             <a
               href="https://github.com/william-laverty/ato-mcp"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-outline px-7 py-3 text-sm"
+              className="btn btn-outline w-full px-7 py-3.5 text-sm sm:w-auto sm:py-3"
             >
               Star on GitHub
             </a>
