@@ -34,6 +34,7 @@ const CORPUS_INDEX = [
 const SESSION_TURNS = [
   {
     graphic: "deductions" as const,
+    eyebrow: "Deductions",
     question: "What can I claim this year?",
     answer:
       "It finds every deduction that fits how you work — home office, equipment, software — and backs each one with the exact ATO source.",
@@ -42,6 +43,7 @@ const SESSION_TURNS = [
   },
   {
     graphic: "depreciation" as const,
+    eyebrow: "Depreciation",
     question: "How do I write off my new laptop?",
     answer:
       "Anything under $300 is claimed straight away; bigger gear is written down over its life. It runs the numbers and shows the rule it used.",
@@ -50,6 +52,7 @@ const SESSION_TURNS = [
   },
   {
     graphic: "risk" as const,
+    eyebrow: "Audit risk",
     question: "Is anything in my return risky?",
     answer:
       "It checks your return against the ATO's common red flags and shows where you stand. This year you sit comfortably in the low band.",
@@ -443,10 +446,11 @@ export default function HomePage() {
                 </div>
               </div>
               <div className={i % 2 === 1 ? "lg:order-1" : ""}>
-                <div className="inline-block max-w-md rounded-2xl rounded-tl-md bg-zinc-100 px-4 py-2.5 text-[15px] text-zinc-800">
+                <p className="eyebrow">{turn.eyebrow}</p>
+                <h3 className="mt-3 max-w-md text-[clamp(1.25rem,2.2vw,1.6rem)] font-normal leading-[1.15] tracking-tight1 text-zinc-900">
                   {turn.question}
-                </div>
-                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-zinc-600 sm:text-base">
+                </h3>
+                <p className="mt-3 max-w-md text-[15px] leading-relaxed text-zinc-600 sm:text-base">
                   {turn.answer}
                 </p>
                 <div className="mt-5 flex flex-wrap gap-1.5" aria-label="Citations">
