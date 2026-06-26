@@ -33,43 +33,27 @@ const CORPUS_INDEX = [
 
 const SESSION_TURNS = [
   {
-    prompt: "I run a software business from home — what can I claim this year?",
-    summary:
-      "Plenty — and because part of your home is a genuine place of business, you reach beyond the obvious running costs:",
-    points: [
-      "Home-office running costs — energy, phone & internet (fixed-rate or actual cost)",
-      "Equipment under $300 — deductible immediately, in full",
-      "Software subscriptions, professional memberships & insurances",
-    ],
-    toolTag: "deduction_discovery → 32 categories matched",
-    chips: [
-      "ITAA 1997 · s 8-1",
-      "PCG 2023/1",
-      "TR 93/30",
-      "Home-based business expenses",
-    ],
+    graphic: "deductions" as const,
+    question: "What can I claim this year?",
+    answer:
+      "It finds every deduction that fits how you work — home office, equipment, software — and backs each one with the exact ATO source.",
+    tool: "deduction_discovery",
+    chips: ["ITAA 1997 · s 8-1", "PCG 2023/1", "TR 93/30"],
   },
   {
-    prompt:
-      "I bought a $4,200 laptop and a $280 monitor — how do I write those off?",
-    summary:
-      "They split on the $300 line. The monitor is immediate; the laptop is depreciated over its effective life:",
-    points: [
-      "Monitor ($280) — under $300, claim the full amount this year",
-      "Laptop ($4,200) — diminishing value or prime cost across its effective life",
-    ],
-    toolTag: "depreciation_helper → 2 assets, 2 methods",
+    graphic: "depreciation" as const,
+    question: "How do I write off my new laptop?",
+    answer:
+      "Anything under $300 is claimed straight away; bigger gear is written down over its life. It runs the numbers and shows the rule it used.",
+    tool: "depreciation_helper",
     chips: ["ITAA 1997 · Div 40", "s 40-80"],
   },
   {
-    prompt: "Before I lodge — anything that looks risky?",
-    summary:
-      "Two items worth a second look, but nothing alarming — your overall profile lands in the low band:",
-    points: [
-      "Home-office claim is above the occupation average — keep your hours log",
-      "Risk bands are heuristic indicators, not a prediction of audit",
-    ],
-    toolTag: "audit_risk_check → 13 rules · band LOW",
+    graphic: "risk" as const,
+    question: "Is anything in my return risky?",
+    answer:
+      "It checks your return against the ATO's common red flags and shows where you stand. This year you sit comfortably in the low band.",
+    tool: "audit_risk_check",
     chips: ["Tax-time toolkit", "PCG 2021/4"],
   },
 ];
@@ -187,6 +171,166 @@ function HeroDemo() {
   );
 }
 
+/* ---------------------------------------------------------------------------
+   Session graphics — small, decorative SVGs in the Clinical style: hairline
+   zinc strokes, soft zinc fills, the vermillion accent used once each. They
+   visualise what the tool does, so the copy can stay short.
+--------------------------------------------------------------------------- */
+
+const GRAPHIC_CLASS = "h-auto w-full max-w-[360px]";
+
+/** deduction_discovery — a taxonomy grid with a few categories "matched". */
+function DeductionsGraphic() {
+  const cols = 5;
+  const rows = 3;
+  const tw = 56;
+  const th = 40;
+  const gx = 16;
+  const gy = 16;
+  const ox = 10;
+  const oy = 10;
+  const filled = new Set([0, 1, 3, 4, 6, 8, 9, 11, 12]);
+  const matched = new Set([1, 4, 6, 9, 12]);
+  const width = ox * 2 + cols * tw + (cols - 1) * gx;
+  const height = oy * 2 + rows * th + (rows - 1) * gy;
+  const tiles = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      const x = ox + c * (tw + gx);
+      const y = oy + r * (th + gy);
+      const isFilled = filled.has(idx);
+      tiles.push(
+        <g key={idx}>
+          <rect
+            x={x}
+            y={y}
+            width={tw}
+            height={th}
+            rx="8"
+            fill={isFilled ? "#f4f4f5" : "none"}
+            stroke={isFilled ? "#d4d4d8" : "#e4e4e7"}
+            strokeWidth="1"
+          />
+          {matched.has(idx) && (
+            <circle cx={x + tw - 11} cy={y + 11} r="3" fill="#fa520f" />
+          )}
+        </g>,
+      );
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className={GRAPHIC_CLASS}
+      fill="none"
+      aria-hidden="true"
+    >
+      {tiles}
+    </svg>
+  );
+}
+
+/** depreciation_helper — a diminishing-value step-down with a curve over it. */
+function DepreciationGraphic() {
+  const values = [100, 70, 49, 34, 24, 17];
+  const bw = 40;
+  const gap = 18;
+  const ox = 16;
+  const baseY = 150;
+  const maxH = 120;
+  const width = ox * 2 + values.length * bw + (values.length - 1) * gap;
+  const bars = values.map((v, i) => {
+    const h = (v / 100) * maxH;
+    const x = ox + i * (bw + gap);
+    const y = baseY - h;
+    return (
+      <g key={i}>
+        <rect
+          x={x}
+          y={y}
+          width={bw}
+          height={h}
+          rx="4"
+          fill="#f4f4f5"
+          stroke="#d4d4d8"
+          strokeWidth="1"
+        />
+        {i === 0 && <rect x={x} y={y} width={bw} height="3" rx="1.5" fill="#fa520f" />}
+      </g>
+    );
+  });
+  const curve = values
+    .map((v, i) => {
+      const h = (v / 100) * maxH;
+      const x = ox + i * (bw + gap) + bw / 2;
+      const y = baseY - h;
+      return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+    })
+    .join(" ");
+  return (
+    <svg
+      viewBox={`0 0 ${width} 170`}
+      className={GRAPHIC_CLASS}
+      fill="none"
+      aria-hidden="true"
+    >
+      {bars}
+      <path d={curve} stroke="#d4d4d8" strokeWidth="1.5" strokeDasharray="3 4" />
+      <line
+        x1={ox - 4}
+        y1={baseY + 0.5}
+        x2={width - ox + 4}
+        y2={baseY + 0.5}
+        stroke="#e4e4e7"
+        strokeWidth="1"
+      />
+    </svg>
+  );
+}
+
+/** audit_risk_check — a LOW/MED/HIGH gauge with the marker resting on LOW. */
+function RiskGraphic() {
+  const x0 = 18;
+  const w = 324;
+  const y = 70;
+  const h = 14;
+  const seg = w / 3;
+  const markerX = x0 + seg / 2;
+  return (
+    <svg
+      viewBox="0 0 360 130"
+      className={GRAPHIC_CLASS}
+      fill="none"
+      aria-hidden="true"
+    >
+      {/* track */}
+      <rect x={x0} y={y} width={w} height={h} rx={h / 2} fill="#f4f4f5" />
+      {/* low band tinted */}
+      <path
+        d={`M ${x0 + h / 2} ${y} H ${x0 + seg} V ${y + h} H ${x0 + h / 2} A ${h / 2} ${h / 2} 0 0 1 ${x0 + h / 2} ${y} Z`}
+        fill="#fde8df"
+      />
+      {/* segment dividers */}
+      <line x1={x0 + seg} y1={y - 6} x2={x0 + seg} y2={y + h + 6} stroke="#e4e4e7" strokeWidth="1" />
+      <line x1={x0 + 2 * seg} y1={y - 6} x2={x0 + 2 * seg} y2={y + h + 6} stroke="#e4e4e7" strokeWidth="1" />
+      {/* marker on LOW */}
+      <line x1={markerX} y1={y - 14} x2={markerX} y2={y + h} stroke="#fa520f" strokeWidth="1.5" />
+      <circle cx={markerX} cy={y - 16} r="5" fill="#fa520f" />
+      {/* labels */}
+      <text x={markerX} y={y + h + 24} textAnchor="middle" className="font-mono" fontSize="11" fill="#fa520f">LOW</text>
+      <text x={x0 + 1.5 * seg} y={y + h + 24} textAnchor="middle" className="font-mono" fontSize="11" fill="#a1a1aa">MED</text>
+      <text x={x0 + 2.5 * seg} y={y + h + 24} textAnchor="middle" className="font-mono" fontSize="11" fill="#a1a1aa">HIGH</text>
+    </svg>
+  );
+}
+
+function SessionGraphic({ kind }: { kind: "deductions" | "depreciation" | "risk" }) {
+  if (kind === "deductions") return <DeductionsGraphic />;
+  if (kind === "depreciation") return <DepreciationGraphic />;
+  return <RiskGraphic />;
+}
+
 /** heynox-style trust strip, light: title/subtitle pairs split by hairlines. */
 function HeroTrust({ className = "" }: { className?: string }) {
   return (
@@ -270,48 +414,42 @@ export default function HomePage() {
 
       {/* ------------------------------------------------ the session */}
       <section
-        className="mx-auto max-w-3xl px-5 py-20 sm:py-24"
+        className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
         aria-labelledby="session-h"
       >
         <p className="eyebrow">A real session</p>
         <h2
           id="session-h"
-          className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
+          className="mt-3 max-w-2xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
         >
           One question is never one lookup
         </h2>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-zinc-500">
+          Ask in plain English. Every answer comes back with the ATO source
+          behind it — and the right tool quietly does the work.
+        </p>
 
-        {/* Vertical thread: hairline rail + node per turn (echoes the
-            CitationGraphMotif). Decorative rail is aria-hidden. */}
-        <ol className="relative mt-12 border-l border-zinc-200 pl-8">
-          {SESSION_TURNS.map((turn) => (
-            <li key={turn.prompt} className="reveal-scroll relative pb-12 last:pb-0">
-              <span
-                className="absolute -left-[37px] top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-zinc-300 bg-white"
-                aria-hidden="true"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-zinc-300" />
-              </span>
-              <p className="font-mono text-[0.8125rem] text-zinc-400">
-                › {turn.prompt}
-              </p>
-              <div className="card mt-3 p-5 text-left">
-                <p className="text-sm leading-relaxed text-zinc-700">
-                  {turn.summary}
+        {/* Alternating wide rows: plain-language turn on one side, a graphic
+            of what the tool did on the other. Sides swap each turn. */}
+        <div className="mt-14 space-y-14 sm:space-y-20">
+          {SESSION_TURNS.map((turn, i) => (
+            <div
+              key={turn.question}
+              className="reveal-scroll grid items-center gap-8 sm:gap-14 lg:grid-cols-2"
+            >
+              <div className={i % 2 === 1 ? "lg:order-2" : ""}>
+                <div className="tile flex min-h-[230px] items-center justify-center p-8 sm:min-h-[280px] sm:p-12">
+                  <SessionGraphic kind={turn.graphic} />
+                </div>
+              </div>
+              <div className={i % 2 === 1 ? "lg:order-1" : ""}>
+                <div className="inline-block max-w-md rounded-2xl rounded-tl-md bg-zinc-100 px-4 py-2.5 text-[15px] text-zinc-800">
+                  {turn.question}
+                </div>
+                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-zinc-600 sm:text-base">
+                  {turn.answer}
                 </p>
-                {turn.points && (
-                  <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-zinc-500">
-                    {turn.points.map((pt) => (
-                      <li key={pt} className="flex gap-2">
-                        <span className="text-zinc-300" aria-hidden="true">
-                          —
-                        </span>
-                        <span>{pt}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <div className="mt-4 flex flex-wrap gap-1.5" aria-label="Citations">
+                <div className="mt-5 flex flex-wrap gap-1.5" aria-label="Citations">
                   {turn.chips.map((c) => (
                     <span key={c} className="chip">
                       <span className="chip-dot" />
@@ -319,17 +457,13 @@ export default function HomePage() {
                     </span>
                   ))}
                 </div>
-                <p className="mt-4 border-t border-zinc-100 pt-3 font-mono text-[0.6875rem] text-zinc-400">
-                  {turn.toolTag}
+                <p className="mt-3 font-mono text-[0.6875rem] text-zinc-400">
+                  {turn.tool}
                 </p>
               </div>
-            </li>
+            </div>
           ))}
-        </ol>
-
-        <p className="mt-2 text-sm text-zinc-500">
-          Three tools, one thread — every figure traceable.
-        </p>
+        </div>
       </section>
 
       {/* ------------------------------------------------ corpus */}
@@ -344,8 +478,8 @@ export default function HomePage() {
               id="corpus-h"
               className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
             >
-              Every chip above resolves to this — guidance, statute and
-              rulings in one graph
+              The whole landscape, indexed — guidance, statute and rulings
+              in one graph
             </h2>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {CORPUS_STATS.map((s) => (
