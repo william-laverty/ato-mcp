@@ -58,6 +58,49 @@ const HOW_IT_WORKS = [
   },
 ];
 
+const SESSION_TURNS = [
+  {
+    prompt: "I run a software business from home — what can I claim this year?",
+    summary:
+      "Plenty — and because part of your home is a genuine place of business, you reach beyond the obvious running costs:",
+    points: [
+      "Home-office running costs — energy, phone & internet (fixed-rate or actual cost)",
+      "Equipment under $300 — deductible immediately, in full",
+      "Software subscriptions, professional memberships & insurances",
+    ],
+    toolTag: "deduction_discovery → 32 categories matched",
+    chips: [
+      "ITAA 1997 · s 8-1",
+      "PCG 2023/1",
+      "TR 93/30",
+      "Home-based business expenses",
+    ],
+  },
+  {
+    prompt:
+      "I bought a $4,200 laptop and a $280 monitor — how do I write those off?",
+    summary:
+      "They split on the $300 line. The monitor is immediate; the laptop is depreciated over its effective life:",
+    points: [
+      "Monitor ($280) — under $300, claim the full amount this year",
+      "Laptop ($4,200) — diminishing value or prime cost across its effective life",
+    ],
+    toolTag: "depreciation_helper → 2 assets, 2 methods",
+    chips: ["ITAA 1997 · Div 40", "s 40-80"],
+  },
+  {
+    prompt: "Before I lodge — anything that looks risky?",
+    summary:
+      "Two items worth a second look, but nothing alarming — your overall profile lands in the low band:",
+    points: [
+      "Home-office claim is above the occupation average — keep your hours log",
+      "Risk bands are heuristic indicators, not a prediction of audit",
+    ],
+    toolTag: "audit_risk_check → 13 rules · band LOW",
+    chips: ["Tax-time toolkit", "PCG 2021/4"],
+  },
+];
+
 const FAQS = [
   {
     q: "Is this tax advice?",
