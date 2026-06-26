@@ -471,60 +471,62 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------ corpus */}
-      <section
-        className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
-        aria-labelledby="corpus-h"
-      >
-        <div className="grid gap-12 lg:grid-cols-[1fr_260px]">
-          <div>
-            <p className="eyebrow">The corpus</p>
-            <h2
-              id="corpus-h"
-              className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-            >
-              The whole landscape, indexed — guidance, statute and rulings
-              in one graph
-            </h2>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {CORPUS_STATS.map((s) => (
-                <div key={s.label} className="card reveal-scroll p-5">
-                  <p className="text-[1.75rem] tracking-tight1 text-zinc-900">
-                    {s.n}
-                  </p>
-                  <p className="mt-1 text-sm font-medium">{s.label}</p>
-                  <p className="mt-1 text-xs text-zinc-400">{s.sub}</p>
-                </div>
-              ))}
-            </div>
-            <p className="mt-6 text-sm text-zinc-500">
-              Rebuilt monthly, served fresh.{" "}
-              <Link
-                href="/docs"
-                className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
+      {/* Contained in its own rounded card, matching the hero card chrome
+          (24px radius, hairline border, warm paper, layered shadow) and its
+          12px edge inset (px-3); content stays centred at max-w-6xl inside. */}
+      <section className="px-3 py-12 sm:py-16" aria-labelledby="corpus-h">
+        <div className="hero-card px-[clamp(28px,6vw,88px)] py-16 sm:py-20">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_260px]">
+            <div>
+              <p className="eyebrow">The corpus</p>
+              <h2
+                id="corpus-h"
+                className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
               >
-                See what&apos;s inside
-              </Link>
-            </p>
-          </div>
-          <div className="border-zinc-100 lg:border-l lg:pl-10">
-            <ol>
-              {CORPUS_INDEX.map((i, idx) => (
-                <li
-                  key={i.num}
-                  className={`flex items-baseline justify-between gap-4 py-4 ${
-                    idx < CORPUS_INDEX.length - 1 ? "border-b border-zinc-100" : ""
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900">{i.title}</p>
-                    <p className="mt-0.5 text-xs text-zinc-400">{i.sub}</p>
+                The whole landscape, indexed — guidance, statute and rulings
+                in one graph
+              </h2>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {CORPUS_STATS.map((s) => (
+                  <div key={s.label} className="card reveal-scroll p-5">
+                    <p className="text-[1.75rem] tracking-tight1 text-zinc-900">
+                      {s.n}
+                    </p>
+                    <p className="mt-1 text-sm font-medium">{s.label}</p>
+                    <p className="mt-1 text-xs text-zinc-400">{s.sub}</p>
                   </div>
-                  <span className="font-mono text-[0.6875rem] text-zinc-400">
-                    {i.num}
-                  </span>
-                </li>
-              ))}
-            </ol>
+                ))}
+              </div>
+              <p className="mt-6 text-sm text-zinc-500">
+                Rebuilt monthly, served fresh.{" "}
+                <Link
+                  href="/docs"
+                  className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
+                >
+                  See what&apos;s inside
+                </Link>
+              </p>
+            </div>
+            <div className="border-zinc-200 lg:border-l lg:pl-10">
+              <ol>
+                {CORPUS_INDEX.map((i, idx) => (
+                  <li
+                    key={i.num}
+                    className={`flex items-baseline justify-between gap-4 py-4 ${
+                      idx < CORPUS_INDEX.length - 1 ? "border-b border-zinc-200" : ""
+                    }`}
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-zinc-900">{i.title}</p>
+                      <p className="mt-0.5 text-xs text-zinc-400">{i.sub}</p>
+                    </div>
+                    <span className="font-mono text-[0.6875rem] text-zinc-400">
+                      {i.num}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </div>
       </section>
