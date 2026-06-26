@@ -31,33 +31,6 @@ const CORPUS_INDEX = [
   { num: "04", title: "Citation graph", sub: "everything cross-linked" },
 ];
 
-const HOW_IT_WORKS = [
-  {
-    num: "1",
-    title: "Install",
-    body: "One global npm package.",
-    fragment: "npx -y ato-mcp",
-  },
-  {
-    num: "2",
-    title: "Onboard",
-    body: "Sign in with email, about two minutes.",
-    fragment: "ato-mcp.com.au/onboard",
-  },
-  {
-    num: "3",
-    title: "Connect",
-    body: "One line in your MCP host config.",
-    fragment: "claude mcp add ato-mcp",
-  },
-  {
-    num: "4",
-    title: "Ask",
-    body: "Answers arrive with their citations.",
-    fragment: "› what can I claim?",
-  },
-];
-
 const SESSION_TURNS = [
   {
     prompt: "I run a software business from home — what can I claim this year?",
@@ -295,6 +268,70 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ------------------------------------------------ the session */}
+      <section
+        className="mx-auto max-w-3xl px-5 py-20 sm:py-24"
+        aria-labelledby="session-h"
+      >
+        <p className="eyebrow">A real session</p>
+        <h2
+          id="session-h"
+          className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
+        >
+          One question is never one lookup
+        </h2>
+
+        {/* Vertical thread: hairline rail + node per turn (echoes the
+            CitationGraphMotif). Decorative rail is aria-hidden. */}
+        <ol className="relative mt-12 border-l border-zinc-200 pl-8">
+          {SESSION_TURNS.map((turn) => (
+            <li key={turn.prompt} className="reveal-scroll relative pb-12 last:pb-0">
+              <span
+                className="absolute -left-[37px] top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-zinc-300 bg-white"
+                aria-hidden="true"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-zinc-300" />
+              </span>
+              <p className="font-mono text-[0.8125rem] text-zinc-400">
+                › {turn.prompt}
+              </p>
+              <div className="card mt-3 p-5 text-left">
+                <p className="text-sm leading-relaxed text-zinc-700">
+                  {turn.summary}
+                </p>
+                {turn.points && (
+                  <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-zinc-500">
+                    {turn.points.map((pt) => (
+                      <li key={pt} className="flex gap-2">
+                        <span className="text-zinc-300" aria-hidden="true">
+                          —
+                        </span>
+                        <span>{pt}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="mt-4 flex flex-wrap gap-1.5" aria-label="Citations">
+                  {turn.chips.map((c) => (
+                    <span key={c} className="chip">
+                      <span className="chip-dot" />
+                      {c}
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-4 border-t border-zinc-100 pt-3 font-mono text-[0.6875rem] text-zinc-400">
+                  {turn.toolTag}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <p className="mt-2 text-sm text-zinc-500">
+          Three tools, one thread — every figure traceable.
+        </p>
+      </section>
+
       {/* ------------------------------------------------ corpus */}
       <section
         className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
@@ -307,8 +344,8 @@ export default function HomePage() {
               id="corpus-h"
               className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
             >
-              The whole landscape, indexed — guidance, statute and rulings in
-              one graph
+              Every chip above resolves to this — guidance, statute and
+              rulings in one graph
             </h2>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {CORPUS_STATS.map((s) => (
@@ -351,38 +388,6 @@ export default function HomePage() {
               ))}
             </ol>
           </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------ how it works */}
-      <section className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24" aria-labelledby="how-h">
-        <div className="text-center">
-          <p className="eyebrow">How it works</p>
-          <h2
-            id="how-h"
-            className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-          >
-            From npm to a tax-fluent agent in two minutes
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-          {HOW_IT_WORKS.map((s) => (
-            <div key={s.num} className="reveal-scroll">
-              {/* Visual-first tile (superpower image-card pattern), caption below */}
-              <div className="tile flex h-36 items-center justify-center px-5">
-                <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white font-mono text-[0.6875rem] text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-                  {s.num}
-                </span>
-                <p className="overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-700">
-                  {s.fragment}
-                </p>
-              </div>
-              <h3 className="mt-4 text-base font-medium tracking-tight1">
-                {s.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-500">{s.body}</p>
-            </div>
-          ))}
         </div>
       </section>
 
