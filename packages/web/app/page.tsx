@@ -417,9 +417,21 @@ export default function HomePage() {
                 <HeroDemo />
               </div>
 
-              {/* Mobile trust strip — pinned to the foot of the full-height hero,
-                  centred (the desktop one is absolutely pinned bottom-left). */}
-              <HeroTrust className="reveal mt-10 w-full justify-center gap-x-8 border-t border-zinc-100 pt-6 text-center lg:hidden" />
+              {/* Mobile trust strip — pinned to the foot of the full-height hero
+                  as a compact 3-up grid (the desktop one, a single row, is
+                  absolutely pinned bottom-left). */}
+              <dl className="reveal mt-10 grid w-full grid-cols-3 gap-x-3 border-t border-zinc-100 pt-6 text-center lg:hidden">
+                {HERO_TRUST.map((t) => (
+                  <div key={t.title}>
+                    <dt className="text-[13px] font-medium leading-tight text-zinc-900">
+                      {t.title}
+                    </dt>
+                    <dd className="mt-1 text-[11px] leading-snug text-zinc-400">
+                      {t.sub}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             {/* Desktop trust strip — pinned to the card's bottom-left */}
