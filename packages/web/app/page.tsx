@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import Link from "next/link";
+import { CorpusFlow } from "../components/site/CorpusFlow";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -16,46 +17,6 @@ const HERO_TRUST = [
   { title: "Cited retrieval", sub: "every answer sourced" },
   { title: "29,000+ documents", sub: "refreshed monthly" },
   { title: "Any MCP host", sub: "Claude Code & Desktop" },
-];
-
-const CORPUS_STATS = [
-  { n: "224,585", label: "passages", sub: "every paragraph, searchable" },
-  { n: "4,638", label: "ITAA 1997 sections", sub: "+ 1,929 legal definitions" },
-  { n: "23,267", label: "citation links", sub: "rulings tied to legislation" },
-];
-
-const CORPUS_INDEX = [
-  { num: "01", title: "Guidance", sub: "ato.gov.au" },
-  { num: "02", title: "Legislation", sub: "ITAA 1997, in full" },
-  { num: "03", title: "Rulings", sub: "law.ato.gov.au" },
-  { num: "04", title: "Citation graph", sub: "everything cross-linked" },
-];
-
-const HOW_IT_WORKS = [
-  {
-    num: "1",
-    title: "Install",
-    body: "One global npm package.",
-    fragment: "npx -y ato-mcp",
-  },
-  {
-    num: "2",
-    title: "Onboard",
-    body: "Sign in with email, about two minutes.",
-    fragment: "ato-mcp.com.au/onboard",
-  },
-  {
-    num: "3",
-    title: "Connect",
-    body: "One line in your MCP host config.",
-    fragment: "claude mcp add ato-mcp",
-  },
-  {
-    num: "4",
-    title: "Ask",
-    body: "Answers arrive with their citations.",
-    fragment: "› what can I claim?",
-  },
 ];
 
 const FAQS = [
@@ -252,96 +213,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ corpus */}
-      <section
-        className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
-        aria-labelledby="corpus-h"
-      >
-        <div className="grid gap-12 lg:grid-cols-[1fr_260px]">
-          <div>
-            <p className="eyebrow">The corpus</p>
-            <h2
-              id="corpus-h"
-              className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-            >
-              The whole landscape, indexed — guidance, statute and rulings in
-              one graph
-            </h2>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {CORPUS_STATS.map((s) => (
-                <div key={s.label} className="card reveal-scroll p-5">
-                  <p className="text-[1.75rem] tracking-tight1 text-zinc-900">
-                    {s.n}
-                  </p>
-                  <p className="mt-1 text-sm font-medium">{s.label}</p>
-                  <p className="mt-1 text-xs text-zinc-400">{s.sub}</p>
-                </div>
-              ))}
-            </div>
-            <p className="mt-6 text-sm text-zinc-500">
-              Rebuilt monthly, served fresh.{" "}
-              <Link
-                href="/docs"
-                className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
-              >
-                See what&apos;s inside
-              </Link>
-            </p>
-          </div>
-          <div className="border-zinc-100 lg:border-l lg:pl-10">
-            <ol>
-              {CORPUS_INDEX.map((i, idx) => (
-                <li
-                  key={i.num}
-                  className={`flex items-baseline justify-between gap-4 py-4 ${
-                    idx < CORPUS_INDEX.length - 1 ? "border-b border-zinc-100" : ""
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900">{i.title}</p>
-                    <p className="mt-0.5 text-xs text-zinc-400">{i.sub}</p>
-                  </div>
-                  <span className="font-mono text-[0.6875rem] text-zinc-400">
-                    {i.num}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------ how it works */}
-      <section className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24" aria-labelledby="how-h">
-        <div className="text-center">
-          <p className="eyebrow">How it works</p>
-          <h2
-            id="how-h"
-            className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-          >
-            From npm to a tax-fluent agent in two minutes
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-          {HOW_IT_WORKS.map((s) => (
-            <div key={s.num} className="reveal-scroll">
-              {/* Visual-first tile (superpower image-card pattern), caption below */}
-              <div className="tile flex h-36 items-center justify-center px-5">
-                <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white font-mono text-[0.6875rem] text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-                  {s.num}
-                </span>
-                <p className="overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-700">
-                  {s.fragment}
-                </p>
-              </div>
-              <h3 className="mt-4 text-base font-medium tracking-tight1">
-                {s.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-500">{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ------------------------------------------------ corpus → mcp flow */}
+      <CorpusFlow />
 
       {/* ------------------------------------------------ FAQ */}
       <section className="mx-auto max-w-3xl px-5 pb-24" aria-labelledby="faq-h">
