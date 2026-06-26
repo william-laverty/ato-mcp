@@ -402,7 +402,7 @@ export default function HomePage() {
                   </Link>
                   <Link
                     href="/docs"
-                    className="btn btn-outline w-full max-w-xs px-7 py-3.5 text-sm sm:w-auto sm:py-3"
+                    className="btn btn-outline hidden w-full max-w-xs px-7 py-3.5 text-sm sm:inline-flex sm:w-auto sm:py-3"
                   >
                     Read the docs
                   </Link>
