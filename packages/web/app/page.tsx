@@ -370,12 +370,12 @@ export default function HomePage() {
           the nav floats *over* the card — content is centred well clear of it. */}
       <section className="relative -mt-16">
         <div className="px-3 pb-3 pt-3">
-          <div className="hero-card flex min-h-[600px] items-center lg:min-h-[calc(100svh-24px)]">
+          <div className="hero-card flex min-h-[560px] items-center sm:min-h-[600px] lg:min-h-[calc(100svh-24px)]">
             <span className="hero-glow" aria-hidden="true" />
-            <div className="relative grid w-full items-center gap-12 px-[clamp(28px,6vw,88px)] py-28 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
+            <div className="relative grid w-full items-center gap-12 px-[clamp(24px,6vw,88px)] py-20 sm:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
               <div>
                 <h1
-                  className="reveal text-[clamp(2.5rem,5vw,3.5rem)] font-normal leading-[1.04] tracking-tight2 text-zinc-900"
+                  className="reveal text-[clamp(2.125rem,7vw,3.5rem)] font-normal leading-[1.06] tracking-tight2 text-zinc-900 sm:leading-[1.04]"
                   style={{ "--reveal-delay": "0s" } as React.CSSProperties}
                 >
                   Your AI agent, fluent in Australian tax
@@ -389,21 +389,30 @@ export default function HomePage() {
                   the section, the ruling and the page.
                 </p>
                 <div
-                  className="reveal mt-8 flex flex-wrap items-center gap-3"
+                  className="reveal mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
                   style={{ "--reveal-delay": "0.24s" } as React.CSSProperties}
                 >
-                  <Link href="/onboard" className="btn btn-primary px-6 py-3 text-sm">
+                  <Link
+                    href="/onboard"
+                    className="btn btn-primary w-full px-6 py-3.5 text-sm sm:w-auto sm:py-3"
+                  >
                     Get started free
                   </Link>
-                  <Link href="/docs" className="btn btn-outline px-6 py-3 text-sm">
+                  <Link
+                    href="/docs"
+                    className="btn btn-outline w-full px-6 py-3.5 text-sm sm:w-auto sm:py-3"
+                  >
                     Read the docs
                   </Link>
                 </div>
                 {/* Mobile trust strip — in-flow (the desktop one is pinned below) */}
-                <HeroTrust className="reveal mt-10 w-full border-t border-zinc-100 pt-6 lg:hidden" />
+                <HeroTrust className="reveal mt-9 w-full border-t border-zinc-100 pt-6 lg:hidden" />
               </div>
 
-              <div className="relative">
+              {/* Hero demo card — desktop only. On mobile the hero is the
+                  headline + CTAs + trust strip, so the demo (and its motif) are
+                  hidden to keep the first screen tight and fast. */}
+              <div className="relative hidden lg:block">
                 <CitationGraphMotif />
                 <HeroDemo />
               </div>
@@ -434,18 +443,20 @@ export default function HomePage() {
 
         {/* Alternating wide rows: plain-language turn on one side, a graphic
             of what the tool did on the other. Sides swap each turn. */}
-        <div className="mt-14 space-y-14 sm:space-y-20">
+        <div className="mt-12 space-y-12 sm:mt-14 sm:space-y-20">
           {SESSION_TURNS.map((turn, i) => (
             <div
               key={turn.question}
-              className="reveal-scroll grid items-center gap-8 sm:gap-14 lg:grid-cols-2"
+              className="reveal-scroll grid items-center gap-6 sm:gap-14 lg:grid-cols-2"
             >
-              <div className={i % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="tile flex min-h-[230px] items-center justify-center p-8 sm:min-h-[280px] sm:p-12">
+              {/* Graphic always follows the question on mobile (order-2); on
+                  desktop the sides alternate each turn. */}
+              <div className={`order-2 ${i % 2 === 1 ? "lg:order-2" : "lg:order-1"}`}>
+                <div className="tile flex min-h-[180px] items-center justify-center p-6 sm:min-h-[280px] sm:p-12">
                   <SessionGraphic kind={turn.graphic} />
                 </div>
               </div>
-              <div className={i % 2 === 1 ? "lg:order-1" : ""}>
+              <div className={`order-1 ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}>
                 <p className="eyebrow">{turn.eyebrow}</p>
                 <h3 className="mt-3 max-w-md text-[clamp(1.25rem,2.2vw,1.6rem)] font-normal leading-[1.15] tracking-tight1 text-zinc-900">
                   {turn.question}
@@ -475,8 +486,8 @@ export default function HomePage() {
           (24px radius, hairline border, warm paper, layered shadow) and its
           12px edge inset (px-3); content stays centred at max-w-6xl inside. */}
       <section className="px-3 py-12 sm:py-16" aria-labelledby="corpus-h">
-        <div className="hero-card px-[clamp(28px,6vw,88px)] py-16 sm:py-20">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_260px]">
+        <div className="hero-card px-[clamp(24px,6vw,88px)] py-14 sm:py-20">
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_260px] lg:gap-12">
             <div>
               <p className="eyebrow">The corpus</p>
               <h2
@@ -507,7 +518,7 @@ export default function HomePage() {
                 </Link>
               </p>
             </div>
-            <div className="border-zinc-200 lg:border-l lg:pl-10">
+            <div className="border-t border-zinc-200 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
               <ol>
                 {CORPUS_INDEX.map((i, idx) => (
                   <li
@@ -532,7 +543,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------ FAQ */}
-      <section className="mx-auto max-w-3xl px-5 pb-24" aria-labelledby="faq-h">
+      <section className="mx-auto max-w-3xl px-5 pb-20 sm:pb-24" aria-labelledby="faq-h">
         <p className="eyebrow text-center">FAQ</p>
         <h2
           id="faq-h"
@@ -561,21 +572,24 @@ export default function HomePage() {
       {/* ------------------------------------------------ final CTA */}
       <section className="border-t border-zinc-100 bg-zinc-50">
         <div className="mx-auto max-w-2xl px-5 py-20 text-center sm:py-24">
-          <h2 className="text-[clamp(1.8rem,3.6vw,2.5rem)] font-normal leading-[1.1] tracking-tight2 text-zinc-900">
+          <h2 className="text-[clamp(1.65rem,6vw,2.5rem)] font-normal leading-[1.1] tracking-tight2 text-zinc-900">
             Two minutes to a tax-fluent agent
           </h2>
           <p className="mt-4 text-[15px] text-zinc-500">
             Onboard, paste one config line, ask better questions.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/onboard" className="btn btn-primary px-7 py-3 text-sm">
+          <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/onboard"
+              className="btn btn-primary w-full px-7 py-3.5 text-sm sm:w-auto sm:py-3"
+            >
               Get started free
             </Link>
             <a
               href="https://github.com/william-laverty/ato-mcp"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-outline px-7 py-3 text-sm"
+              className="btn btn-outline w-full px-7 py-3.5 text-sm sm:w-auto sm:py-3"
             >
               Star on GitHub
             </a>
