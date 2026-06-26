@@ -370,7 +370,7 @@ export default function HomePage() {
           the nav floats *over* the card — content is centred well clear of it. */}
       <section className="relative -mt-16">
         <div className="px-3 pb-3 pt-3">
-          <div className="hero-card flex min-h-[560px] items-center sm:min-h-[600px] lg:min-h-[calc(100svh-24px)]">
+          <div className="hero-card flex min-h-[calc(100svh-24px)] items-center">
             <span className="hero-glow" aria-hidden="true" />
             <div className="relative grid w-full items-center gap-12 px-[clamp(24px,6vw,88px)] py-20 sm:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
               <div>
