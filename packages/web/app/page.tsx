@@ -31,30 +31,33 @@ const CORPUS_INDEX = [
   { num: "04", title: "Citation graph", sub: "everything cross-linked" },
 ];
 
-const HOW_IT_WORKS = [
+const SESSION_TURNS = [
   {
-    num: "1",
-    title: "Install",
-    body: "One global npm package.",
-    fragment: "npx -y ato-mcp",
+    graphic: "deductions" as const,
+    eyebrow: "Deductions",
+    question: "What can I claim this year?",
+    answer:
+      "It finds every deduction that fits how you work — home office, equipment, software — and backs each one with the exact ATO source.",
+    tool: "deduction_discovery",
+    chips: ["ITAA 1997 · s 8-1", "PCG 2023/1", "TR 93/30"],
   },
   {
-    num: "2",
-    title: "Onboard",
-    body: "Sign in with email, about two minutes.",
-    fragment: "ato-mcp.com.au/onboard",
+    graphic: "depreciation" as const,
+    eyebrow: "Depreciation",
+    question: "How do I write off my new laptop?",
+    answer:
+      "Anything under $300 is claimed straight away; bigger gear is written down over its life. It runs the numbers and shows the rule it used.",
+    tool: "depreciation_helper",
+    chips: ["ITAA 1997 · Div 40", "s 40-80"],
   },
   {
-    num: "3",
-    title: "Connect",
-    body: "One line in your MCP host config.",
-    fragment: "claude mcp add ato-mcp",
-  },
-  {
-    num: "4",
-    title: "Ask",
-    body: "Answers arrive with their citations.",
-    fragment: "› what can I claim?",
+    graphic: "risk" as const,
+    eyebrow: "Audit risk",
+    question: "Is anything in my return risky?",
+    answer:
+      "It checks your return against the ATO's common red flags and shows where you stand. This year you sit comfortably in the low band.",
+    tool: "audit_risk_check",
+    chips: ["Tax-time toolkit", "PCG 2021/4"],
   },
 ];
 
@@ -171,6 +174,166 @@ function HeroDemo() {
   );
 }
 
+/* ---------------------------------------------------------------------------
+   Session graphics — small, decorative SVGs in the Clinical style: hairline
+   zinc strokes, soft zinc fills, the vermillion accent used once each. They
+   visualise what the tool does, so the copy can stay short.
+--------------------------------------------------------------------------- */
+
+const GRAPHIC_CLASS = "h-auto w-full max-w-[360px]";
+
+/** deduction_discovery — a taxonomy grid with a few categories "matched". */
+function DeductionsGraphic() {
+  const cols = 5;
+  const rows = 3;
+  const tw = 56;
+  const th = 40;
+  const gx = 16;
+  const gy = 16;
+  const ox = 10;
+  const oy = 10;
+  const filled = new Set([0, 1, 3, 4, 6, 8, 9, 11, 12]);
+  const matched = new Set([1, 4, 6, 9, 12]);
+  const width = ox * 2 + cols * tw + (cols - 1) * gx;
+  const height = oy * 2 + rows * th + (rows - 1) * gy;
+  const tiles = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      const x = ox + c * (tw + gx);
+      const y = oy + r * (th + gy);
+      const isFilled = filled.has(idx);
+      tiles.push(
+        <g key={idx}>
+          <rect
+            x={x}
+            y={y}
+            width={tw}
+            height={th}
+            rx="8"
+            fill={isFilled ? "#f4f4f5" : "none"}
+            stroke={isFilled ? "#d4d4d8" : "#e4e4e7"}
+            strokeWidth="1"
+          />
+          {matched.has(idx) && (
+            <circle cx={x + tw - 11} cy={y + 11} r="3" fill="#fa520f" />
+          )}
+        </g>,
+      );
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className={GRAPHIC_CLASS}
+      fill="none"
+      aria-hidden="true"
+    >
+      {tiles}
+    </svg>
+  );
+}
+
+/** depreciation_helper — a diminishing-value step-down with a curve over it. */
+function DepreciationGraphic() {
+  const values = [100, 70, 49, 34, 24, 17];
+  const bw = 40;
+  const gap = 18;
+  const ox = 16;
+  const baseY = 150;
+  const maxH = 120;
+  const width = ox * 2 + values.length * bw + (values.length - 1) * gap;
+  const bars = values.map((v, i) => {
+    const h = (v / 100) * maxH;
+    const x = ox + i * (bw + gap);
+    const y = baseY - h;
+    return (
+      <g key={i}>
+        <rect
+          x={x}
+          y={y}
+          width={bw}
+          height={h}
+          rx="4"
+          fill="#f4f4f5"
+          stroke="#d4d4d8"
+          strokeWidth="1"
+        />
+        {i === 0 && <rect x={x} y={y} width={bw} height="3" rx="1.5" fill="#fa520f" />}
+      </g>
+    );
+  });
+  const curve = values
+    .map((v, i) => {
+      const h = (v / 100) * maxH;
+      const x = ox + i * (bw + gap) + bw / 2;
+      const y = baseY - h;
+      return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+    })
+    .join(" ");
+  return (
+    <svg
+      viewBox={`0 0 ${width} 170`}
+      className={GRAPHIC_CLASS}
+      fill="none"
+      aria-hidden="true"
+    >
+      {bars}
+      <path d={curve} stroke="#d4d4d8" strokeWidth="1.5" strokeDasharray="3 4" />
+      <line
+        x1={ox - 4}
+        y1={baseY + 0.5}
+        x2={width - ox + 4}
+        y2={baseY + 0.5}
+        stroke="#e4e4e7"
+        strokeWidth="1"
+      />
+    </svg>
+  );
+}
+
+/** audit_risk_check — a LOW/MED/HIGH gauge with the marker resting on LOW. */
+function RiskGraphic() {
+  const x0 = 18;
+  const w = 324;
+  const y = 70;
+  const h = 14;
+  const seg = w / 3;
+  const markerX = x0 + seg / 2;
+  return (
+    <svg
+      viewBox="0 0 360 130"
+      className={GRAPHIC_CLASS}
+      fill="none"
+      aria-hidden="true"
+    >
+      {/* track */}
+      <rect x={x0} y={y} width={w} height={h} rx={h / 2} fill="#f4f4f5" />
+      {/* low band tinted */}
+      <path
+        d={`M ${x0 + h / 2} ${y} H ${x0 + seg} V ${y + h} H ${x0 + h / 2} A ${h / 2} ${h / 2} 0 0 1 ${x0 + h / 2} ${y} Z`}
+        fill="#fde8df"
+      />
+      {/* segment dividers */}
+      <line x1={x0 + seg} y1={y - 6} x2={x0 + seg} y2={y + h + 6} stroke="#e4e4e7" strokeWidth="1" />
+      <line x1={x0 + 2 * seg} y1={y - 6} x2={x0 + 2 * seg} y2={y + h + 6} stroke="#e4e4e7" strokeWidth="1" />
+      {/* marker on LOW */}
+      <line x1={markerX} y1={y - 14} x2={markerX} y2={y + h} stroke="#fa520f" strokeWidth="1.5" />
+      <circle cx={markerX} cy={y - 16} r="5" fill="#fa520f" />
+      {/* labels */}
+      <text x={markerX} y={y + h + 24} textAnchor="middle" className="font-mono" fontSize="11" fill="#fa520f">LOW</text>
+      <text x={x0 + 1.5 * seg} y={y + h + 24} textAnchor="middle" className="font-mono" fontSize="11" fill="#a1a1aa">MED</text>
+      <text x={x0 + 2.5 * seg} y={y + h + 24} textAnchor="middle" className="font-mono" fontSize="11" fill="#a1a1aa">HIGH</text>
+    </svg>
+  );
+}
+
+function SessionGraphic({ kind }: { kind: "deductions" | "depreciation" | "risk" }) {
+  if (kind === "deductions") return <DeductionsGraphic />;
+  if (kind === "depreciation") return <DepreciationGraphic />;
+  return <RiskGraphic />;
+}
+
 /** heynox-style trust strip, light: title/subtitle pairs split by hairlines. */
 function HeroTrust({ className = "" }: { className?: string }) {
   return (
@@ -252,94 +415,119 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ corpus */}
+      {/* ------------------------------------------------ the session */}
       <section
         className="mx-auto max-w-6xl px-5 py-20 sm:py-24"
-        aria-labelledby="corpus-h"
+        aria-labelledby="session-h"
       >
-        <div className="grid gap-12 lg:grid-cols-[1fr_260px]">
-          <div>
-            <p className="eyebrow">The corpus</p>
-            <h2
-              id="corpus-h"
-              className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
+        <p className="eyebrow">A real session</p>
+        <h2
+          id="session-h"
+          className="mt-3 max-w-2xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
+        >
+          One question is never one lookup
+        </h2>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-zinc-500">
+          Ask in plain English. Every answer comes back with the ATO source
+          behind it — and the right tool quietly does the work.
+        </p>
+
+        {/* Alternating wide rows: plain-language turn on one side, a graphic
+            of what the tool did on the other. Sides swap each turn. */}
+        <div className="mt-14 space-y-14 sm:space-y-20">
+          {SESSION_TURNS.map((turn, i) => (
+            <div
+              key={turn.question}
+              className="reveal-scroll grid items-center gap-8 sm:gap-14 lg:grid-cols-2"
             >
-              The whole landscape, indexed — guidance, statute and rulings in
-              one graph
-            </h2>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {CORPUS_STATS.map((s) => (
-                <div key={s.label} className="card reveal-scroll p-5">
-                  <p className="text-[1.75rem] tracking-tight1 text-zinc-900">
-                    {s.n}
-                  </p>
-                  <p className="mt-1 text-sm font-medium">{s.label}</p>
-                  <p className="mt-1 text-xs text-zinc-400">{s.sub}</p>
+              <div className={i % 2 === 1 ? "lg:order-2" : ""}>
+                <div className="tile flex min-h-[230px] items-center justify-center p-8 sm:min-h-[280px] sm:p-12">
+                  <SessionGraphic kind={turn.graphic} />
                 </div>
-              ))}
+              </div>
+              <div className={i % 2 === 1 ? "lg:order-1" : ""}>
+                <p className="eyebrow">{turn.eyebrow}</p>
+                <h3 className="mt-3 max-w-md text-[clamp(1.25rem,2.2vw,1.6rem)] font-normal leading-[1.15] tracking-tight1 text-zinc-900">
+                  {turn.question}
+                </h3>
+                <p className="mt-3 max-w-md text-[15px] leading-relaxed text-zinc-600 sm:text-base">
+                  {turn.answer}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-1.5" aria-label="Citations">
+                  {turn.chips.map((c) => (
+                    <span key={c} className="chip">
+                      <span className="chip-dot" />
+                      {c}
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-3 font-mono text-[0.6875rem] text-zinc-400">
+                  {turn.tool}
+                </p>
+              </div>
             </div>
-            <p className="mt-6 text-sm text-zinc-500">
-              Rebuilt monthly, served fresh.{" "}
-              <Link
-                href="/docs"
-                className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
-              >
-                See what&apos;s inside
-              </Link>
-            </p>
-          </div>
-          <div className="border-zinc-100 lg:border-l lg:pl-10">
-            <ol>
-              {CORPUS_INDEX.map((i, idx) => (
-                <li
-                  key={i.num}
-                  className={`flex items-baseline justify-between gap-4 py-4 ${
-                    idx < CORPUS_INDEX.length - 1 ? "border-b border-zinc-100" : ""
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900">{i.title}</p>
-                    <p className="mt-0.5 text-xs text-zinc-400">{i.sub}</p>
-                  </div>
-                  <span className="font-mono text-[0.6875rem] text-zinc-400">
-                    {i.num}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* ------------------------------------------------ how it works */}
-      <section className="mx-auto max-w-6xl px-5 pb-20 sm:pb-24" aria-labelledby="how-h">
-        <div className="text-center">
-          <p className="eyebrow">How it works</p>
-          <h2
-            id="how-h"
-            className="mt-3 text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
-          >
-            From npm to a tax-fluent agent in two minutes
-          </h2>
-        </div>
-        <div className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-          {HOW_IT_WORKS.map((s) => (
-            <div key={s.num} className="reveal-scroll">
-              {/* Visual-first tile (superpower image-card pattern), caption below */}
-              <div className="tile flex h-36 items-center justify-center px-5">
-                <span className="absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white font-mono text-[0.6875rem] text-zinc-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-                  {s.num}
-                </span>
-                <p className="overflow-x-auto whitespace-nowrap font-mono text-xs text-zinc-700">
-                  {s.fragment}
-                </p>
+      {/* ------------------------------------------------ corpus */}
+      {/* Contained in its own rounded card, matching the hero card chrome
+          (24px radius, hairline border, warm paper, layered shadow) and its
+          12px edge inset (px-3); content stays centred at max-w-6xl inside. */}
+      <section className="px-3 py-12 sm:py-16" aria-labelledby="corpus-h">
+        <div className="hero-card px-[clamp(28px,6vw,88px)] py-16 sm:py-20">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_260px]">
+            <div>
+              <p className="eyebrow">The corpus</p>
+              <h2
+                id="corpus-h"
+                className="mt-3 max-w-xl text-[clamp(1.6rem,3vw,2.25rem)] font-normal leading-[1.1] tracking-tight1"
+              >
+                The whole landscape, indexed — guidance, statute and rulings
+                in one graph
+              </h2>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {CORPUS_STATS.map((s) => (
+                  <div key={s.label} className="card reveal-scroll p-5">
+                    <p className="text-[1.75rem] tracking-tight1 text-zinc-900">
+                      {s.n}
+                    </p>
+                    <p className="mt-1 text-sm font-medium">{s.label}</p>
+                    <p className="mt-1 text-xs text-zinc-400">{s.sub}</p>
+                  </div>
+                ))}
               </div>
-              <h3 className="mt-4 text-base font-medium tracking-tight1">
-                {s.title}
-              </h3>
-              <p className="mt-1 text-sm text-zinc-500">{s.body}</p>
+              <p className="mt-6 text-sm text-zinc-500">
+                Rebuilt monthly, served fresh.{" "}
+                <Link
+                  href="/docs"
+                  className="text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
+                >
+                  See what&apos;s inside
+                </Link>
+              </p>
             </div>
-          ))}
+            <div className="border-zinc-200 lg:border-l lg:pl-10">
+              <ol>
+                {CORPUS_INDEX.map((i, idx) => (
+                  <li
+                    key={i.num}
+                    className={`flex items-baseline justify-between gap-4 py-4 ${
+                      idx < CORPUS_INDEX.length - 1 ? "border-b border-zinc-200" : ""
+                    }`}
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-zinc-900">{i.title}</p>
+                      <p className="mt-0.5 text-xs text-zinc-400">{i.sub}</p>
+                    </div>
+                    <span className="font-mono text-[0.6875rem] text-zinc-400">
+                      {i.num}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </div>
       </section>
 
