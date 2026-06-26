@@ -149,3 +149,100 @@ body {
     animation: none !important;
   }
 }
+
+/* --- Corpus flow: sticky scrollytelling visual --------------------------- */
+.corpus-visual {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.corpus-visual .cf-graph,
+.corpus-visual .cf-sources,
+.corpus-visual .cf-stats,
+.corpus-visual .cf-agent,
+.corpus-visual .cf-query {
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+/* base = act 0 (sources) */
+.corpus-visual .cf-graph {
+  opacity: 0.18;
+}
+.corpus-visual .cf-stats {
+  opacity: 0;
+}
+.corpus-visual .cf-agent {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.corpus-visual .cf-query {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* act 1 = one library */
+.corpus-visual[data-step="1"] .cf-sources {
+  opacity: 0.3;
+  transform: translateX(-8px);
+}
+.corpus-visual[data-step="1"] .cf-graph {
+  opacity: 1;
+}
+.corpus-visual[data-step="1"] .cf-stats {
+  opacity: 1;
+}
+
+/* act 2 = connect */
+.corpus-visual[data-step="2"] .cf-sources {
+  opacity: 0.2;
+}
+.corpus-visual[data-step="2"] .cf-graph {
+  opacity: 0.7;
+}
+.corpus-visual[data-step="2"] .cf-agent {
+  opacity: 1;
+  transform: none;
+}
+
+/* act 3 = just ask */
+.corpus-visual[data-step="3"] .cf-sources {
+  opacity: 0.2;
+}
+.corpus-visual[data-step="3"] .cf-graph {
+  opacity: 0.7;
+}
+.corpus-visual[data-step="3"] .cf-query {
+  opacity: 1;
+  transform: none;
+}
+
+/* citation links draw themselves once the graph is shown */
+.corpus-visual .cf-link {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+}
+.corpus-visual[data-step="1"] .cf-link,
+.corpus-visual[data-step="2"] .cf-link,
+.corpus-visual[data-step="3"] .cf-link {
+  animation: cfLinkDraw 0.9s var(--ease-out) forwards;
+}
+@keyframes cfLinkDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corpus-visual .cf-graph,
+  .corpus-visual .cf-sources,
+  .corpus-visual .cf-stats,
+  .corpus-visual .cf-agent,
+  .corpus-visual .cf-query,
+  .corpus-visual .cf-link {
+    transition: none !important;
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
