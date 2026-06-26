@@ -370,18 +370,20 @@ export default function HomePage() {
           the nav floats *over* the card — content is centred well clear of it. */}
       <section className="relative -mt-16">
         <div className="px-3 pb-3 pt-3">
-          <div className="hero-card flex min-h-[calc(100svh-24px)] items-center">
+          <div className="hero-card flex min-h-[calc(100svh-24px)] flex-col lg:flex-row lg:items-center">
             <span className="hero-glow" aria-hidden="true" />
-            <div className="relative grid w-full items-center gap-12 px-[clamp(24px,6vw,88px)] py-20 sm:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
-              <div>
+            <div className="relative flex w-full flex-1 flex-col px-[clamp(24px,7vw,88px)] py-16 sm:py-20 lg:grid lg:flex-none lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:py-24">
+              {/* Main hero block — centred stack on mobile (heynox-style),
+                  left-aligned beside the demo on desktop. */}
+              <div className="flex flex-1 flex-col items-center justify-center text-center lg:block lg:flex-none lg:text-left">
                 <h1
-                  className="reveal text-[clamp(2.125rem,7vw,3.5rem)] font-normal leading-[1.06] tracking-tight2 text-zinc-900 sm:leading-[1.04]"
+                  className="reveal max-w-[16ch] text-[clamp(2.25rem,8.5vw,3.5rem)] font-normal leading-[1.08] tracking-tight2 text-zinc-900 sm:max-w-none sm:leading-[1.04]"
                   style={{ "--reveal-delay": "0s" } as React.CSSProperties}
                 >
                   Your AI agent, fluent in Australian tax
                 </h1>
                 <p
-                  className="reveal mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-500"
+                  className="reveal mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-zinc-500 sm:max-w-xl lg:mx-0"
                   style={{ "--reveal-delay": "0.16s" } as React.CSSProperties}
                 >
                   Connect Claude — or any MCP agent — to 29,000+ ATO documents,
@@ -389,33 +391,35 @@ export default function HomePage() {
                   the section, the ruling and the page.
                 </p>
                 <div
-                  className="reveal mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+                  className="reveal mt-9 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:justify-center lg:justify-start"
                   style={{ "--reveal-delay": "0.24s" } as React.CSSProperties}
                 >
                   <Link
                     href="/onboard"
-                    className="btn btn-primary w-full px-6 py-3.5 text-sm sm:w-auto sm:py-3"
+                    className="btn btn-primary w-full max-w-xs px-7 py-3.5 text-sm sm:w-auto sm:py-3"
                   >
                     Get started free
                   </Link>
                   <Link
                     href="/docs"
-                    className="btn btn-outline w-full px-6 py-3.5 text-sm sm:w-auto sm:py-3"
+                    className="btn btn-outline w-full max-w-xs px-7 py-3.5 text-sm sm:w-auto sm:py-3"
                   >
                     Read the docs
                   </Link>
                 </div>
-                {/* Mobile trust strip — in-flow (the desktop one is pinned below) */}
-                <HeroTrust className="reveal mt-9 w-full border-t border-zinc-100 pt-6 lg:hidden" />
               </div>
 
               {/* Hero demo card — desktop only. On mobile the hero is the
-                  headline + CTAs + trust strip, so the demo (and its motif) are
-                  hidden to keep the first screen tight and fast. */}
+                  centred headline + CTAs + trust strip, so the demo (and its
+                  motif) are hidden to keep the first screen tight and fast. */}
               <div className="relative hidden lg:block">
                 <CitationGraphMotif />
                 <HeroDemo />
               </div>
+
+              {/* Mobile trust strip — pinned to the foot of the full-height hero,
+                  centred (the desktop one is absolutely pinned bottom-left). */}
+              <HeroTrust className="reveal mt-10 w-full justify-center gap-x-8 border-t border-zinc-100 pt-6 text-center lg:hidden" />
             </div>
 
             {/* Desktop trust strip — pinned to the card's bottom-left */}
