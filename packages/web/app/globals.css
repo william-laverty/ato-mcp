@@ -51,11 +51,6 @@ body {
     @apply transition-shadow duration-300 hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_16px_40px_-16px_rgba(0,0,0,0.16)];
   }
 
-  /* --- Tile: visual-first area inside/as a card (image-card pattern) ---- */
-  .tile {
-    @apply relative overflow-hidden rounded-[15px] border border-black/[0.04] bg-zinc-50;
-  }
-
   /* --- Hero card: large rounded framing on warm paper ------------------- */
   .hero-card {
     @apply relative overflow-hidden rounded-[24px] border border-black/5 bg-[#fcfbf9] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_60px_-28px_rgba(0,0,0,0.12)];
