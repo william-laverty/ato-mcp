@@ -35,6 +35,15 @@ describe("ndcgAtK", () => {
   it("is 0 when no expected docs appear", () => {
     expect(ndcgAtK(["x", "y"], ["a"], 2)).toBe(0);
   });
+  it("normalizes IDCG for multiple expected docs", () => {
+    // two expected docs, both in top-2: DCG = 1/log2(2) + 1/log2(3); IDCG same => nDCG = 1
+    expect(ndcgAtK(["a", "b", "c"], ["a", "b"], 3)).toBeCloseTo(1, 10);
+    // two expected, only "a" present at position 1 (0-indexed 1):
+    // DCG = 1/log2(3); IDCG (2 ideal hits) = 1/log2(2)+1/log2(3); nDCG = DCG/IDCG
+    const dcg = 1 / Math.log2(3);
+    const idcg = 1 / Math.log2(2) + 1 / Math.log2(3);
+    expect(ndcgAtK(["x", "a", "y"], ["a", "b"], 3)).toBeCloseTo(dcg / idcg, 10);
+  });
 });
 
 describe("mean", () => {

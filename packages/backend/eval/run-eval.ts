@@ -40,6 +40,18 @@ async function main(): Promise<void> {
   mkdirSync(resultsDir, { recursive: true });
   writeFileSync(join(resultsDir, "latest.json"), JSON.stringify({ agg, results }, null, 2));
 
+  // Hard-fail on any errored cases — a baseline derived from errored runs is invalid,
+  // and regressions are meaningless when some cases never ran.
+  if (agg.errorCount > 0) {
+    const errored = results.filter((r) => r.error);
+    console.error(`\nERROR: ${agg.errorCount} case(s) errored during eval:`);
+    for (const r of errored) {
+      console.error(`  [${r.id}] ${r.error}`);
+    }
+    console.error("\nFix the errors above before updating baseline or comparing against it.");
+    process.exit(1);
+  }
+
   const baselinePath = join(here, "baseline.json");
   const baseline: Baseline = { mrr: agg.mrr, perK: agg.perK, exactPassRate: agg.exactPassRate };
 

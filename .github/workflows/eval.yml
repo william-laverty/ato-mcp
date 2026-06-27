@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --filter "@ato-mcp/backend..."
       - run: pnpm --filter @ato-mcp/shared build
       - name: Run retrieval eval
         env:
