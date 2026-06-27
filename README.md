@@ -33,7 +33,7 @@ crypto, and every answer is branched for *your* taxpayer shape.
 | **Citation graph** | 23,267 cross-references between rulings and legislation |
 | **Thresholds** | Time-keyed scalars (instant asset write-off, GST registration, CGT discount, super caps, …) |
 
-**29,181 documents · 224,585 chunks**, embedded and hybrid-indexed (BM25 + vector), rebuilt monthly.
+**29,861 documents · 209,588 chunks**, embedded and hybrid-indexed (BM25 + vector), rebuilt monthly.
 
 ## The 13 tools
 
