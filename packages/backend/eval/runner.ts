@@ -36,7 +36,7 @@ export async function runCase(deps: EvalDeps, c: GoldenCase, maxK: number): Prom
     if (c.kind === "search") {
       const out = await search(
         { store: deps.store, embedder: deps.embedder },
-        { query: c.query, k: maxK, mode: "hybrid" },
+        { query: c.query, k: maxK, mode: "hybrid", include_old: false },
       );
       return {
         id: c.id, kind: "search", expectedDocs: c.expected_docs,
@@ -44,7 +44,7 @@ export async function runCase(deps: EvalDeps, c: GoldenCase, maxK: number): Prom
       };
     }
     if (c.kind === "definition") {
-      const out = await getDefinition({ store: deps.store }, { term: c.term });
+      const out = await getDefinition({ store: deps.store }, { term: c.term, jurisdiction: "AU" });
       // getDefinition returns no `source` field when no statutory definition exists (ordinary fallback),
       // so out.source?.doc_id is undefined and the case correctly fails.
       const resolved = out.source?.doc_id ? [out.source.doc_id] : [];
