@@ -34,7 +34,7 @@ GitHub rulesets on the public repo: `protect-main` (require PR + the `node` stat
 - **Federal Register of Legislation** (legislation.gov.au) — the Income Tax Assessment Act 1997, via EPUB compilations (4,638 sections + 1,929 statutory definitions).
 - **law.ato.gov.au** — public rulings via the browse API (2,127 docs across 10 ruling series: TR, TD, GSTR, etc.).
 
-**Live size** (in Supabase): ~29,181 docs, ~224,585 chunks, 4,638 anchors, 1,929 definitions, 8 thresholds, ~23,267 citation edges.
+**Live size** (in Supabase): ~29,861 docs, ~209,588 chunks, 4,638 anchors, 1,929 definitions, 8 thresholds, ~23,267 citation edges.
 
 **Embedding model:** `all-MiniLM-L6-v2`, 384-dim. The engine embeds the corpus (`sentence-transformers/all-MiniLM-L6-v2`); the backend embeds queries at serve time (`Xenova/all-MiniLM-L6-v2` via `WasmEmbedder`). **These must use the same model** — a model upgrade is a coordinated change across both repos + a full re-embed.
 
