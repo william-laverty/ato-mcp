@@ -27,8 +27,6 @@ export const FetchInputSchema = z.object({
 
 export type FetchInput = z.infer<typeof FetchInputSchema>;
 
-export const StatsInputSchema = z.object({}).optional();
-
 export const GetDefinitionInputSchema = z.object({
   term: z.string().min(1),
   pit: z.string().optional(),
