@@ -45,6 +45,8 @@ export async function runCase(deps: EvalDeps, c: GoldenCase, maxK: number): Prom
     }
     if (c.kind === "definition") {
       const out = await getDefinition({ store: deps.store }, { term: c.term });
+      // getDefinition returns no `source` field when no statutory definition exists (ordinary fallback),
+      // so out.source?.doc_id is undefined and the case correctly fails.
       const resolved = out.source?.doc_id ? [out.source.doc_id] : [];
       const pass = resolved.length > 0 && c.expected_docs.includes(resolved[0]!);
       return {

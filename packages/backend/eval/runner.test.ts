@@ -47,7 +47,10 @@ describe("runCase: search", () => {
     }, 10);
     expect(r.kind).toBe("search");
     expect(r.exactPass).toBeNull();
+    expect(r.rankedDocs).toContain("d1");
     expect(r.rankedDocs).toContain("d2");
+    expect(r.rankedDocs).toContain("d3");
+    expect(r.rankedDocs.filter(d => d === "d2")).toHaveLength(1);
     expect(r.error).toBeNull();
   });
 });
