@@ -70,6 +70,19 @@ body {
     );
   }
 
+  /* --- Closing CTA atmosphere ------------------------------------------
+     A faint vermillion wash bleeding down from the top of the final CTA, on
+     plain white (no solid band). It melts the CTA into the page so the
+     floating footer card below reads as an inset panel overlaying the
+     extended bottom of the CTA — not a hard-cut colour block. */
+  .glow-cta {
+    background: radial-gradient(
+      62% 58% at 50% -4%,
+      rgba(250, 82, 15, 0.06) 0%,
+      transparent 68%
+    );
+  }
+
   /* --- Footer card: rounded inset block (superpower section_footer3) ---- */
   .footer-card {
     @apply rounded-[24px] border border-black/5 bg-zinc-50 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_50px_-28px_rgba(0,0,0,0.1)];

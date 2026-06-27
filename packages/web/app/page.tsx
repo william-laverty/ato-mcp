@@ -585,10 +585,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ------------------------------------------------ final CTA */}
-      <section className="border-t border-zinc-100 bg-zinc-50">
-        <div className="mx-auto max-w-2xl px-5 py-20 text-center sm:py-24">
-          <h2 className="text-[clamp(1.65rem,6vw,2.5rem)] font-normal leading-[1.1] tracking-tight2 text-zinc-900">
+      {/* ------------------------------------------------ final CTA
+          On plain white with a faint glow + deep bottom padding so it melts
+          into the page; the floating footer card below then reads as an inset
+          panel overlaying the extended bottom of the CTA (pluck pattern). */}
+      <section className="glow-cta px-5 pt-20 pb-28 sm:pt-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <svg
+            width={48}
+            height={48}
+            viewBox="0 0 32 32"
+            fill="none"
+            aria-hidden="true"
+            className="mx-auto"
+          >
+            <rect x="1" y="1" width="30" height="30" rx="8.5" fill="#fa520f" />
+            <circle cx="10.5" cy="16" r="2.6" fill="#ffffff" />
+            <rect x="15" y="13.9" width="7.5" height="4.2" rx="2.1" fill="#ffffff" />
+          </svg>
+          <h2 className="mt-7 text-[clamp(1.65rem,6vw,2.5rem)] font-normal leading-[1.1] tracking-tight2 text-zinc-900">
             Two minutes to a tax-fluent agent
           </h2>
           <p className="mt-4 text-[15px] text-zinc-500">
