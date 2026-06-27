@@ -71,27 +71,22 @@ export function Nav() {
   const pillPainted = scrolled || open;
 
   return (
-    <header
-      className={[
-        "fixed inset-x-0 top-0 z-50 px-4 transition-[padding] duration-500 ease-out",
-        scrolled ? "py-3" : "py-4",
-      ].join(" ")}
-    >
+    <header className="fixed inset-x-0 top-0 z-50 px-6 pt-[30px] max-md:px-4 max-md:pt-4">
       <div
         className={[
-          "mx-auto transition-[max-width] duration-500 ease-out will-change-[max-width]",
-          scrolled ? "max-w-3xl" : "max-w-6xl",
+          "mx-auto transition-[max-width] duration-[550ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[max-width]",
+          scrolled ? "max-w-[760px]" : "max-w-6xl",
         ].join(" ")}
       >
         {/* Nav pill — logo | links | CTA. Transparent at top, glass on scroll. */}
         <nav
           aria-label="Main"
           className={[
-            "grid grid-cols-[1fr_auto_1fr] items-center rounded-full border px-2 py-1.5 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ease-out",
+            "grid grid-cols-[1fr_auto_1fr] items-center rounded-full border py-2 pl-3 pr-2 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
             "max-md:flex max-md:flex-col max-md:items-stretch max-md:gap-0 max-md:rounded-2xl max-md:px-3 max-md:py-1.5",
             pillPainted
-              ? "border-black/5 bg-white/80 shadow-[0_4px_24px_rgba(0,0,0,0.08)] backdrop-blur-xl"
-              : "border-transparent bg-transparent max-md:border-black/5 max-md:bg-white/80 max-md:shadow-[0_4px_24px_rgba(0,0,0,0.08)] max-md:backdrop-blur-xl",
+              ? "border-black/[0.06] bg-white/80 shadow-[0_14px_40px_-18px_rgba(24,24,27,0.18),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-[20px] backdrop-saturate-150"
+              : "border-transparent bg-transparent max-md:border-black/[0.06] max-md:bg-white/80 max-md:shadow-[0_14px_40px_-18px_rgba(24,24,27,0.18),inset_0_1px_0_rgba(255,255,255,0.7)] max-md:backdrop-blur-[20px] max-md:backdrop-saturate-150",
           ].join(" ")}
         >
           {/* Top row: contents on desktop so the grid owns layout; flex row on mobile. */}
