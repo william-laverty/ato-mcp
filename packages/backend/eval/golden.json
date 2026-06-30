@@ -84,9 +84,9 @@
     "expected_docs": ["legis:c2004a05138/dictionary"]
   },
   {
-    "id": "definition-capital-gain",
+    "id": "definition-permanent-establishment",
     "kind": "definition",
-    "term": "capital gain",
+    "term": "permanent establishment",
     "expected_docs": ["legis:c2004a05138/dictionary"]
   },
   {
