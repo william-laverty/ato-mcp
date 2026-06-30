@@ -8,5 +8,6 @@
     "lib": ["ES2022", "DOM"],
     "noEmit": false
   },
-  "include": ["src/**/*", "api/**/*"]
+  "include": ["src/**/*", "api/**/*", "eval/**/*"],
+  "exclude": ["**/*.test.ts"]
 }
