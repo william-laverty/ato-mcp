@@ -28,7 +28,7 @@ import {
   AuditRiskCheckInputSchema,
   UserFactsSchema,
 } from "@ato-mcp/shared";
-import type { UserFacts } from "@ato-mcp/shared";
+import type { UserFacts, Embedder } from "@ato-mcp/shared";
 import { stats } from "@ato-mcp/shared/tools/stats";
 import { search } from "@ato-mcp/shared/tools/search";
 import { getChunks } from "@ato-mcp/shared/tools/get_chunks";
@@ -44,14 +44,18 @@ import { basPrepChecklist } from "@ato-mcp/shared/tools/bas_prep_checklist";
 import { auditRiskCheck } from "@ato-mcp/shared/tools/audit_risk_check";
 import { SupabaseStore } from "../src/supabase-store.js";
 import { WasmEmbedder } from "../src/wasm-embedder.js";
+import { OpenAIEmbedder } from "../src/openai-embedder.js";
+import { embedProvider } from "../src/embed-provider.js";
 import { makeServiceClient } from "../src/supabase.js";
 
 const store = new SupabaseStore();
 // The embedder downloads its model on first use — load it lazily and only for
 // tools that actually embed, so stats/get_chunks/etc. stay fast on cold start.
-let embedder: WasmEmbedder | null = null;
-async function getEmbedder(): Promise<WasmEmbedder> {
-  embedder ??= await WasmEmbedder.load();
+let embedder: Embedder | null = null;
+async function getEmbedder(): Promise<Embedder> {
+  embedder ??= embedProvider() === "openai"
+    ? await OpenAIEmbedder.load()
+    : await WasmEmbedder.load();
   return embedder;
 }
 

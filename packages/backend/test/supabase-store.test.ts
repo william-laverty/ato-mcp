@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseStore } from "../src/supabase-store.js";
 
@@ -260,5 +260,34 @@ describe("SupabaseStore.close()", () => {
     const { client } = makeMockClient();
     const store = new SupabaseStore(client);
     expect(() => store.close()).not.toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// vector RPC selection
+// ---------------------------------------------------------------------------
+describe("SupabaseStore vector RPC selection", () => {
+  afterEach(() => { delete process.env["EMBED_PROVIDER"]; });
+
+  function spyClient() {
+    const calls: string[] = [];
+    const client = {
+      rpc: (name: string) => { calls.push(name); return Promise.resolve({ data: [], error: null }); },
+      from: () => ({ select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: null }) }) }) }),
+    } as unknown as import("@supabase/supabase-js").SupabaseClient;
+    return { client, calls };
+  }
+
+  it("uses ato_vector_search by default", async () => {
+    const { client, calls } = spyClient();
+    await new SupabaseStore(client).vectorSearch(new Float32Array(3), 5);
+    expect(calls).toContain("ato_vector_search");
+  });
+
+  it("uses ato_vector_search_openai when EMBED_PROVIDER=openai", async () => {
+    process.env["EMBED_PROVIDER"] = "openai";
+    const { client, calls } = spyClient();
+    await new SupabaseStore(client).vectorSearch(new Float32Array(3), 5);
+    expect(calls).toContain("ato_vector_search_openai");
   });
 });
