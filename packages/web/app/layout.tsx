@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import localFont from "next/font/local";
 import { Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
@@ -24,6 +25,9 @@ const mono = Geist_Mono({
 });
 
 const SITE = "https://ato-mcp.com.au";
+
+// Google Analytics 4 (gtag.js) measurement ID.
+const GA_MEASUREMENT_ID = "G-1DFRLLC2CR";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
@@ -99,6 +103,19 @@ export default function RootLayout({
   return (
     <html lang="en-AU" className={`${sans.variable} ${mono.variable}`}>
       <body className="min-h-screen bg-white font-sans text-zinc-900 antialiased">
+        {/* Google tag (gtag.js) */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
