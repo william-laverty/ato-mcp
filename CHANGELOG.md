@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.1
+
+- No functional changes. Repository restructure: this repo now contains only the
+  open-source client; the hosted platform moved to a private repository. Rebuilt
+  and re-published with fresh provenance from the restructured repo; dropped
+  stale devDependencies from the package manifest.
+
 ## v1.1.0
 
 - **Hosted-only.** The `ato-mcp` client forwards every tool call to
