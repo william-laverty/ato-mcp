@@ -1,7 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "installCommand": "cd ../.. && pnpm install --filter \"@ato-mcp/web...\" --frozen-lockfile --config.confirmModulesPurge=false",
-  "buildCommand": "cd ../.. && pnpm --filter @ato-mcp/shared build && pnpm --filter @ato-mcp/web build",
-  "outputDirectory": ".next"
-}

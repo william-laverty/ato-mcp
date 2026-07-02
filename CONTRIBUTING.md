@@ -2,6 +2,11 @@
 
 Thanks for helping make Australian tax legible to AI agents. Issues and PRs are welcome.
 
+This repository contains the **ato-mcp client** — the open-source npm package that runs on
+your machine and forwards MCP tool calls to the hosted API. The retrieval platform and the
+corpus are maintained privately; issues about tool behaviour, corpus coverage, or tax
+content are still welcome here and will be routed to the right place.
+
 ## Setup
 
 ```bash
@@ -12,34 +17,28 @@ pnpm install && pnpm -r build      # Node 22+, pnpm 10 (pinned via packageManage
 
 ```bash
 pnpm -r typecheck
-pnpm -r test                                   # TypeScript suites
+pnpm -r test
+pnpm test:smoke
 ```
 
-All four TS workspaces must be green. CI runs the same commands.
+CI runs the same commands.
 
-## Layout and conventions
+## Conventions
 
-- **Tool logic lives in `packages/shared/src/tools/`** as pure `(deps, args) => result`
-  functions against the `Store`/`Embedder` interfaces. The hosted backend runs this
-  exact code.
-- New tools need: a Zod input schema in `shared/src/tools.ts`, registration in
-  `mcp/src/server.ts`, a dispatch entry in `backend/api/[tool].ts`, a subpath export in
-  `shared/package.json`, unit tests (mock the store/embedder), and a row in `docs/tools.md`.
-- **No advice in a tool's own voice.** Tools return structured data + resolvable citations;
-  the agent does the prose. Every workflow tool carries a disclaimer. This is a hard
-  product rule, not a style preference.
-- No silent failures: throw actionable errors ("Run `ato-mcp onboard`…"), and surface any
-  degraded behaviour explicitly in the output.
-- Corpus-grounded data (e.g. the deduction taxonomy) must cite doc_ids that exist — there
-  are integrity tests for this.
+- The client stays **thin and dependency-light**: it reads `ATO_MCP_TOKEN`, registers the
+  tool schemas (`src/server.ts`), and forwards calls (`src/lib/remote-tools.ts`). No native
+  deps, no local corpus, no tool logic — tool behaviour changes happen server-side.
+- No silent failures: throw actionable errors ("Get your token at ato-mcp.com.au/onboard…"),
+  and surface any degraded behaviour explicitly in the output.
+- Tool schema changes must stay in sync with the hosted API and be reflected in
+  [`docs/tools.md`](docs/tools.md).
 
-## Tax-law correctness
+## Tax content issues
 
-If a change encodes tax law (a rule, rate, date, or threshold), link the controlling source
-(ITAA section / ruling / ATO page) in the PR description. Time-sensitive figures belong in
-the `thresholds` table — never hardcoded.
+If you're reporting incorrect tax information, link the controlling source (ITAA section /
+ruling / ATO page) that shows the correct position — it makes fixes fast.
 
 ## Releases
 
-See [RELEASING.md](RELEASING.md). Software releases are tagged `v*`; the corpus is
-maintained privately and refreshed on its own cycle.
+See [RELEASING.md](RELEASING.md). Software releases are tagged `v*` and published to npm
+via Trusted Publishing.

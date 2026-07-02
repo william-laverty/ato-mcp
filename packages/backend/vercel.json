@@ -1,8 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && pnpm install --filter \"@ato-mcp/backend...\" --frozen-lockfile --config.confirmModulesPurge=false",
-  "buildCommand": "cd ../.. && pnpm --filter @ato-mcp/shared build && pnpm --filter @ato-mcp/backend build",
-  "rewrites": [
-    { "source": "/:path((?!api|public).*)", "destination": "/api/:path" }
-  ]
-}

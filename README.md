@@ -33,7 +33,8 @@ crypto, and every answer is branched for *your* taxpayer shape.
 | **Citation graph** | 23,267 cross-references between rulings and legislation |
 | **Thresholds** | Time-keyed scalars (instant asset write-off, GST registration, CGT discount, super caps, …) |
 
-**29,861 documents · 209,588 chunks**, embedded and hybrid-indexed (BM25 + vector), rebuilt monthly.
+**29,000+ documents, hybrid-indexed (BM25 + vector)**, refreshed monthly and served from
+the hosted platform.
 
 ## The 13 tools
 
@@ -48,7 +49,7 @@ structure, GST registration, investments, super type, residency, …) so the age
 
 | Tool | What it does |
 |---|---|
-| `deduction_discovery` | Surfaces **every deduction category** that plausibly applies to your profile — 59-category curated taxonomy, branched across sole traders, companies, trusts, partnerships, investors and SMSF members, each with live citations and a confidence rating |
+| `deduction_discovery` | Surfaces **every deduction category** that plausibly applies to your profile — a curated, cited taxonomy branched across sole traders, companies, trusts, partnerships, investors and SMSF members |
 | `depreciation_helper` | Deterministic prime-cost / diminishing-value / instant-write-off / small-business-pool / Div 43 schedules for any asset, with the live IAWO threshold |
 | `bas_prep_checklist` | A tiered, cited BAS checklist for your reporting period — which labels apply, what evidence to gather, the gotchas |
 | `audit_risk_check` | Flags the patterns the ATO scrutinises in a draft return (WRE vs income, rental anomalies, unreported crypto, …) with risk bands and the guidance behind each flag |
@@ -73,32 +74,30 @@ local corpus to download.
 ```mermaid
 flowchart LR
     A[Claude Code / MCP host] -- stdio --> B[ato-mcp CLI]
-    B --> D[api.ato-mcp.com.au]
-    D --> E[(Supabase Postgres\n+ pgvector, RLS)]
+    B -- bearer token --> D[api.ato-mcp.com.au]
+    D --> E[(hosted corpus)]
 ```
 
-```
-packages/
-├── shared/    Types, Zod schemas, Store/Embedder interfaces, all 13 tool implementations
-├── mcp/       The npm package: stdio MCP server + CLI (npx -y ato-mcp)
-├── backend/   Vercel functions over Supabase Postgres + pgvector
-└── web/       ato-mcp.com.au — Next.js onboarding, account, schema-driven privacy policy
-```
+This repository is the **client**: the small, dependency-light program that runs on your
+machine. It reads `ATO_MCP_TOKEN`, speaks MCP over stdio, and forwards each tool call to
+the hosted API. Because it's open source, you can audit exactly what leaves your machine —
+your queries go to the ato-mcp API and nowhere else. The retrieval platform and the corpus
+are maintained privately.
 
 ## Privacy, by construction
 
-No tool names, no query content, no results are ever stored — the analytics schema physically has
-nowhere to put them. The [privacy page](https://ato-mcp.com.au/privacy) is rendered from
-`UserFactsSchema` at build time and a contract test fails if any stored field is undocumented.
-Per-user rows are isolated with Postgres row-level security; bearer tokens are stored as SHA-256
-hashes and revocable from the account page. The client, shared tool logic, hosted backend and
-this website are in this repository — verify, don't trust.
+No tool names, no query content, no results are ever stored — the analytics schema physically
+has nowhere to put them. See the [privacy policy](https://ato-mcp.com.au/privacy), which is
+generated from the stored-data schema itself. Per-user rows are isolated with Postgres
+row-level security; bearer tokens are stored as SHA-256 hashes and revocable from the
+[account page](https://ato-mcp.com.au/account).
 
 ## Development
 
 ```bash
 pnpm install && pnpm -r build
-pnpm -r test            # TypeScript suites (shared, mcp, backend, web)
+pnpm -r test
+pnpm test:smoke
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and [RELEASING.md](RELEASING.md) for the
@@ -117,4 +116,5 @@ Federal Register of Legislation under its open licensing.
 
 ## License
 
-[MIT](LICENSE) © William Laverty
+[MIT](LICENSE) © William Laverty — applies to this client. The hosted platform and corpus
+are proprietary.

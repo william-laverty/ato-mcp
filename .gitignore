@@ -4,26 +4,4 @@ dist/
 .DS_Store
 .env
 .env.local
-.env.supabase.local
-.venv/
-__pycache__/
-.pytest_cache/
-.coverage
 coverage/
-data/
-!packages/shared/src/data/
-!packages/shared/test/data/
-*.sqlite
-*.jsonl
-*.sqlite-shm
-*.sqlite-wal
-
-# brainstorming visual companion sessions
-.superpowers/
-
-# internal process docs — kept locally, not part of the public repo
-/HANDOFF.md
-/docs/superpowers/
-CLAUDE.local.md
-/packages/pipeline/
-.vercel
