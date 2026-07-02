@@ -29,5 +29,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r build
       - run: pnpm --filter ato-mcp test
+      # Trusted publishing needs npm >= 11.5.1 (Node 22 bundles npm 10.x, which
+      # can't do the OIDC exchange and dies with ENEEDAUTH).
+      - run: npm install -g npm@latest
       - name: Publish ato-mcp (OIDC trusted publishing)
-        run: pnpm --filter ato-mcp publish --access public --no-git-checks --provenance
+        working-directory: packages/mcp
+        run: npm publish --access public
