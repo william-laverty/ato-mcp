@@ -1,9 +1,23 @@
+import { createRequire } from "node:module";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RemoteToolForwarder } from "./lib/remote-tools.js";
 
 const DEFAULT_API = "https://api.ato-mcp.com.au";
+
+// serverInfo.version must track the released package — read it from
+// package.json instead of hardcoding (which drifted: 1.1.0 vs 1.1.1).
+// Resolves from both src/ (dev) and dist/ (published) since each sits one
+// level below the package root.
+function packageVersion(): string {
+  try {
+    const require = createRequire(import.meta.url);
+    return (require("../package.json") as { version: string }).version;
+  } catch {
+    return "unknown";
+  }
+}
 
 const TOOLS = {
   stats: {
@@ -164,7 +178,7 @@ export async function runMcp(): Promise<void> {
   const forwarder = new RemoteToolForwarder(endpoint, token);
 
   const server = new Server(
-    { name: "ato-mcp", version: "1.1.0" },
+    { name: "ato-mcp", version: packageVersion() },
     { capabilities: { tools: {} } },
   );
 
