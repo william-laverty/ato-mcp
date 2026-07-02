@@ -23,7 +23,9 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: https://registry.npmjs.org
+          # NOTE: no registry-url here — it writes an .npmrc _authToken line
+          # referencing the unset NODE_AUTH_TOKEN, which breaks the OIDC
+          # trusted-publishing exchange (npm returns 404 on the PUT).
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r build
       - run: pnpm --filter ato-mcp test
