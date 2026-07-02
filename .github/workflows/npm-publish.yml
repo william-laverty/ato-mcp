@@ -37,4 +37,6 @@ jobs:
         working-directory: packages/mcp
         run: |
           npm --version
-          npm publish --access public --loglevel http
+          echo "OIDC env: ${ACTIONS_ID_TOKEN_REQUEST_URL:+request-url-present}"
+          npm publish --access public --loglevel silly 2>&1 | grep -viE 'authorization|token"' | grep -iE 'oidc|provenance|exchange|publish|error|http fetch (PUT|POST)' | head -40
+          exit ${PIPESTATUS[0]}

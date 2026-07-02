@@ -27,7 +27,7 @@
   },
   "type": "module",
   "bin": {
-    "ato-mcp": "./bin/ato-mcp.js"
+    "ato-mcp": "bin/ato-mcp.js"
   },
   "main": "./dist/index.js",
   "files": [
