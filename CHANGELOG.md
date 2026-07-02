@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- `serverInfo.version` now reads from `package.json` instead of a hardcoded
+  string, so the MCP handshake always reports the released version (#39).
+- Invalid/revoked-token (401) errors now include recovery guidance pointing to
+  ato-mcp.com.au/account and /onboard; 429s advise retrying; raw validation
+  (400) payloads are collapsed into concise human-readable messages (#40).
+- `fetch` tool: a non-200 response from the source site is now surfaced as a
+  tool error instead of a silent empty-body success; `stats` no longer returns
+  the legacy `data_dir`, `corpus_path`, and `staleness_days` fields
+  (docs updated to match the hosted API).
+
 ## v1.1.1
 
 - No functional changes. Repository restructure: this repo now contains only the

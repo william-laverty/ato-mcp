@@ -73,4 +73,44 @@ describe("RemoteToolForwarder", () => {
     const f = new RemoteToolForwarder("https://api.example.com", "tok");
     await expect(f.call("stats", {})).rejects.toThrow(/Backend unreachable/);
   });
+
+  it("401 carries token-recovery guidance", async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      new Response(JSON.stringify({ kind: "error", message: "invalid_token" }), { status: 401 }),
+    );
+    const f = new RemoteToolForwarder("https://api.example.com", "bad");
+    await expect(f.call("stats", {})).rejects.toThrow(/ato-mcp\.com\.au\/account/);
+  });
+
+  it("429 tells the caller to retry", async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      new Response(JSON.stringify({ kind: "error", message: "rate_limited" }), { status: 429 }),
+    );
+    const f = new RemoteToolForwarder("https://api.example.com", "tok");
+    await expect(f.call("stats", {})).rejects.toThrow(/rate limited.*retry/i);
+  });
+
+  it("collapses raw Zod issue arrays on 400 into readable messages", async () => {
+    const zodBlob = JSON.stringify([
+      { code: "invalid_type", expected: "string", received: "undefined", path: ["query"], message: "Required" },
+      { code: "too_big", maximum: 50, path: ["k"], message: "Number must be less than or equal to 50" },
+    ]);
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      new Response(JSON.stringify({ kind: "error", message: zodBlob }), { status: 400 }),
+    );
+    const f = new RemoteToolForwarder("https://api.example.com", "tok");
+    await expect(f.call("search", {})).rejects.toThrow(
+      /query: Required; k: Number must be less than or equal to 50/,
+    );
+  });
+
+  it("passes already-readable 400 messages through untouched", async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      new Response(JSON.stringify({ kind: "error", message: "invalid_input — query: Required" }), {
+        status: 400,
+      }),
+    );
+    const f = new RemoteToolForwarder("https://api.example.com", "tok");
+    await expect(f.call("search", {})).rejects.toThrow(/invalid_input — query: Required/);
+  });
 });

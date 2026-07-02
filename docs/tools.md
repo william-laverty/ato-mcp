@@ -313,9 +313,9 @@ Live-fetch a document over HTTPS by scheme-prefixed URI — for content newer th
 
 - `uri` — echo of the request.
 - `url` — the resolved HTTPS URL fetched.
-- `status` — HTTP status code.
+- `status` — HTTP status code (always `200`; non-200 responses raise an error instead).
 - `content_type` — response `content-type` header, or `null`.
-- `body` — response body text; empty string when `status` is not 200.
+- `body` — response body text.
 
 ### Example
 
@@ -335,11 +335,11 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Unsupported URI scheme: <uri>` for unknown schemes (including an unrecognised `staterev-` jurisdiction). A non-200 HTTP response is not an error — it is reported via `status` with an empty `body`.
+**Errors:** throws `Unsupported URI scheme: <uri>` for unknown schemes (including an unrecognised `staterev-` jurisdiction). Throws `Live fetch failed: HTTP <status> from <url> …` when the source responds with anything other than 200, so a blocked or missing page is never silently returned as an empty success.
 
 ## stats
 
-Report corpus coverage and freshness: schema version and document/chunk counts. The cheapest health check: call it first to confirm the service is reachable and how fresh the corpus is. Never throws.
+Report corpus coverage: schema version and document/chunk counts. The cheapest health check: call it first to confirm the service is reachable. Never throws.
 
 ### Input
 
@@ -351,9 +351,6 @@ No parameters (`{}`).
 - `schema_version` — corpus schema version (e.g. `"0.3.0"`), or `null`.
 - `docs` — number of documents.
 - `chunks` — number of chunks.
-- `data_dir` — legacy field; always empty.
-- `corpus_path` — legacy field; always empty.
-- `staleness_days` — days since the corpus was last refreshed, or `null`.
 
 ### Example
 
@@ -368,10 +365,7 @@ Response (abridged):
   "installed": true,
   "schema_version": "0.3.0",
   "docs": 29861,
-  "chunks": 209588,
-  "data_dir": "",
-  "corpus_path": "",
-  "staleness_days": 12
+  "chunks": 209588
 }
 ```
 
