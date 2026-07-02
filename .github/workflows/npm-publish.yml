@@ -3,6 +3,7 @@ name: npm-publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -11,7 +12,7 @@ jobs:
     # Trusted Publisher to be configured on npmjs.com (GitHub Actions →
     # william-laverty/ato-mcp → npm-publish.yml). pnpm performs the OIDC exchange.
     # The NPM_PUBLISH_ENABLED gate stays as an explicit publish safety switch.
-    if: startsWith(github.event.release.tag_name, 'v') && vars.NPM_PUBLISH_ENABLED == 'true'
+    if: (github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')) && vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,4 +35,6 @@ jobs:
       - run: npm install -g npm@latest
       - name: Publish ato-mcp (OIDC trusted publishing)
         working-directory: packages/mcp
-        run: npm publish --access public
+        run: |
+          npm --version
+          npm publish --access public --loglevel http
