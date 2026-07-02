@@ -1,0 +1,12 @@
+{
+  "name": "ato-mcp",
+  "version": "0.1.0",
+  "description": "Local retrieval over the Australian Taxation Office corpus (scaffolding release)",
+  "author": "William Laverty",
+  "mcpServers": {
+    "ato-mcp": {
+      "command": "ato-mcp",
+      "args": ["mcp"]
+    }
+  }
+}

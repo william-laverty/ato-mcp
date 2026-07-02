@@ -1,0 +1,31 @@
+name: npm-publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    # Only software releases (v*). Publishes the unscoped `ato-mcp` client via npm
+    # Trusted Publishing (OIDC) — no NPM_TOKEN needed. Requires the package's
+    # Trusted Publisher to be configured on npmjs.com (GitHub Actions →
+    # william-laverty/ato-mcp → npm-publish.yml). pnpm performs the OIDC exchange.
+    # The NPM_PUBLISH_ENABLED gate stays as an explicit publish safety switch.
+    if: startsWith(github.event.release.tag_name, 'v') && vars.NPM_PUBLISH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # OIDC for Trusted Publishing + provenance
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r build
+      - run: pnpm --filter ato-mcp test
+      - name: Publish ato-mcp (OIDC trusted publishing)
+        run: pnpm --filter ato-mcp publish --access public --no-git-checks --provenance
