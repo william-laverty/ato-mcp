@@ -55,7 +55,7 @@ const TOOLS = {
   },
   fetch: {
     description:
-      "Live-fetch a document by URI. Supports `ato:`, `ato-law:`, `legis:`, and `staterev-<juris>:` schemes.",
+      "Live-fetch a document by URI. Supports `ato:`, `ato-law:`, `legis:`, and `staterev-<juris>:` schemes. If the source site blocks automated access, `ato:`/`ato-law:` URIs are served from the stored corpus copy (`served_from: \"corpus\"`, with `retrieved_at`).",
     inputSchema: {
       type: "object",
       properties: { uri: { type: "string", minLength: 1 } },

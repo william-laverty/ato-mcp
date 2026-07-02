@@ -313,9 +313,11 @@ Live-fetch a document over HTTPS by scheme-prefixed URI — for content newer th
 
 - `uri` — echo of the request.
 - `url` — the resolved HTTPS URL fetched.
-- `status` — HTTP status code (always `200`; non-200 responses raise an error instead).
+- `status` — HTTP status code (always `200`; failures raise an error instead).
 - `content_type` — response `content-type` header, or `null`.
 - `body` — response body text.
+- `served_from` — `"live"` for a direct fetch of the source site; `"corpus"` when the source blocked automated access and the stored corpus copy was served instead (`ato:`/`ato-law:` only).
+- `retrieved_at` — when `served_from` is `"corpus"`, the timestamp the stored copy was retrieved.
 
 ### Example
 
@@ -335,7 +337,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Unsupported URI scheme: <uri>` for unknown schemes (including an unrecognised `staterev-` jurisdiction). Throws `Live fetch failed: HTTP <status> from <url> …` when the source responds with anything other than 200, so a blocked or missing page is never silently returned as an empty success.
+**Errors:** throws `Unsupported URI scheme: <uri>` for unknown schemes (including an unrecognised `staterev-` jurisdiction). Throws `Live fetch failed: HTTP <status> from <url> …` when the source responds with anything other than 200 and no corpus copy exists — a blocked or missing page is never silently returned as an empty success.
 
 ## stats
 
