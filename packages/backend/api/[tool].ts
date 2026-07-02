@@ -43,19 +43,15 @@ import { depreciationHelper } from "@ato-mcp/shared/tools/depreciation_helper";
 import { basPrepChecklist } from "@ato-mcp/shared/tools/bas_prep_checklist";
 import { auditRiskCheck } from "@ato-mcp/shared/tools/audit_risk_check";
 import { SupabaseStore } from "../src/supabase-store.js";
-import { WasmEmbedder } from "../src/wasm-embedder.js";
 import { OpenAIEmbedder } from "../src/openai-embedder.js";
-import { embedProvider } from "../src/embed-provider.js";
 import { makeServiceClient } from "../src/supabase.js";
 
 const store = new SupabaseStore();
-// The embedder downloads its model on first use — load it lazily and only for
-// tools that actually embed, so stats/get_chunks/etc. stay fast on cold start.
+// Load the embedder lazily and only for tools that actually embed, so
+// stats/get_chunks/etc. stay fast on cold start.
 let embedder: Embedder | null = null;
 async function getEmbedder(): Promise<Embedder> {
-  embedder ??= embedProvider() === "openai"
-    ? await OpenAIEmbedder.load()
-    : await WasmEmbedder.load();
+  embedder ??= await OpenAIEmbedder.load();
   return embedder;
 }
 

@@ -1,7 +1,7 @@
 // Adapter that lets us write handlers in the Web Standard `(req: Request) => Response`
 // style and expose them as Vercel Node functions. Vercel's default function runtime
 // uses Node-style (req, res); the Edge runtime would allow native Web Standard but
-// doesn't support some of our deps (sharp, onnxruntime-node transitively).
+// doesn't support some of our deps (sharp transitively).
 //
 // Usage:
 //   async function handler(req: Request): Promise<Response> { ... }
