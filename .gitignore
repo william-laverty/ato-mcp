@@ -26,3 +26,4 @@ data/
 /docs/superpowers/
 CLAUDE.local.md
 /packages/pipeline/
+.vercel

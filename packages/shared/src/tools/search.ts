@@ -28,12 +28,15 @@ export async function search(deps: SearchDeps, args: SearchInput): Promise<Searc
     return { query: args.query, mode, hits };
   }
 
-  // hybrid
+  // hybrid — vector ranks weighted over BM25; constants tuned against the
+  // golden retrieval set (packages/backend/eval/fusion-sweep.ts)
+  const VECTOR_WEIGHT = 3;
+  const RRF_K = 20;
   const overFetch = Math.min(Math.max(k * 3, 20), 50);
   const [kw, vec] = await Promise.all([
     deps.store.keywordSearch(args.query, overFetch, pit),
     deps.embedder.embed(args.query).then((v) => deps.store!.vectorSearch(v, overFetch, pit)),
   ]);
-  const fused = rrfFuse<SearchHit>([kw, vec], (h) => h.chunk_id, 60).slice(0, k);
+  const fused = rrfFuse<SearchHit>([kw, vec], (h) => h.chunk_id, RRF_K, [1, VECTOR_WEIGHT]).slice(0, k);
   return { query: args.query, mode, hits: fused };
 }
