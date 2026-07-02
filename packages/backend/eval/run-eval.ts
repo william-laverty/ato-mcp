@@ -2,9 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SupabaseStore } from "../src/supabase-store.js";
-import { WasmEmbedder } from "../src/wasm-embedder.js";
 import { OpenAIEmbedder } from "../src/openai-embedder.js";
-import { embedProvider } from "../src/embed-provider.js";
 import { loadGolden } from "./golden-schema.js";
 import { runCase, type CaseResult } from "./runner.js";
 import { scoreResults, diffBaseline, formatTable, type Baseline } from "./report.js";
@@ -17,8 +15,8 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
-  if (embedProvider() === "openai" && !process.env["OPENAI_API_KEY"]) {
-    console.error("EMBED_PROVIDER=openai but OPENAI_API_KEY is not set.");
+  if (!process.env["OPENAI_API_KEY"]) {
+    console.error("OPENAI_API_KEY is not set — query embedding uses the OpenAI API.");
     process.exit(2);
   }
 
@@ -30,8 +28,7 @@ async function main(): Promise<void> {
 
   const golden = loadGolden(join(here, "golden.json"));
   const store = new SupabaseStore();
-  const embedder =
-    embedProvider() === "openai" ? await OpenAIEmbedder.load() : await WasmEmbedder.load();
+  const embedder = await OpenAIEmbedder.load();
 
   const results: CaseResult[] = [];
   for (const c of golden) {

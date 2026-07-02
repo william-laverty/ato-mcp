@@ -19,9 +19,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild",
-      "onnxruntime-node",
-      "sharp"
+      "esbuild"
     ]
   }
 }

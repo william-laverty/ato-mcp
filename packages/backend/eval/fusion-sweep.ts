@@ -1,14 +1,12 @@
 // Offline hybrid-fusion sweep: fetches keyword + vector lists once per golden
 // search case (overfetch 100), then fuses in-memory across a parameter grid.
-// Run: EMBED_PROVIDER=openai tsx eval/fusion-sweep.ts
+// Run: tsx eval/fusion-sweep.ts   (needs OPENAI_API_KEY + Supabase env)
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { rrfFuse } from "@ato-mcp/shared/lib/rrf";
 import type { SearchHit } from "@ato-mcp/shared";
 import { SupabaseStore } from "../src/supabase-store.js";
-import { WasmEmbedder } from "../src/wasm-embedder.js";
 import { OpenAIEmbedder } from "../src/openai-embedder.js";
-import { embedProvider } from "../src/embed-provider.js";
 import { loadGolden } from "./golden-schema.js";
 import { extractRankedDocs } from "./runner.js";
 
@@ -44,8 +42,7 @@ function score(cases: CaseLists[], w: number, rrfK: number, of: number) {
 async function main(): Promise<void> {
   const golden = loadGolden(join(here, "golden.json")).filter((c) => c.kind === "search");
   const store = new SupabaseStore();
-  const embedder =
-    embedProvider() === "openai" ? await OpenAIEmbedder.load() : await WasmEmbedder.load();
+  const embedder = await OpenAIEmbedder.load();
 
   const cases: CaseLists[] = [];
   for (const c of golden) {
@@ -59,7 +56,7 @@ async function main(): Promise<void> {
   }
   process.stdout.write("\n");
 
-  console.log(`provider=${embedProvider()}  n=${cases.length}  (fused in-memory)\n`);
+  console.log(`n=${cases.length}  (fused in-memory)\n`);
   console.log("w      rrfK  of    recall@5  recall@10  MRR");
   for (const w of [1, 1.5, 2, 3, 5]) {
     for (const rrfK of [20, 60]) {

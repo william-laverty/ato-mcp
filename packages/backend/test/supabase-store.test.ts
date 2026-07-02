@@ -267,8 +267,6 @@ describe("SupabaseStore.close()", () => {
 // vector RPC selection
 // ---------------------------------------------------------------------------
 describe("SupabaseStore vector RPC selection", () => {
-  afterEach(() => { delete process.env["EMBED_PROVIDER"]; });
-
   function spyClient() {
     const calls: string[] = [];
     const client = {
@@ -278,16 +276,9 @@ describe("SupabaseStore vector RPC selection", () => {
     return { client, calls };
   }
 
-  it("uses ato_vector_search by default", async () => {
+  it("uses ato_vector_search", async () => {
     const { client, calls } = spyClient();
     await new SupabaseStore(client).vectorSearch(new Float32Array(3), 5);
     expect(calls).toContain("ato_vector_search");
-  });
-
-  it("uses ato_vector_search_openai when EMBED_PROVIDER=openai", async () => {
-    process.env["EMBED_PROVIDER"] = "openai";
-    const { client, calls } = spyClient();
-    await new SupabaseStore(client).vectorSearch(new Float32Array(3), 5);
-    expect(calls).toContain("ato_vector_search_openai");
   });
 });

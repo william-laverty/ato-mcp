@@ -11,7 +11,6 @@ import type {
 } from "@ato-mcp/shared";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { makeServiceClient } from "./supabase.js";
-import { vectorSearchRpc } from "./embed-provider.js";
 
 // ---------------------------------------------------------------------------
 // SupabaseStore — implements the shared Store interface against Supabase Postgres.
@@ -67,7 +66,7 @@ export class SupabaseStore implements Store {
   // vectorSearch
   // -------------------------------------------------------------------------
   async vectorSearch(vector: Float32Array, k: number, pit?: string): Promise<SearchHit[]> {
-    const { data, error } = await this.sb.rpc(vectorSearchRpc(), {
+    const { data, error } = await this.sb.rpc("ato_vector_search", {
       q_embedding: Array.from(vector),
       k,
       pit_date: pit ?? null,
