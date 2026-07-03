@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.6
+
+- npm README: drop the without/with contrast section. No code changes.
+
 ## v1.1.5
 
 - npm README rebuilt: benefit-led hero, without/with contrast, per-client

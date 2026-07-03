@@ -11,25 +11,6 @@ Cited answers from 34,500+ ATO documents, the income tax and GST Acts and
 
 </div>
 
-## ❌ Without ato-mcp
-
-Ask an AI agent about Australian tax and it answers from training-data memory:
-
-- ❌ Thresholds and caps from one or two financial years ago
-- ❌ "Sections" and "rulings" that don't exist, or say something else
-- ❌ Generic answers that ignore whether you're a sole trader, company or trust
-- ❌ No way to check where any of it came from
-
-## ✅ With ato-mcp
-
-- ✅ Answers grounded in the actual ATO guidance page, the actual legislative
-  section and the actual ruling — every one with a resolvable citation
-- ✅ Time-keyed thresholds (instant asset write-off, GST registration, super
-  caps, …) that are correct *for the financial year you ask about*
-- ✅ Withdrawn rulings are flagged, so your agent never cites dead law as current
-- ✅ Your taxpayer profile (business structure, GST registration, investments,
-  …) captured once — every answer branched for your situation
-
 ## Quick start
 
 1. Get a token at **[ato-mcp.com.au/onboard](https://ato-mcp.com.au/onboard)** (free)
