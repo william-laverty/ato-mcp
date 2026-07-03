@@ -1,7 +1,7 @@
 {
   "name": "ato-mcp",
-  "version": "1.1.3",
-  "description": "Hosted MCP server for Australian tax \u2014 cited retrieval over 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings, plus personal context and tax workflow tools for AI agents.",
+  "version": "1.1.4",
+  "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings \u2014 plus deduction, depreciation, BAS and audit-risk tools that know your tax profile.",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -12,7 +12,10 @@
     "claude",
     "ai-agent",
     "rag",
-    "itaa-1997"
+    "itaa-1997",
+    "mcp-server",
+    "gst",
+    "tax-deductions"
   ],
   "license": "MIT",
   "author": "William Laverty",

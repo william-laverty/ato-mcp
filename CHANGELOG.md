@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.4
+
+- npm listing: benefit-led description and expanded keywords. No code changes.
+
 ## v1.1.3
 
 - **Corpus expansion** (served by the hosted platform; no client code changes):
