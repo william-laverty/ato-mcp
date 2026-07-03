@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.1.3
+
+- **Corpus expansion** (served by the hosted platform; no client code changes):
+  34,500+ documents / 286,000+ searchable passages. Legislation now covers the
+  **ITAA 1997, ITAA 1936 and the GST Act** (6,468 sections, 2,310 statutory
+  definitions including the GST dictionary); **4,900+ public rulings** with
+  withdrawn rulings flagged `[Withdrawn]`; citation graph grown to 64,217
+  edges; 13 live-verified thresholds (including the FY2026-27 super caps).
+  Retrieval quality: passages are embedded with their document/heading context
+  and chunked with overlap; search snippets are query-aware.
+
 ## v1.1.2
 
 - `serverInfo.version` now reads from `package.json` instead of a hardcoded

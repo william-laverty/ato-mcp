@@ -4,7 +4,7 @@
 
 **The Australian tax knowledge base for AI agents.**
 
-Give Claude (or any MCP host) cited, current retrieval over 29,000+ ATO documents —
+Give Claude (or any MCP host) cited, current retrieval over 34,500+ ATO documents —
 plus a personal-facts layer and four tax workflow tools that know *your* situation.
 
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
@@ -27,13 +27,13 @@ crypto, and every answer is branched for *your* taxpayer shape.
 
 | Source | Contents |
 |---|---|
-| **ato.gov.au** | 24,500+ guidance pages, forms & instructions, occupation guides, myTax help |
-| **ITAA 1997** | 4,638 sections + 1,929 statutory definitions (point-in-time aware) |
-| **ATO public rulings** | 2,127 rulings across 10 types (TR, TD, GSTR, GSTD, PR, CR, LCR, PCG, MT, FTR) |
-| **Citation graph** | 23,267 cross-references between rulings and legislation |
+| **ato.gov.au** | 23,000+ guidance pages, forms & instructions, occupation guides, myTax help |
+| **Legislation** | ITAA 1997, ITAA 1936 and the GST Act — 6,468 sections + 2,310 statutory definitions (point-in-time aware) |
+| **ATO public rulings** | 4,900+ rulings across 10 types (TR, TD, GSTR, GSTD, PR, CR, LCR, PCG, MT, FTR), withdrawn rulings flagged |
+| **Citation graph** | 64,217 cross-references between rulings and legislation |
 | **Thresholds** | Time-keyed scalars (instant asset write-off, GST registration, CGT discount, super caps, …) |
 
-**29,000+ documents, hybrid-indexed (BM25 + vector)**, refreshed monthly and served from
+**34,500+ documents (286,000+ searchable passages), hybrid-indexed (BM25 + vector)**, refreshed monthly and served from
 the hosted platform.
 
 ## The 13 tools
