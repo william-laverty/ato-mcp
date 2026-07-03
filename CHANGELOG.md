@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.5
+
+- npm README rebuilt: benefit-led hero, without/with contrast, per-client
+  quick start (Claude Code one-liner + JSON config), example prompts, current
+  corpus stats. No code changes.
+
 ## v1.1.4
 
 - npm listing: benefit-led description and expanded keywords. No code changes.
