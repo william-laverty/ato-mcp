@@ -24,8 +24,7 @@ instead of from training-data vibes. Tell it once that you're a GST-registered s
 crypto, and every answer is branched for *your* taxpayer shape.
 
 ## Quick start
-
-*Pick your client, run one line, and sign in with your browser — no tokens, no config to hand-edit.*
+First, install the ATO MCP server with your client. [Instructions](ato-mcp.com.au/install)
 
 <details>
 <summary><b>Claude Code</b></summary>
