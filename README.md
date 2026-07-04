@@ -251,5 +251,6 @@ Federal Register of Legislation under its open licensing.
 
 ## License
 
-[AGPL-3.0](LICENSE) © William Laverty — applies to this client: use, modify and contribute freely; any distributed or hosted fork must publish its complete source under the same license. Commercial licensing available on request. The hosted platform and corpus
-are proprietary.
+[AGPL-3.0](LICENSE) © William Laverty
+
+Commercial licensing available on request. *The hosted platform and corpus are proprietary.*
