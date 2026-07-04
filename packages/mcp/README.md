@@ -32,7 +32,7 @@ First, install the ATO MCP server with your client.
 npm install -g ato-mcp   # optional — npx works without installing
 ```
 
-For hosts that natively support remote MCP servers, choose your client below to connect directly:
+For hosts that natively support remote MCP servers, connect your client directly:
 
 <details>
 <summary><b>Claude Code</b></summary>
