@@ -85,7 +85,7 @@ automatically.
 <details>
 <summary><b>VS Code (Copilot)</b></summary>
 
-[<img src="https://img.shields.io/badge/VS_Code-Install_ato--mcp-0098FF?style=flat-square&logo=vscodium&logoColor=white" alt="Install in VS Code">](https://insiders.vscode.dev/redirect/mcp/install?name=ato&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fapi.ato-mcp.com.au%2Fmcp%22%7D)
+[<img src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Server&color=0098FF" alt="Install in VS Code">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522ato%2522%252C%2522type%2522%253A%2522http%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fapi.ato-mcp.com.au%252Fmcp%2522%257D) [<img alt="Install in VS Code Insiders" src="https://img.shields.io/badge/VS_Code_Insiders-VS_Code_Insiders?style=flat-square&label=Install%20Server&color=24bfa5">](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522ato%2522%252C%2522type%2522%253A%2522http%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fapi.ato-mcp.com.au%252Fmcp%2522%257D)
 
 Or from the command line:
 
@@ -100,7 +100,7 @@ VS Code prompts to authenticate in your browser when the server first connects.
 <details>
 <summary><b>Cursor</b></summary>
 
-[<img src="https://img.shields.io/badge/Cursor-Install_ato--mcp-000000?style=flat-square" alt="Install in Cursor">](https://cursor.com/en/install-mcp?name=ato&config=eyJ1cmwiOiJodHRwczovL2FwaS5hdG8tbWNwLmNvbS5hdS9tY3AifQ%3D%3D)
+[<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor">](https://cursor.com/en/install-mcp?name=ato&config=eyJ1cmwiOiJodHRwczovL2FwaS5hdG8tbWNwLmNvbS5hdS9tY3AifQ%3D%3D)
 
 Or add to `~/.cursor/mcp.json`:
 
