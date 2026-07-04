@@ -25,11 +25,12 @@ CI runs the same commands.
 
 ## Conventions
 
-- The client stays **thin and dependency-light**: it reads `ATO_MCP_TOKEN`, registers the
-  tool schemas (`src/server.ts`), and forwards calls (`src/lib/remote-tools.ts`). No native
-  deps, no local corpus, no tool logic — tool behaviour changes happen server-side.
-- No silent failures: throw actionable errors ("Get your token at ato-mcp.com.au/onboard…"),
-  and surface any degraded behaviour explicitly in the output.
+- The client stays **thin and dependency-light**: it's a stdio proxy (`src/index.ts`) that
+  spawns the bundled `mcp-remote` against the hosted endpoint, which handles the browser
+  OAuth sign-in and token cache. No native deps beyond `mcp-remote`, no local corpus, no
+  tool logic — tool behaviour changes happen server-side.
+- No silent failures: propagate the child process's exit code and forward SIGINT/SIGTERM
+  so Ctrl-C actually stops the proxy.
 - Tool schema changes must stay in sync with the hosted API and be reflected in
   [`docs/tools.md`](docs/tools.md).
 

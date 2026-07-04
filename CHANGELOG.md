@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.0.0
+
+**Breaking:** token-based auth is gone — the hosted service no longer issues or accepts
+`ATO_MCP_TOKEN`.
+
+- Package rebuilt as a branded OAuth stdio proxy: it speaks MCP over stdio to the host and
+  proxies to the hosted endpoint via the bundled [`mcp-remote`](https://www.npmjs.com/package/mcp-remote),
+  which performs browser sign-in (dynamic client registration + PKCE) and caches/refreshes
+  tokens under `~/.mcp-auth`.
+- Removed the `onboard` command, `ATO_MCP_TOKEN` env var, and the inlined tool schemas —
+  the proxy no longer implements MCP itself, it forwards the whole session.
+- New `ATO_MCP_URL` env var to point the proxy at a different hosted endpoint (defaults to
+  `https://api.ato-mcp.com.au/mcp`).
+- Dependencies: only `mcp-remote`; dropped `@modelcontextprotocol/sdk` and `open`.
+
 ## v1.1.6
 
 - npm README: drop the without/with contrast section. No code changes.

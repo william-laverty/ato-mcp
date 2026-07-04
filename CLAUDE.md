@@ -8,19 +8,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `ato-mcp` is the public npm client for the hosted ato-mcp service (`ato-mcp.com.au`): AI agents get cited retrieval over the Australian Taxation Office corpus plus personal-context and workflow tools, over the MCP stdio protocol.
 
-The client is a **self-contained thin forwarder**: it reads `ATO_MCP_TOKEN` from the environment, registers the 13 tool schemas, and forwards every tool call to `api.ato-mcp.com.au` over HTTPS. There is no local corpus, no offline mode, and no dependency on any private package.
+The client is a **self-contained branded stdio proxy**: it speaks MCP over stdio to the host
+and internally proxies to the hosted endpoint (`https://api.ato-mcp.com.au/mcp`) via the
+bundled `mcp-remote`, which performs the browser OAuth handshake (DCR + PKCE) and caches/
+refreshes tokens under `~/.mcp-auth`. There is no local corpus, no offline mode, no token
+environment variable, and no dependency on any private package.
 
 ## Layout
 
 ```
 packages/mcp/          the npm package (unscoped: ato-mcp)
-  bin/ato-mcp.js       CLI entry (default action: stdio MCP server; also `help`, `onboard`)
-  src/server.ts        MCP server + the 13 inlined tool JSON Schemas (TOOLS map)
-  src/lib/remote-tools.ts   RemoteToolForwarder — the only thing the client does
-  src/lib/onboard.ts   opens the browser to ato-mcp.com.au/onboard
-  test/                server registration, forwarder, and MCP-protocol e2e tests
+  bin/ato-mcp.js       CLI entry → dist/index.js
+  src/index.ts         command dispatch (`mcp` default, `help`) + spawns mcp-remote's proxy
+  test/                resolveProxyArgs unit tests + CLI smoke coverage
 docs/tools.md          user-facing tool reference (inputs/outputs/examples)
-scripts/smoke.sh       build + token-guidance + help smoke test
+scripts/smoke.sh       build + CLI help smoke test
 ```
 
 ## Commands
@@ -29,15 +31,17 @@ scripts/smoke.sh       build + token-guidance + help smoke test
 pnpm install
 pnpm -r build && pnpm -r typecheck && pnpm -r test
 pnpm test:smoke
-ATO_MCP_TOKEN=... node packages/mcp/bin/ato-mcp.js   # run the stdio server
+node packages/mcp/bin/ato-mcp.js   # run the stdio proxy; first run opens the browser to sign in
 ```
 
 ## Rules
 
-- **Stay self-contained.** No `@ato-mcp/*` workspace deps, no native deps. The package must install instantly via `npx -y ato-mcp`.
-- **Tool schemas are duplicated by design.** The hosted API implements the tools; this repo inlines their JSON Schemas in `src/server.ts`. A tool change is coordinated with the hosted platform and must update `docs/tools.md` too.
+- **Stay self-contained.** No `@ato-mcp/*` workspace deps, no native deps beyond `mcp-remote`.
+  The package must install instantly via `npx -y ato-mcp`.
+- **No token auth.** The hosted service only accepts browser OAuth; there is no
+  `ATO_MCP_TOKEN` and never will be again.
 - **Never merge a branch whose git ancestry predates the 2026-07-02 baseline commit** — the repo history was intentionally reset; old ancestry must not be reintroduced.
-- Errors must carry user guidance (token missing → point to `ato-mcp.com.au/onboard`).
+- `ATO_MCP_URL` is the only supported override (points mcp-remote at a different hosted endpoint).
 
 ## Release & publish
 

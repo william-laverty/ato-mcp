@@ -13,16 +13,15 @@ Cited answers from 34,500+ ATO documents, the income tax and GST Acts and
 
 ## Quick start
 
-1. Get a token at **[ato-mcp.com.au/onboard](https://ato-mcp.com.au/onboard)** (free)
-2. Add the server to your MCP client:
+Add the server to your MCP client — no token, no account setup:
 
 **Claude Code**
 
 ```bash
-claude mcp add ato-mcp -e ATO_MCP_TOKEN=<your-token> -- npx -y ato-mcp
+claude mcp add ato-mcp -- npx -y ato-mcp
 ```
 
-**Claude Desktop, Cursor, or any MCP host** — add to your MCP config
+**Claude Desktop, Cursor, or any stdio MCP host** — add to your MCP config
 (`claude_desktop_config.json`, `.cursor/mcp.json`, …):
 
 ```json
@@ -30,15 +29,16 @@ claude mcp add ato-mcp -e ATO_MCP_TOKEN=<your-token> -- npx -y ato-mcp
   "mcpServers": {
     "ato-mcp": {
       "command": "npx",
-      "args": ["-y", "ato-mcp"],
-      "env": { "ATO_MCP_TOKEN": "<your-token>" }
+      "args": ["-y", "ato-mcp"]
     }
   }
 }
 ```
 
-The client forwards every tool call to `api.ato-mcp.com.au` over TLS — nothing
-to download, always the current corpus.
+First run opens your browser to sign in. `ato-mcp` is a stdio proxy: it runs
+[`mcp-remote`](https://www.npmjs.com/package/mcp-remote) under the hood to bridge to the
+hosted endpoint over streamable HTTP with OAuth. Tokens are cached under `~/.mcp-auth` and
+refreshed automatically — delete that folder to sign out.
 
 ## Try asking
 
