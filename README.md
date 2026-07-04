@@ -1,10 +1,10 @@
 <div align="center">
 
-# ato-mcp
+# Australian Tax MCP
 
 **The Australian tax knowledge base for AI agents.**
 
-Give Claude (or any MCP host) cited, current retrieval over 34,500+ ATO documents —
+Give your agent access to cited, current retrieval over 34,500+ ATO documents —
 plus a personal-facts layer and four tax workflow tools that know *your* situation.
 
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
@@ -207,17 +207,6 @@ structure, GST registration, investments, super type, residency, …) so the age
 
 Every workflow tool returns **structured data + resolvable ATO citations — never advice in its
 own voice**. See the [full tool reference](docs/tools.md).
-
-## How it works
-
-`ato-mcp` is a branded stdio proxy: it speaks MCP over stdio to your client and, under the
-hood, runs [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) to bridge to
-`api.ato-mcp.com.au/mcp` over streamable HTTP. The first tool call triggers a browser OAuth
-sign-in (dynamic client registration + PKCE); after that, tokens are cached under
-`~/.mcp-auth` and refreshed automatically. Sign out by deleting that folder.
-
-Hosts that speak streamable HTTP directly can skip this package entirely and use the
-one-liner in **Quick start** above — same sign-in, no extra process in between.
 
 ## Disclaimer
 
