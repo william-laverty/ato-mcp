@@ -56,20 +56,20 @@ Hybrid BM25 + vector search over the ATO corpus (ato.gov.au guidance, ITAA 1997 
 | `doc_type` | string[] | no | — | Accepted by the input schema; not yet applied as a filter. |
 | `jurisdiction` | string | no | — | Accepted by the input schema; not yet applied as a filter. |
 | `pit` | string | no | — | Point-in-time date `YYYY-MM-DD`; restricts to content effective at that date. |
-| `include_old` | boolean | no | `false` | Accepted by the input schema; not yet applied as a filter. |
+| `include_old` | boolean | no | `false` | When `false`, hits from withdrawn rulings are excluded. Set `true` to include them (flagged with `doc_status`). |
 
 ### Output
 
 - `query`, `mode` — echo of the request.
-- `hits` — array of hit objects:
+- `hits` — array of hit objects, ranked best-first:
   - `chunk_id` — chunk identifier (`<doc_id>#<ord>`).
   - `doc_id` — parent document identifier.
   - `ord` — chunk position within the document.
   - `text` — full chunk text.
   - `heading_path` — heading breadcrumb (array of strings).
-  - `score` — relevance score (RRF-fused in hybrid mode).
   - `title`, `url`, `doc_type` — parent document metadata.
-  - `snippet` — short extract.
+  - `published_at` — the source document's last-published date (nullable). Check it when citing rates or thresholds and prefer recent sources.
+  - `doc_status` — present only when the source document is not current (e.g. `"withdrawn"`).
 
 ### Example
 
@@ -88,13 +88,12 @@ Response (abridged):
       "chunk_id": "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/working-from-home-expenses#4",
       "doc_id": "ato:individuals-and-families/income-deductions-offsets-and-records/deductions-you-can-claim/working-from-home-expenses",
       "title": "Working from home expenses",
-      "snippet": "…fixed rate method … cents per hour you work from home…",
-      "score": 0.032,
       "doc_type": "ATO_GUIDE",
       "url": "https://www.ato.gov.au/…",
       "heading_path": ["…"],
       "ord": 4,
-      "text": "…"
+      "text": "…fixed rate method … cents per hour you work from home…",
+      "published_at": "2026-05-26"
     }
   ]
 }
@@ -116,7 +115,7 @@ Fetch chunk bodies by `chunk_id`, optionally widened with neighbouring chunks (`
 
 ### Output
 
-- `chunks` — array of chunk records in the same shape as `search` hits (`chunk_id`, `doc_id`, `ord`, `text`, `heading_path`, `score`, `title`, `url`, `doc_type`, `snippet`).
+- `chunks` — array of chunk records in the same shape as `search` hits (`chunk_id`, `doc_id`, `ord`, `text`, `heading_path`, `title`, `url`, `doc_type`, `published_at`, and `doc_status` when the source is not current). Unlike `search`, chunks from withdrawn documents are always returned — you asked for them explicitly — with `doc_status` set.
 
 ### Example
 
@@ -139,7 +138,7 @@ Response (abridged):
 
 ## get_doc
 
-Fetch a full document by `doc_id`: its metadata record, the cleaned HTML body, and the list of in-document anchors (each anchor maps to a `chunk_id`). Use after `search`/citations when chunk-level context is not enough.
+Fetch a full document by `doc_id`: its metadata record, the full text assembled in reading order, and the list of in-document anchors (each anchor maps to a `chunk_id`). Use after `search`/citations when chunk-level context is not enough.
 
 ### Input
 
@@ -151,7 +150,9 @@ Fetch a full document by `doc_id`: its metadata record, the cleaned HTML body, a
 ### Output
 
 - `doc` — document metadata: `doc_id`, `source` (`ato` \| `legislation` \| `austlii` \| `state_revenue`), `url`, `title`, `jurisdiction`, `doc_type`, `effective_from`, `effective_to`, `published_at`, `retrieved_at`, `metadata`.
-- `cleaned_html` — sanitised HTML body, or `null`.
+- `text` — the full document text in reading order, with heading breadcrumbs re-inserted as `## …` lines where they change.
+- `chunk_count` — how many chunks the document has in total.
+- `truncated` — `true` when the document is very long and `text` was capped at a chunk boundary; fetch the remainder with `get_chunks`.
 - `anchors` — array of `{ anchor_id, anchor_name, chunk_id }` for in-document targets.
 
 ### Example
@@ -165,7 +166,9 @@ Response (abridged):
 ```json
 {
   "doc": { "doc_id": "legis:c2004a05138/328-180", "source": "legislation", "title": "ITAA 1997 s 328-180", "doc_type": "LEGISLATION_ITAA1997", "url": "…", "retrieved_at": "…", "…": "…" },
-  "cleaned_html": "<h1>328-180 …</h1>…",
+  "text": "## 328-180 …\n\nYou deduct the taxable purpose proportion of…",
+  "chunk_count": 3,
+  "truncated": false,
   "anchors": [ { "anchor_id": "…", "anchor_name": "…", "chunk_id": "legis:c2004a05138/328-180#0" } ]
 }
 ```
@@ -251,13 +254,13 @@ Response (abridged):
 
 ## get_threshold
 
-Time-keyed scalar tax fact lookup, point-in-time aware. The corpus currently carries 8 thresholds: `gst_registration_threshold`, `gst_registration_threshold_nonprofit`, `instant_asset_write_off`, `cgt_discount_individual`, `super_concessional_cap`, `tax_free_threshold`, `low_income_tax_offset_max`, `small_business_income_tax_offset_cap`.
+Time-keyed scalar tax fact lookup, point-in-time aware. `name` is a closed set, enumerated in the tool schema: `cgt_discount_individual`, `fbt_rate`, `gst_registration_threshold`, `gst_registration_threshold_nonprofit`, `instant_asset_write_off`, `low_income_tax_offset_max`, `medicare_levy_rate`, `small_business_income_tax_offset_cap`, `super_concessional_cap`, `super_guarantee_rate`, `super_non_concessional_cap`, `tax_free_threshold`, `working_from_home_fixed_rate`.
 
 ### Input
 
 | field | type | required | default | notes |
 |---|---|---|---|---|
-| `name` | string | yes | — | Threshold key (see list above). |
+| `name` | string | yes | — | One of the enum values above. |
 | `pit` | string | no | today | Date the threshold must be effective at (`YYYY-MM-DD`). |
 
 ### Output
@@ -266,7 +269,7 @@ A single threshold row:
 
 - `name` — threshold key.
 - `value` — numeric value.
-- `unit` — `"AUD"` for dollar amounts, `"percent"` for rates.
+- `unit` — `"AUD"` for dollar amounts, `"percent"` for rates, `"cents_per_hour"` for the working-from-home fixed rate.
 - `effective_from`, `effective_to` — validity window (nullable).
 - `source_doc_id`, `source_anchor` — provenance pointers into the corpus (nullable).
 
@@ -290,7 +293,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available; throws `Threshold not found: <name> at <pit>` when no row is effective at the date.
+**Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available; throws `Threshold not found: <name> at <pit>. Valid names: …` (listing the full valid set) when no row is effective at the date.
 
 ## fetch
 
