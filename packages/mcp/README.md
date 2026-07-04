@@ -202,7 +202,19 @@ so the agent never re-asks.
 
 Full reference: [docs/tools.md](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md)
 
----
+## Important disclaimer
 
-Not tax advice: tools return structured data + ATO citations for an agent to
-reason over. AGPL-3.0 © William Laverty
+ato-mcp is **information infrastructure, not tax advice**. It retrieves and structures published
+ATO material and computes deterministic schedules; it does not consider your full circumstances
+and it is not a registered tax agent service. Confidence ratings and risk bands are heuristic
+indicators, not professional judgement. Verify material decisions with a registered tax agent —
+and read the [terms](https://ato-mcp.com.au/terms).
+
+ATO content remains subject to ATO publication terms. ITAA 1997 text is reproduced from the
+Federal Register of Legislation under its open licensing.
+
+## License
+
+[AGPL-3.0](https://github.com/william-laverty/ato-mcp/blob/main/LICENSE) © William Laverty
+
+Commercial licensing available on request. *The hosted platform and corpus are proprietary.*
