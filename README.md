@@ -27,6 +27,25 @@ crypto, and every answer is branched for *your* taxpayer shape.
 
 First, install the ATO MCP server with your client.
 
+**Standard config** works with most tools that run stdio servers:
+
+```json
+{
+  "mcpServers": {
+    "ato": {
+      "command": "npx",
+      "args": ["-y", "ato-mcp"]
+    }
+  }
+}
+```
+
+```bash
+npm install -g ato-mcp   # optional — npx works without installing
+```
+
+For hosts that natively support remote MCP servers, connect your client directly:
+
 <details>
 <summary><b>Claude Code</b></summary>
 
@@ -116,8 +135,8 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-If Windsurf doesn't open a sign-in window, use the npm package below instead — it
-handles the browser sign-in itself.
+If Windsurf doesn't open a sign-in window, use the standard npm config at the top
+of this section instead — it handles the browser sign-in itself.
 
 </details>
 
@@ -129,8 +148,8 @@ handles the browser sign-in itself.
 3. Paste `https://api.ato-mcp.com.au/mcp`
 4. Click **Connect** and sign in when the browser window appears
 
-Available on paid Claude plans. Claude Desktop can alternatively use the npm package
-below in `claude_desktop_config.json`.
+Available on paid Claude plans. Claude Desktop can alternatively use the standard
+npm config at the top of this section in `claude_desktop_config.json`.
 
 </details>
 
@@ -145,27 +164,15 @@ Requires a plan with connector support.
 
 </details>
 
-Full instructions avaliable **[here](https://ato-mcp.com.au/install)**.
+<details>
+<summary><b>OpenCode, Zed & other stdio-only hosts</b></summary>
 
-### npm package
+Use the standard npm config at the top of this section — this package bridges any
+stdio host to the hosted server with the same browser sign-in.
 
-For stdio-only hosts that can't add a remote HTTP server directly (OpenCode, Zed, …),
-install this package:
+</details>
 
-```bash
-npm install -g ato-mcp   # or use npx directly
-```
-
-```json
-{
-  "mcpServers": {
-    "ato": {
-      "command": "npx",
-      "args": ["-y", "ato-mcp"]
-    }
-  }
-}
-```
+Full instructions available **[here](https://ato-mcp.com.au/install)**.
 
 ## What's in the corpus
 
