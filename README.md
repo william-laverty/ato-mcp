@@ -217,7 +217,7 @@ indicators, not professional judgement. Verify material decisions with a registe
 ATO content remains subject to ATO publication terms. ITAA 1997 text is reproduced from the
 Federal Register of Legislation under its open licensing.
 
-**See the [Terms of Service](https://ato-mcp.com.au/terms) & [Privacy Policy](https://ato-mcp.com.au/privacy) for more details.**
+See the [Terms of Service](https://ato-mcp.com.au/terms) & [Privacy Policy](https://ato-mcp.com.au/privacy) for more details.
 
 ---
 
