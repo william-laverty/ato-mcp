@@ -219,37 +219,19 @@ sign-in (dynamic client registration + PKCE); after that, tokens are cached unde
 Hosts that speak streamable HTTP directly can skip this package entirely and use the
 one-liner in **Quick start** above — same sign-in, no extra process in between.
 
-## Privacy, by construction
+## Disclaimer
 
-No tool names, no query content, no results are ever stored — the analytics schema physically
-has nowhere to put them. See the [privacy policy](https://ato-mcp.com.au/privacy), which is
-generated from the stored-data schema itself. Per-user rows are isolated with Postgres
-row-level security; access is tied to your browser sign-in and can be reviewed from the
-[account page](https://ato-mcp.com.au/account).
-
-## Development
-
-```bash
-pnpm install && pnpm -r build
-pnpm -r test
-pnpm test:smoke
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and the release process.
-
-## Important disclaimer
-
-ato-mcp is **information infrastructure, not tax advice**. It retrieves and structures published
-ATO material and computes deterministic schedules; it does not consider your full circumstances
+This service is provided as **information infrastructure, not tax advice**. It does not consider your full financial circumstances
 and it is not a registered tax agent service. Confidence ratings and risk bands are heuristic
-indicators, not professional judgement. Verify material decisions with a registered tax agent —
-and read the [terms](https://ato-mcp.com.au/terms).
+indicators, not professional judgement. Verify material decisions with a registered tax agent. 
 
 ATO content remains subject to ATO publication terms. ITAA 1997 text is reproduced from the
 Federal Register of Legislation under its open licensing.
 
-## License
+**See the [Terms of Service](https://ato-mcp.com.au/terms) & [Privacy Policy](https://ato-mcp.com.au/privacy) for more details.**
 
-[AGPL-3.0](LICENSE) © William Laverty
+---
 
-Commercial licensing available on request. *The hosted platform and corpus are proprietary.*
+**License [AGPL-3.0](LICENSE) © William Laverty**
+
+ *The hosted platform and corpus are proprietary. Commercial licensing available on request.*
