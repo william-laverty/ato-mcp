@@ -25,9 +25,7 @@ crypto, and every answer is branched for *your* taxpayer shape.
 
 ## Quick start
 
-First, install the ATO MCP server with your client — pick yours below, or see the
-full per-client instructions at **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**.
-Signing in happens in your browser on first connect: no tokens, no API keys.
+First, install the ATO MCP server with your client. Full instructions avaliable **[here](https://ato-mcp.com.au/install)**.
 
 <details>
 <summary><b>Claude Code</b></summary>
@@ -166,9 +164,6 @@ npm install -g ato-mcp   # or use npx directly
   }
 }
 ```
-
-No token, no environment variable — first run opens your browser to sign in.
-Full, always-current instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**
 
 ## What's in the corpus
 
