@@ -25,7 +25,7 @@ crypto, and every answer is branched for *your* taxpayer shape.
 
 ## Quick start
 
-First, install the ATO MCP server with your client. Full instructions avaliable **[here](https://ato-mcp.com.au/install)**.
+First, install the ATO MCP server with your client.
 
 <details>
 <summary><b>Claude Code</b></summary>
@@ -144,6 +144,8 @@ below in `claude_desktop_config.json`.
 Requires a plan with connector support.
 
 </details>
+
+Full instructions avaliable **[here](https://ato-mcp.com.au/install)**.
 
 ### npm package
 
