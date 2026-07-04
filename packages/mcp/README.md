@@ -13,21 +13,28 @@ Cited answers from 34,500+ ATO documents, the income tax and GST Acts and
 
 ## Quick start
 
-Add the server to your MCP client — no token, no account setup:
-
-**Claude Code**
+Add the hosted server to your client — one line, then sign in with your browser:
 
 ```bash
-claude mcp add ato-mcp -- npx -y ato-mcp
+claude mcp add --transport http ato https://api.ato-mcp.com.au/mcp
 ```
 
-**Claude Desktop, Cursor, or any stdio MCP host** — add to your MCP config
-(`claude_desktop_config.json`, `.cursor/mcp.json`, …):
+Then run `/mcp` inside Claude Code and choose **Authenticate**. Codex, Gemini CLI,
+Cursor, VS Code, Windsurf, Claude.ai and ChatGPT instructions live at
+**[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**.
+
+### npm package
+
+For stdio-only hosts that can't add a remote HTTP server directly, install this package:
+
+```bash
+npm install -g ato-mcp   # or use npx directly
+```
 
 ```json
 {
   "mcpServers": {
-    "ato-mcp": {
+    "ato": {
       "command": "npx",
       "args": ["-y", "ato-mcp"]
     }
@@ -35,10 +42,10 @@ claude mcp add ato-mcp -- npx -y ato-mcp
 }
 ```
 
-First run opens your browser to sign in. `ato-mcp` is a stdio proxy: it runs
-[`mcp-remote`](https://www.npmjs.com/package/mcp-remote) under the hood to bridge to the
-hosted endpoint over streamable HTTP with OAuth. Tokens are cached under `~/.mcp-auth` and
-refreshed automatically — delete that folder to sign out.
+Same sign-in, no token: first run opens your browser. `ato-mcp` is a stdio proxy —
+it runs [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) under the hood to bridge
+to the hosted endpoint over streamable HTTP with OAuth. Credentials are cached under
+`~/.mcp-auth` and refreshed automatically — delete that folder to sign out.
 
 ## Try asking
 
