@@ -41,8 +41,9 @@ ruling / ATO page) that shows the correct position — it makes fixes fast.
 
 ## Releases
 
-See [RELEASING.md](RELEASING.md). Software releases are tagged `v*` and published to npm
-via Trusted Publishing.
+Releases are cut by the maintainer: software releases are tagged `v*` and published to
+npm automatically via Trusted Publishing (OIDC, provenance-signed). The corpus is
+maintained privately; this repository only ships software releases.
 
 ## License of contributions
 
