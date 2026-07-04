@@ -205,4 +205,4 @@ Full reference: [docs/tools.md](https://github.com/william-laverty/ato-mcp/blob/
 ---
 
 Not tax advice: tools return structured data + ATO citations for an agent to
-reason over. MIT © William Laverty
+reason over. AGPL-3.0 © William Laverty

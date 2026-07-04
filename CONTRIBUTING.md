@@ -43,3 +43,11 @@ ruling / ATO page) that shows the correct position — it makes fixes fast.
 
 See [RELEASING.md](RELEASING.md). Software releases are tagged `v*` and published to npm
 via Trusted Publishing.
+
+## License of contributions
+
+This project is licensed under AGPL-3.0-only. By submitting a contribution you
+certify the [Developer Certificate of Origin](https://developercertificate.org/)
+(sign off with `git commit -s`) and agree that your contribution is licensed
+under the project license, and may additionally be licensed by the maintainer
+under commercial terms.

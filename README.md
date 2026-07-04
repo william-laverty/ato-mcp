@@ -11,7 +11,7 @@ plus a personal-facts layer and four tax workflow tools that know *your* situati
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/ato-mcp)](https://www.npmjs.com/package/ato-mcp)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Node 22+](https://img.shields.io/badge/node-%E2%89%A522-brightgreen)](https://nodejs.org)
 
 </div>
@@ -251,5 +251,5 @@ Federal Register of Legislation under its open licensing.
 
 ## License
 
-[MIT](LICENSE) © William Laverty — applies to this client. The hosted platform and corpus
+[AGPL-3.0](LICENSE) © William Laverty — applies to this client: use, modify and contribute freely; any distributed or hosted fork must publish its complete source under the same license. Commercial licensing available on request. The hosted platform and corpus
 are proprietary.

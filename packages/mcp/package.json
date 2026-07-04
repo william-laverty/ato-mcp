@@ -1,6 +1,6 @@
 {
   "name": "ato-mcp",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings \u2014 plus deduction, depreciation, BAS and audit-risk tools that know your tax profile.",
   "keywords": [
     "mcp",
@@ -17,7 +17,7 @@
     "gst",
     "tax-deductions"
   ],
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "author": "William Laverty",
   "homepage": "https://ato-mcp.com.au",
   "repository": {
