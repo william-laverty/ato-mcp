@@ -13,7 +13,9 @@ Cited answers from 34,500+ ATO documents, the income tax and GST Acts and
 
 ## Quick start
 
-Standard config — works in any MCP host that runs stdio servers:
+First, install the ATO MCP server with your client.
+
+**Standard config** works with most tools that run stdio servers:
 
 ```json
 {
@@ -30,15 +32,7 @@ Standard config — works in any MCP host that runs stdio servers:
 npm install -g ato-mcp   # optional — npx works without installing
 ```
 
-No token, no env vars: **first run opens your browser to sign in** (or create an
-account). `ato-mcp` is a stdio proxy — it runs
-[`mcp-remote`](https://www.npmjs.com/package/mcp-remote) under the hood to bridge to the
-hosted endpoint (`https://api.ato-mcp.com.au/mcp`) over streamable HTTP with OAuth.
-Credentials are cached under `~/.mcp-auth` and refreshed automatically — delete that
-folder to sign out.
-
-Hosts that speak remote MCP natively can skip this package and connect directly —
-pick your client:
+For hosts that natively support remote MCP servers, choose your client below to connect directly:
 
 <details>
 <summary><b>Claude Code</b></summary>
@@ -166,7 +160,7 @@ stdio host to the hosted server with the same browser sign-in.
 
 </details>
 
-Full, always-current instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**
+Full instructions available **[here](https://ato-mcp.com.au/install)**.
 
 ## Try asking
 
