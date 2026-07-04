@@ -18,6 +18,18 @@ plus a personal-facts layer and four tax workflow tools that know *your* situati
 
 ---
 
+> [!WARNING]
+> **This npm package is deprecated.** The hosted service has removed token-based
+> authentication entirely (ato-mcp is in beta; this was an intentional breaking change),
+> so the token-based client this package provides no longer works. Connect via the
+> remote endpoint instead — one line, then sign in with your browser:
+>
+> ```bash
+> claude mcp add --transport http ato https://api.ato-mcp.com.au/mcp
+> ```
+>
+> See **Quick start** below for other hosts.
+
 Ask your agent *"can I claim my home office?"* and it answers from the actual ATO guidance,
 the actual ITAA 1997 section, and the actual ruling — with citations you can resolve and read —
 instead of from training-data vibes. Tell it once that you're a GST-registered sole trader with
@@ -69,43 +81,33 @@ Then run `/mcp` inside Claude Code and choose **Authenticate**. Codex, Gemini CL
 Cursor, VS Code, Windsurf, Claude.ai and ChatGPT instructions live at
 **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**.
 
-<details>
-<summary>Token-based setup (this npm client)</summary>
+For stdio-only hosts that can't add a remote HTTP server directly, bridge with
+[`mcp-remote`](https://www.npmjs.com/package/mcp-remote) instead:
 
-Get a token at **https://ato-mcp.com.au/onboard**, then add to your MCP client config:
-
-```json
-{ "mcpServers": { "ato-mcp": { "command": "npx", "args": ["-y", "ato-mcp"],
-    "env": { "ATO_MCP_TOKEN": "<your-token>" } } } }
+```bash
+npx -y mcp-remote https://api.ato-mcp.com.au/mcp
 ```
 
-</details>
+In a host's MCP config that's command `npx`, args `["-y", "mcp-remote", "https://api.ato-mcp.com.au/mcp"]`
+— same browser sign-in, no token.
 
 ## How it works
 
-Most MCP hosts connect straight to `api.ato-mcp.com.au/mcp` over streamable HTTP and sign
-in with a browser — no client-side package required. This repository is a separate,
-token-based option: a small, dependency-light stdio program for hosts that don't yet speak
-remote MCP.
+Every MCP host talks straight to `api.ato-mcp.com.au/mcp` over streamable HTTP and signs
+in with a browser. Stdio-only hosts reach the same endpoint through the `mcp-remote`
+bridge shown above. There is no client-side package to install and no token to manage;
+the retrieval platform and the corpus are maintained privately.
 
-```mermaid
-flowchart LR
-    A[Claude Code / MCP host] -- stdio --> B[ato-mcp CLI]
-    B -- bearer token --> D[api.ato-mcp.com.au]
-    D --> E[(hosted corpus)]
-```
-
-It reads `ATO_MCP_TOKEN`, speaks MCP over stdio, and forwards each tool call to
-the hosted API. Because it's open source, you can audit exactly what leaves your machine —
-your queries go to the ato-mcp API and nowhere else. The retrieval platform and the corpus
-are maintained privately.
+This npm package's old stdio client — a local program that read `ATO_MCP_TOKEN` and
+forwarded calls with a bearer token — is what's deprecated above. It no longer works
+because the hosted service no longer issues or accepts tokens.
 
 ## Privacy, by construction
 
 No tool names, no query content, no results are ever stored — the analytics schema physically
 has nowhere to put them. See the [privacy policy](https://ato-mcp.com.au/privacy), which is
 generated from the stored-data schema itself. Per-user rows are isolated with Postgres
-row-level security; bearer tokens are stored as SHA-256 hashes and revocable from the
+row-level security; access is tied to your browser sign-in and can be reviewed from the
 [account page](https://ato-mcp.com.au/account).
 
 ## Development
