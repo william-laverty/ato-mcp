@@ -25,13 +25,7 @@ crypto, and every answer is branched for *your* taxpayer shape.
 
 ## Quick start
 
-Add the hosted server to your client — one line, then sign in with your browser:
-
-```bash
-claude mcp add --transport http ato https://api.ato-mcp.com.au/mcp
-```
-
-Then run `/mcp` inside Claude Code and choose **Authenticate**. Or pick your client:
+*Pick your client, run one line, and sign in with your browser — no tokens, no config to hand-edit.*
 
 <details>
 <summary><b>Claude Code</b></summary>
