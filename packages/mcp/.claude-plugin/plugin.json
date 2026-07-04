@@ -1,7 +1,7 @@
 {
   "name": "ato-mcp",
   "version": "0.1.0",
-  "description": "Local retrieval over the Australian Taxation Office corpus (scaffolding release)",
+  "description": "Your AI agent, fluent in Australian tax. Cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings.",
   "author": "William Laverty",
   "mcpServers": {
     "ato-mcp": {

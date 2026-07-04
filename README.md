@@ -235,8 +235,7 @@ pnpm -r test
 pnpm test:smoke
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and [RELEASING.md](RELEASING.md) for the
-release process.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and the release process.
 
 ## Important disclaimer
 

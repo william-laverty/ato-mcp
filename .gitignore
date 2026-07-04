@@ -5,3 +5,9 @@ dist/
 .env
 .env.local
 coverage/
+
+# local-only maintainer/agent docs (kept on disk, not published)
+AGENTS.md
+CLAUDE.md
+CLAUDE.local.md
+RELEASING.md
