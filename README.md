@@ -59,17 +59,34 @@ own voice**. See the [full tool reference](docs/tools.md).
 
 ## Quick start
 
-Get your token at **https://ato-mcp.com.au/onboard**, then add to your MCP client config:
+Add the hosted server to your client — one line, then sign in with your browser:
+
+```bash
+claude mcp add --transport http ato https://api.ato-mcp.com.au/mcp
+```
+
+Then run `/mcp` inside Claude Code and choose **Authenticate**. Codex, Gemini CLI,
+Cursor, VS Code, Windsurf, Claude.ai and ChatGPT instructions live at
+**[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**.
+
+<details>
+<summary>Token-based setup (this npm client)</summary>
+
+Get a token at **https://ato-mcp.com.au/onboard**, then add to your MCP client config:
 
 ```json
 { "mcpServers": { "ato-mcp": { "command": "npx", "args": ["-y", "ato-mcp"],
     "env": { "ATO_MCP_TOKEN": "<your-token>" } } } }
 ```
 
-The client forwards every tool call to `api.ato-mcp.com.au` over TLS. There is no
-local corpus to download.
+</details>
 
 ## How it works
+
+Most MCP hosts connect straight to `api.ato-mcp.com.au/mcp` over streamable HTTP and sign
+in with a browser — no client-side package required. This repository is a separate,
+token-based option: a small, dependency-light stdio program for hosts that don't yet speak
+remote MCP.
 
 ```mermaid
 flowchart LR
@@ -78,8 +95,7 @@ flowchart LR
     D --> E[(hosted corpus)]
 ```
 
-This repository is the **client**: the small, dependency-light program that runs on your
-machine. It reads `ATO_MCP_TOKEN`, speaks MCP over stdio, and forwards each tool call to
+It reads `ATO_MCP_TOKEN`, speaks MCP over stdio, and forwards each tool call to
 the hosted API. Because it's open source, you can audit exactly what leaves your machine —
 your queries go to the ato-mcp API and nowhere else. The retrieval platform and the corpus
 are maintained privately.
