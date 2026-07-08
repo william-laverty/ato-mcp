@@ -7,8 +7,6 @@
 Give your agent cited, current answers from 34,500+ ATO documents, plus a
 personal-facts layer and four tax workflow tools that know *your* situation.
 
-> _"Here's my bank transactions, what can I claim this year? How do I write off my new laptop? Is anything in my return risky?"_
-
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
@@ -192,6 +190,8 @@ scalars), `fetch` (live page fetch), `stats`.
 structure, GST registration, investments, super type, residency, …) so the agent never re-asks.
 
 **Workflows** are the reason this exists:
+
+> _"Here's my bank transactions, what can I claim this year? How do I write off my new laptop? Is anything in my return risky?"_
 
 | Tool | What it does |
 |---|---|
