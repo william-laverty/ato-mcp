@@ -4,8 +4,8 @@
 
 **The Australian tax knowledge base for AI agents.**
 
-Give your agent access to cited, current retrieval over 34,500+ ATO documents —
-plus a personal-facts layer and four tax workflow tools that know *your* situation.
+Give your agent cited, current answers from 34,500+ ATO documents, plus a
+personal-facts layer and four tax workflow tools that know *your* situation.
 
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
 
@@ -19,13 +19,13 @@ plus a personal-facts layer and four tax workflow tools that know *your* situati
 ---
 
 Ask your agent *"can I claim my home office?"* and it answers from the actual ATO guidance,
-the actual ITAA 1997 section, and the actual ruling — with citations you can resolve and read —
+the actual ITAA 1997 section, and the actual ruling, with citations you can resolve and read,
 instead of from training-data vibes. Tell it once that you're a GST-registered sole trader with
-crypto, and every answer is branched for *your* taxpayer shape.
+crypto, and every answer is shaped to *your* situation.
 
 ## Quick start
 
-First, install the ATO MCP server with your client.
+Add the server to the client you already use.
 
 **Standard config** works with most tools that run stdio servers:
 
@@ -41,7 +41,7 @@ First, install the ATO MCP server with your client.
 ```
 
 ```bash
-npm install -g ato-mcp   # optional — npx works without installing
+npm install -g ato-mcp   # optional, npx works without installing
 ```
 
 For hosts that natively support remote MCP servers, connect your client directly:
@@ -53,8 +53,8 @@ For hosts that natively support remote MCP servers, connect your client directly
 claude mcp add --transport http ato https://api.ato-mcp.com.au/mcp
 ```
 
-Then run `/mcp` inside Claude Code, select **ato**, and choose **Authenticate** —
-your browser opens to sign in.
+Then run `/mcp` inside Claude Code, select **ato**, and choose **Authenticate**.
+Your browser opens to sign in.
 
 </details>
 
@@ -114,7 +114,7 @@ Or add to `~/.cursor/mcp.json`:
 }
 ```
 
-Cursor shows a "Needs login" prompt on the server — click it to sign in via your
+Cursor shows a "Needs login" prompt on the server. Click it to sign in via your
 browser.
 
 </details>
@@ -136,7 +136,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 ```
 
 If Windsurf doesn't open a sign-in window, use the standard npm config at the top
-of this section instead — it handles the browser sign-in itself.
+of this section instead; it handles the browser sign-in itself.
 
 </details>
 
@@ -167,7 +167,7 @@ Requires a plan with connector support.
 <details>
 <summary><b>OpenCode, Zed & other stdio-only hosts</b></summary>
 
-Use the standard npm config at the top of this section — this package bridges any
+Use the standard npm config at the top of this section. This package bridges any
 stdio host to the hosted server with the same browser sign-in.
 
 </details>
@@ -179,7 +179,7 @@ Full instructions available **[here](https://ato-mcp.com.au/install)**.
 | Source | Contents |
 |---|---|
 | **ato.gov.au** | 23,000+ guidance pages, forms & instructions, occupation guides, myTax help |
-| **Legislation** | ITAA 1997, ITAA 1936 and the GST Act — 6,468 sections + 2,310 statutory definitions (point-in-time aware) |
+| **Legislation** | ITAA 1997, ITAA 1936 and the GST Act: 6,468 sections + 2,310 statutory definitions (point-in-time aware) |
 | **ATO public rulings** | 4,900+ rulings across 10 types (TR, TD, GSTR, GSTD, PR, CR, LCR, PCG, MT, FTR), withdrawn rulings flagged |
 | **Citation graph** | 64,217 cross-references between rulings and legislation |
 | **Thresholds** | Time-keyed scalars (instant asset write-off, GST registration, CGT discount, super caps, …) |
@@ -189,23 +189,23 @@ the hosted platform.
 
 ## The 13 tools
 
-**Retrieval** — `search` (hybrid BM25+vector), `get_chunks`, `get_doc`, `get_doc_anchors`
+**Retrieval:** `search` (hybrid BM25+vector), `get_chunks`, `get_doc`, `get_doc_anchors`
 (citation graph), `get_definition` (statutory, point-in-time), `get_threshold` (time-keyed
 scalars), `fetch` (live page fetch), `stats`.
 
-**Personal context** — `get_user_facts`: 25 facts captured once at onboarding (business
+**Personal context:** `get_user_facts`, 25 facts captured once at onboarding (business
 structure, GST registration, investments, super type, residency, …) so the agent never re-asks.
 
-**Workflows** — the reason this exists:
+**Workflows** are the reason this exists:
 
 | Tool | What it does |
 |---|---|
-| `deduction_discovery` | Surfaces **every deduction category** that plausibly applies to your profile — a curated, cited taxonomy branched across sole traders, companies, trusts, partnerships, investors and SMSF members |
+| `deduction_discovery` | Surfaces **every deduction category** that plausibly applies to your profile: a curated, cited taxonomy branched across sole traders, companies, trusts, partnerships, investors and SMSF members |
 | `depreciation_helper` | Deterministic prime-cost / diminishing-value / instant-write-off / small-business-pool / Div 43 schedules for any asset, with the live IAWO threshold |
-| `bas_prep_checklist` | A tiered, cited BAS checklist for your reporting period — which labels apply, what evidence to gather, the gotchas |
+| `bas_prep_checklist` | A tiered, cited BAS checklist for your reporting period: which labels apply, what evidence to gather, the gotchas |
 | `audit_risk_check` | Flags the patterns the ATO scrutinises in a draft return (WRE vs income, rental anomalies, unreported crypto, …) with risk bands and the guidance behind each flag |
 
-Every workflow tool returns **structured data + resolvable ATO citations — never advice in its
+Every workflow tool returns **structured data and resolvable ATO citations, never advice in its
 own voice**. See the [full tool reference](docs/tools.md).
 
 ## Disclaimer
