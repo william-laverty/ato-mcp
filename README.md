@@ -7,6 +7,8 @@
 Give your agent cited, current answers from 34,500+ ATO documents, plus a
 personal-facts layer and four tax workflow tools that know *your* situation.
 
+> _"Here's my bank transactions, what can I claim this year? How do I write off my new laptop? Is anything in my return risky?"_
+
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
@@ -15,13 +17,6 @@ personal-facts layer and four tax workflow tools that know *your* situation.
 [![Node 22+](https://img.shields.io/badge/node-%E2%89%A522-brightgreen)](https://nodejs.org)
 
 </div>
-
----
-
-Ask your agent *"can I claim my home office?"* and it answers from the actual ATO guidance,
-the actual ITAA 1997 section, and the actual ruling, with citations you can resolve and read,
-instead of from training-data vibes. Tell it once that you're a GST-registered sole trader with
-crypto, and every answer is shaped to *your* situation.
 
 ## Quick start
 
@@ -165,7 +160,7 @@ Requires a plan with connector support.
 </details>
 
 <details>
-<summary><b>OpenCode, Zed & other stdio-only hosts</b></summary>
+<summary><b>Other (OpenCode, Zed, etc)</b></summary>
 
 Use the standard npm config at the top of this section. This package bridges any
 stdio host to the hosted server with the same browser sign-in.
