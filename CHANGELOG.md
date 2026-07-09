@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.1.3
+
+- README unified across GitHub and npm: `prepack` now copies the root README into the
+  package on every publish, so the npm page always matches GitHub. New tagline,
+  workflows-first tool section, explicit ATO non-affiliation statement.
+- Package description updated to match. No code changes.
+
 ## v2.0.0
 
 **Breaking:** token-based auth is gone — the hosted service no longer issues or accepts
