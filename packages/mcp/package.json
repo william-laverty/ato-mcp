@@ -1,7 +1,7 @@
 {
   "name": "ato-mcp",
   "version": "2.1.2",
-  "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings \u2014 plus deduction, depreciation, BAS and audit-risk tools that know your tax profile.",
+  "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings, plus deduction, depreciation, BAS and audit-risk tools that know your tax profile.",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -45,7 +45,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "rm -rf dist && tsc -p tsconfig.json",
+    "prepack": "cp ../../README.md ./README.md && rm -rf dist && tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",

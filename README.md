@@ -1,24 +1,25 @@
 <div align="center">
 
-# Australian Tax MCP
+# Australian Tax MCP Server
 
 **The Australian tax knowledge base for AI agents.**
 
-Give your agent cited, current answers from 34,500+ ATO documents, plus a
-personal-facts layer and four tax workflow tools that know *your* situation.
+Connect your AI agent to 34,500+ ATO documents (guidance, legislation, and
+public rulings) and get cited answers to the tax questions you'd otherwise pay
+your accountant to answer.
 
-[ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](docs/tools.md) · [Changelog](CHANGELOG.md)
+[ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md) · [Changelog](https://github.com/william-laverty/ato-mcp/blob/main/CHANGELOG.md)
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/ato-mcp)](https://www.npmjs.com/package/ato-mcp)
-[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](https://github.com/william-laverty/ato-mcp/blob/main/LICENSE)
 [![Node 22+](https://img.shields.io/badge/node-%E2%89%A522-brightgreen)](https://nodejs.org)
 
 </div>
 
 ## Quick start
 
-Add the server to the client you already use.
+Add the MCP Server to the client you already use.
 
 **Standard config** works with most tools that run stdio servers:
 
@@ -165,29 +166,24 @@ stdio host to the hosted server with the same browser sign-in.
 
 </details>
 
-Full instructions available **[here](https://ato-mcp.com.au/install)**.
+Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**
 
 ## What's in the corpus
+
+Everything the ATO publishes, in one searchable place, refreshed monthly:
 
 | Source | Contents |
 |---|---|
 | **ato.gov.au** | 23,000+ guidance pages, forms & instructions, occupation guides, myTax help |
 | **Legislation** | ITAA 1997, ITAA 1936 and the GST Act: 6,468 sections + 2,310 statutory definitions (point-in-time aware) |
 | **ATO public rulings** | 4,900+ rulings across 10 types (TR, TD, GSTR, GSTD, PR, CR, LCR, PCG, MT, FTR), withdrawn rulings flagged |
-| **Citation graph** | 64,217 cross-references between rulings and legislation |
-| **Thresholds** | Time-keyed scalars (instant asset write-off, GST registration, CGT discount, super caps, …) |
+| **Cross-references** | 64,217 links between rulings and legislation |
+| **Thresholds** | Time-keyed values (instant asset write-off, GST registration, CGT discount, super caps, …) |
 
-**34,500+ documents (286,000+ searchable passages), hybrid-indexed (BM25 + vector)**, refreshed monthly and served from
-the hosted platform.
+**34,500+ documents (286,000+ searchable passages)**, refreshed monthly and
+served from the hosted platform.
 
 ## The 13 tools
-
-**Retrieval:** `search` (hybrid BM25+vector), `get_chunks`, `get_doc`, `get_doc_anchors`
-(citation graph), `get_definition` (statutory, point-in-time), `get_threshold` (time-keyed
-scalars), `fetch` (live page fetch), `stats`.
-
-**Personal context:** `get_user_facts`, 25 facts captured once at onboarding (business
-structure, GST registration, investments, super type, residency, …) so the agent never re-asks.
 
 **Workflows** are the reason this exists:
 
@@ -200,22 +196,37 @@ structure, GST registration, investments, super type, residency, …) so the age
 | `bas_prep_checklist` | A tiered, cited BAS checklist for your reporting period: which labels apply, what evidence to gather, the gotchas |
 | `audit_risk_check` | Flags the patterns the ATO scrutinises in a draft return (WRE vs income, rental anomalies, unreported crypto, …) with risk bands and the guidance behind each flag |
 
-Every workflow tool returns **structured data and resolvable ATO citations, never advice in its
-own voice**. See the [full tool reference](docs/tools.md).
+Every workflow tool returns **structured data and resolvable ATO citations,
+never advice in its own voice**.
+
+**Personal context:** `get_user_facts`, 25 facts captured once at onboarding
+(business structure, GST registration, investments, super type, residency, …)
+so the agent never re-asks.
+
+**Retrieval:** `search` (keyword and semantic retrieval), `get_chunks`,
+`get_doc`, `get_doc_anchors` (cross-references), `get_definition` (statutory,
+point-in-time), `get_threshold` (time-keyed values), `fetch` (live page fetch),
+`stats`.
+
+See the [full tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md).
 
 ## Disclaimer
 
-This service is provided as **information infrastructure, not tax advice**. It does not consider your full financial circumstances
-and it is not a registered tax agent service. Confidence ratings and risk bands are heuristic
-indicators, not professional judgement. Verify material decisions with a registered tax agent. 
+This service is provided as **information infrastructure, not tax advice**. It
+does not consider your full financial circumstances and it is not a registered
+tax agent service. Confidence ratings and risk bands are guides, not
+professional judgement. Verify material decisions with a registered tax agent.
 
-ATO content remains subject to ATO publication terms. ITAA 1997 text is reproduced from the
-Federal Register of Legislation under its open licensing.
+ato-mcp is an independent service. It is not affiliated with or endorsed by
+the Australian Taxation Office. ATO content remains subject to ATO publication
+terms. Legislation text is reproduced from the Federal Register of Legislation
+under its open licensing.
 
-See the [Terms of Service](https://ato-mcp.com.au/terms) & [Privacy Policy](https://ato-mcp.com.au/privacy) for more details.
+See the [Terms of Service](https://ato-mcp.com.au/terms) &
+[Privacy Policy](https://ato-mcp.com.au/privacy) for more details.
 
 ---
 
-**License [AGPL-3.0](LICENSE) © William Laverty**
+**License [AGPL-3.0](https://github.com/william-laverty/ato-mcp/blob/main/LICENSE) © William Laverty**
 
- *The hosted platform and corpus are proprietary. Commercial licensing available on request.*
+*The hosted platform and corpus are proprietary. Commercial licensing available on request.*
