@@ -44,10 +44,11 @@ For hosts that natively support remote MCP servers, connect your client directly
 <summary><b>Claude Code</b></summary>
 
 ```bash
-claude mcp add --transport http ato https://api.ato-mcp.com.au/mcp
+claude mcp add --scope user --transport http ato https://api.ato-mcp.com.au/mcp
 ```
 
-Then run `/mcp` inside Claude Code, select **ato**, and choose **Authenticate**.
+`--scope user` makes the server available in every project, not just the current
+one. Then run `/mcp` inside Claude Code, select **ato**, and choose **Authenticate**.
 Your browser opens to sign in.
 
 </details>
@@ -68,10 +69,11 @@ codex mcp login ato
 <summary><b>Gemini CLI</b></summary>
 
 ```bash
-gemini mcp add --transport http ato https://api.ato-mcp.com.au/mcp
+gemini mcp add --scope user --transport http ato https://api.ato-mcp.com.au/mcp
 ```
 
-Gemini CLI detects the auth challenge on first use and opens your browser
+`--scope user` makes the server available in every project, not just the current
+one. Gemini CLI detects the auth challenge on first use and opens your browser
 automatically.
 
 </details>
