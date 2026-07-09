@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // CI gate: validates the Claude Code plugin and marketplace manifests.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -53,10 +53,22 @@ if (marketplace) {
       "marketplace.json: plugin source must be a relative path",
     );
     check(
+      typeof p.source === "string" &&
+        existsSync(resolve(root, p.source, ".claude-plugin/plugin.json")),
+      `marketplace.json: plugin source ${p.source} does not contain .claude-plugin/plugin.json`,
+    );
+    check(
       typeof p.description === "string" && p.description.length > 0,
       "marketplace.json: plugin description required",
     );
   }
+}
+
+if (plugin && marketplace) {
+  check(
+    plugin.description === marketplace.plugins?.[0]?.description,
+    "plugin.json and marketplace.json descriptions must match verbatim",
+  );
 }
 
 const skillPath = "plugins/claude-code/skills/australian-tax/SKILL.md";
@@ -67,7 +79,10 @@ try {
   failures.push(`${skillPath}: missing`);
 }
 if (skill !== null) {
-  const fm = skill.startsWith("---\n") ? skill.slice(4).split("\n---")[0] : null;
+  const fm =
+    skill.startsWith("---\n") && skill.slice(4).includes("\n---")
+      ? skill.slice(4).split("\n---")[0]
+      : null;
   check(fm !== null, `${skillPath}: missing YAML frontmatter`);
   check(
     (fm ?? "").includes("name: australian-tax"),
