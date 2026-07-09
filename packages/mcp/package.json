@@ -1,6 +1,6 @@
 {
   "name": "ato-mcp",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings, plus deduction, depreciation, BAS and audit-risk tools that know your tax profile.",
   "keywords": [
     "mcp",

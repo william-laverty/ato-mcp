@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.1.4
+
+- README: the Claude Code and Gemini CLI install commands now use `--scope user`, so a
+  single install makes the server available in every project. No code changes.
+
 ## v2.1.3
 
 - README unified across GitHub and npm: `prepack` now copies the root README into the
