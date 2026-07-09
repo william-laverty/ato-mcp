@@ -1,5 +1,6 @@
 {
   "name": "ato-mcp",
+  "description": "Official plugin marketplace for ato-mcp — the Australian tax knowledge base for AI agents.",
   "owner": { "name": "William Laverty", "url": "https://ato-mcp.com.au" },
   "plugins": [
     {
