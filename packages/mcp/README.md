@@ -4,9 +4,9 @@
 
 **The Australian tax knowledge base for AI agents.**
 
-Cited, current answers from 34,500+ ATO documents, the income tax and GST Acts
-and 4,900+ public rulings, plus tax workflow tools that know *your* situation.
-Connect your client in one command and ask in plain English.
+Connect your AI agent to 34,500+ ATO documents (guidance, legislation, and
+public rulings) and get cited answers to the tax questions you'd otherwise pay
+your accountant to answer.
 
 [ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md) · [Changelog](https://github.com/william-laverty/ato-mcp/blob/main/CHANGELOG.md)
 
@@ -17,20 +17,28 @@ Connect your client in one command and ask in plain English.
 
 </div>
 
-## Try asking
-
-- *"Can I claim my home office? I work from home three days a week."*
-- *"What's the instant asset write-off limit right now, and does my ute qualify?"*
-- *"Walk me through what I need for this quarter's BAS."*
-- *"Here's my draft return. What would the ATO look twice at?"*
-
-Every answer comes back with the ATO source behind it: the guidance page, the
-legislation section, the ruling.
-
 ## Quick start
 
-Connect your client to the hosted server. Your browser opens to sign in: no
-tokens, no API keys, nothing to configure by hand.
+Add the server to the client you already use.
+
+**Standard config** works with most tools that run stdio servers:
+
+```json
+{
+  "mcpServers": {
+    "ato": {
+      "command": "npx",
+      "args": ["-y", "ato-mcp"]
+    }
+  }
+}
+```
+
+```bash
+npm install -g ato-mcp   # optional, npx works without installing
+```
+
+For hosts that natively support remote MCP servers, connect your client directly:
 
 <details>
 <summary><b>Claude Code</b></summary>
@@ -121,8 +129,8 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-If Windsurf doesn't open a sign-in window, use the standard npm config further
-down; it handles the browser sign-in itself.
+If Windsurf doesn't open a sign-in window, use the standard npm config at the top
+of this section instead; it handles the browser sign-in itself.
 
 </details>
 
@@ -134,9 +142,8 @@ down; it handles the browser sign-in itself.
 3. Paste `https://api.ato-mcp.com.au/mcp`
 4. Click **Connect** and sign in when the browser window appears
 
-Custom connectors require a paid Claude plan. On any plan, Claude Desktop can
-instead use the standard npm config further down, in
-`claude_desktop_config.json`.
+Available on paid Claude plans. Claude Desktop can alternatively use the standard
+npm config at the top of this section in `claude_desktop_config.json`.
 
 </details>
 
@@ -151,26 +158,15 @@ Requires a plan with connector support.
 
 </details>
 
-On a client that can't connect to remote servers (OpenCode, Zed and other
-stdio-only hosts), the **standard config** bridges it to the hosted server with
-the same browser sign-in:
+<details>
+<summary><b>Other (OpenCode, Zed, etc)</b></summary>
 
-```json
-{
-  "mcpServers": {
-    "ato": {
-      "command": "npx",
-      "args": ["-y", "ato-mcp"]
-    }
-  }
-}
-```
+Use the standard npm config at the top of this section. This package bridges any
+stdio host to the hosted server with the same browser sign-in.
 
-```bash
-npm install -g ato-mcp   # optional, npx works without installing
-```
+</details>
 
-Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**
+Full instructions available **[here](https://ato-mcp.com.au/install)**.
 
 ## What's in the corpus
 
