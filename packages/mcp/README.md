@@ -166,8 +166,7 @@ stdio host to the hosted server with the same browser sign-in.
 
 </details>
 
-Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/instal
-l)**
+Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**
 
 ## What's in the corpus
 
