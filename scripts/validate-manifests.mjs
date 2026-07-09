@@ -59,6 +59,23 @@ if (marketplace) {
   }
 }
 
+const skillPath = "plugins/claude-code/skills/australian-tax/SKILL.md";
+let skill = null;
+try {
+  skill = readFileSync(resolve(root, skillPath), "utf8");
+} catch {
+  failures.push(`${skillPath}: missing`);
+}
+if (skill !== null) {
+  const fm = skill.startsWith("---\n") ? skill.slice(4).split("\n---")[0] : null;
+  check(fm !== null, `${skillPath}: missing YAML frontmatter`);
+  check(
+    (fm ?? "").includes("name: australian-tax"),
+    `${skillPath}: frontmatter name must be australian-tax`,
+  );
+  check(/^description: .+/m.test(fm ?? ""), `${skillPath}: frontmatter description required`);
+}
+
 if (failures.length > 0) {
   console.error("Manifest validation failed:");
   for (const f of failures) console.error(`  - ${f}`);
