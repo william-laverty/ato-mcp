@@ -1,6 +1,6 @@
 <div align="center">
 
-# ato-mcp
+# Australian Tax MCP Server
 
 **The Australian tax knowledge base for AI agents.**
 
@@ -19,7 +19,7 @@ your accountant to answer.
 
 ## Quick start
 
-Add the server to the client you already use.
+Add the MCP Server to the client you already use.
 
 **Standard config** works with most tools that run stdio servers:
 
