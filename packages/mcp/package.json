@@ -19,7 +19,7 @@
   ],
   "license": "AGPL-3.0-only",
   "author": "William Laverty",
-  "homepage": "https://ato-mcp.com.au",
+  "homepage": "https://ato-mcp.com.au?utm_source=npm&utm_medium=package",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/william-laverty/ato-mcp.git",

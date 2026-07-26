@@ -8,7 +8,7 @@ Connect your AI agent to 34,500+ ATO documents (guidance, legislation, and
 public rulings) and get cited answers to the tax questions you'd otherwise pay
 your accountant to answer.
 
-[ato-mcp.com.au](https://ato-mcp.com.au) · [Tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md) · [Changelog](https://github.com/william-laverty/ato-mcp/blob/main/CHANGELOG.md)
+[ato-mcp.com.au](https://ato-mcp.com.au?utm_source=github&utm_medium=readme) · [Tool reference](https://github.com/william-laverty/ato-mcp/blob/main/docs/tools.md) · [Changelog](https://github.com/william-laverty/ato-mcp/blob/main/CHANGELOG.md)
 
 [![CI](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/william-laverty/ato-mcp/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/ato-mcp)](https://www.npmjs.com/package/ato-mcp)
@@ -166,7 +166,7 @@ stdio host to the hosted server with the same browser sign-in.
 
 </details>
 
-Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install)**
+Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install?utm_source=github&utm_medium=readme)**
 
 ## What's in the corpus
 
