@@ -43,12 +43,21 @@ For hosts that natively support remote MCP servers, connect your client directly
 <details>
 <summary><b>Claude Code</b></summary>
 
+**As a plugin** (recommended — also installs an Australian-tax skill):
+
+```
+/plugin marketplace add william-laverty/ato-mcp
+/plugin install ato-mcp@ato-mcp
+```
+
+**Or connect the server directly:**
+
 ```bash
 claude mcp add --scope user --transport http ato https://api.ato-mcp.com.au/mcp
 ```
 
-Then run `/mcp` inside Claude Code, select **ato**, and choose **Authenticate**.
-Your browser opens to sign in.
+Either way, run `/mcp` inside Claude Code, select the **ato** server, and choose
+**Authenticate** — your browser opens to sign in.
 
 </details>
 

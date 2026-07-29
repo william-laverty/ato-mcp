@@ -1,0 +1,12 @@
+{
+  "name": "ato-mcp",
+  "description": "Official plugin marketplace for ato-mcp — the Australian tax knowledge base for AI agents.",
+  "owner": { "name": "William Laverty", "url": "https://ato-mcp.com.au" },
+  "plugins": [
+    {
+      "name": "ato-mcp",
+      "source": "./plugins/claude-code",
+      "description": "Your AI agent, fluent in Australian tax. Cited answers from 34,500+ ATO documents, the income tax and GST Acts and 4,900+ rulings — plus deduction, depreciation, BAS and audit-risk tools that know your tax profile."
+    }
+  ]
+}
