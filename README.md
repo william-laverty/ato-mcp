@@ -38,10 +38,7 @@ Add the MCP Server to the client you already use.
 npm install -g ato-mcp   # optional, npx works without installing
 ```
 
-For hosts that natively support remote MCP servers, connect your client directly:
-
-<details>
-<summary><b>Claude Code</b></summary>
+**Claude Code** connects to the remote server directly:
 
 ```bash
 claude mcp add --scope user --transport http ato https://api.ato-mcp.com.au/mcp
@@ -50,123 +47,9 @@ claude mcp add --scope user --transport http ato https://api.ato-mcp.com.au/mcp
 Then run `/mcp` inside Claude Code, select **ato**, and choose **Authenticate**.
 Your browser opens to sign in.
 
-</details>
-
-<details>
-<summary><b>Codex CLI</b></summary>
-
-```bash
-codex mcp add ato --url https://api.ato-mcp.com.au/mcp
-codex mcp login ato
-```
-
-`codex mcp login` opens your browser to sign in.
-
-</details>
-
-<details>
-<summary><b>Gemini CLI</b></summary>
-
-```bash
-gemini mcp add --scope user --transport http ato https://api.ato-mcp.com.au/mcp
-```
-
-Gemini CLI detects the auth challenge on first use and opens your browser
-automatically.
-
-</details>
-
-<details>
-<summary><b>VS Code (Copilot)</b></summary>
-
-[<img src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Server&color=0098FF" alt="Install in VS Code">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522ato%2522%252C%2522type%2522%253A%2522http%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fapi.ato-mcp.com.au%252Fmcp%2522%257D) [<img alt="Install in VS Code Insiders" src="https://img.shields.io/badge/VS_Code_Insiders-VS_Code_Insiders?style=flat-square&label=Install%20Server&color=24bfa5">](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522ato%2522%252C%2522type%2522%253A%2522http%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fapi.ato-mcp.com.au%252Fmcp%2522%257D)
-
-Or from the command line:
-
-```bash
-code --add-mcp '{"name":"ato","type":"http","url":"https://api.ato-mcp.com.au/mcp"}'
-```
-
-VS Code prompts to authenticate in your browser when the server first connects.
-
-</details>
-
-<details>
-<summary><b>Cursor</b></summary>
-
-[<img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Install in Cursor">](https://cursor.com/en/install-mcp?name=ato&config=eyJ1cmwiOiJodHRwczovL2FwaS5hdG8tbWNwLmNvbS5hdS9tY3AifQ%3D%3D)
-
-Or add to `~/.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "ato": {
-      "url": "https://api.ato-mcp.com.au/mcp"
-    }
-  }
-}
-```
-
-Cursor shows a "Needs login" prompt on the server. Click it to sign in via your
-browser.
-
-</details>
-
-<details>
-<summary><b>Windsurf</b></summary>
-
-Add to `~/.codeium/windsurf/mcp_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "ato": {
-      "type": "streamable-http",
-      "serverUrl": "https://api.ato-mcp.com.au/mcp"
-    }
-  }
-}
-```
-
-If Windsurf doesn't open a sign-in window, use the standard npm config at the top
-of this section instead; it handles the browser sign-in itself.
-
-</details>
-
-<details>
-<summary><b>Claude.ai / Claude Desktop</b></summary>
-
-1. Open **Settings → Connectors**
-2. **Add custom connector**
-3. Paste `https://api.ato-mcp.com.au/mcp`
-4. Click **Connect** and sign in when the browser window appears
-
-Available on paid Claude plans. Claude Desktop can alternatively use the standard
-npm config at the top of this section in `claude_desktop_config.json`.
-
-</details>
-
-<details>
-<summary><b>ChatGPT</b></summary>
-
-1. **Settings → Apps & Connectors** → enable **Developer Mode**
-2. **New connector** → paste `https://api.ato-mcp.com.au/mcp`
-3. Choose **OAuth** and sign in when prompted
-
-Requires a plan with connector support.
-
-</details>
-
-<details>
-<summary><b>Other (OpenCode, Zed, etc)</b></summary>
-
-Use the standard npm config at the top of this section. This package bridges any
-stdio host to the hosted server with the same browser sign-in.
-
-</details>
-
-Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install?utm_source=github&utm_medium=readme)**
+Using another client? Cursor, VS Code, Codex, Gemini CLI, Windsurf, Claude.ai and
+ChatGPT all connect to the same endpoint.
+Per-client instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install?utm_source=github&utm_medium=readme)**
 
 ## What's in the corpus
 
