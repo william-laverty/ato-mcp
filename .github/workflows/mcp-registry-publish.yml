@@ -1,6 +1,7 @@
 name: mcp-registry-publish
 
-# Lists the server in the official MCP Registry after each npm release.
+# Lists the server in the official MCP Registry after each npm release, under the
+# domain namespace au.com.ato-mcp (verified via ato-mcp.com.au/.well-known/mcp-registry-auth).
 # Runs alongside npm-publish.yml on the same release event and waits for the
 # published npm version to appear, because the registry verifies the package's
 # mcpName against the npm tarball.
@@ -19,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write   # OIDC login to the registry, no stored token
     steps:
       - uses: actions/checkout@v6
       - name: Resolve version from package.json
@@ -49,5 +49,8 @@ jobs:
           printf '%s  mcp-publisher.tar.gz\n' "$MCP_PUBLISHER_SHA256" | sha256sum -c -
           tar xzf mcp-publisher.tar.gz mcp-publisher
       - run: ./mcp-publisher validate
-      - run: ./mcp-publisher login github-oidc
+      - name: Log in to the registry (domain namespace au.com.ato-mcp)
+        env:
+          MCP_REGISTRY_PRIVATE_KEY: ${{ secrets.MCP_REGISTRY_PRIVATE_KEY }}
+        run: ./mcp-publisher login http --domain ato-mcp.com.au --private-key "$MCP_REGISTRY_PRIVATE_KEY"
       - run: ./mcp-publisher publish
