@@ -25,7 +25,7 @@ CI runs the same commands.
 
 ## Conventions
 
-- The client stays **thin and dependency-light**: it's a stdio proxy (`src/index.ts`) that
+- The client stays **thin and dependency-light**: it's a stdio proxy (`packages/mcp/src/cli.ts`) that
   spawns the bundled `mcp-remote` against the hosted endpoint, which handles the browser
   OAuth sign-in and token cache. No native deps beyond `mcp-remote`, no local corpus, no
   tool logic — tool behaviour changes happen server-side.

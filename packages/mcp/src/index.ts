@@ -1,10 +1,9 @@
-#!/usr/bin/env node
 import { createRequire } from "node:module";
-import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 
-const DEFAULT_URL = "https://api.ato-mcp.com.au/mcp";
+export const DEFAULT_URL = "https://api.ato-mcp.com.au/mcp";
 
-const HELP_TEXT = `ato-mcp - stdio proxy for the hosted ATO tax MCP server (ato-mcp.com.au)
+export const HELP_TEXT = `ato-mcp - stdio proxy for the hosted ATO tax MCP server (ato-mcp.com.au)
 
 Speaks MCP over stdio to your AI client and proxies every tool call to the
 hosted endpoint. First run opens your browser to sign in (OAuth); after that,
@@ -14,8 +13,9 @@ that folder to sign out.
 Usage:
   ato-mcp                 # start the proxy (default)
   ato-mcp mcp [args...]   # same as above; extra args are passed through to
-                           # the bundled mcp-remote proxy (e.g. --transport
-                           # http-only, a callback port)
+                           # the bundled mcp-remote proxy (e.g. --debug,
+                           # --transport http-only, a callback port)
+  ato-mcp version          # print the installed version
   ato-mcp help             # this message
 
 Environment:
@@ -30,9 +30,8 @@ export interface ProxyInvocation {
 }
 
 /**
- * Pure helper: given the raw CLI argv (process.argv.slice(2)) and env,
- * resolve the hosted endpoint URL and the args to forward to mcp-remote.
- * Exported so it's testable without spawning a child process.
+ * Given the raw CLI argv (process.argv.slice(2)) and env, resolve the hosted
+ * endpoint URL and the args to forward to mcp-remote.
  */
 export function resolveProxyArgs(argv: string[], env: NodeJS.ProcessEnv): ProxyInvocation {
   const url = env["ATO_MCP_URL"] ?? DEFAULT_URL;
@@ -46,59 +45,10 @@ export function resolveProxyPath(): string {
   return require.resolve("mcp-remote/dist/proxy.js");
 }
 
-function runProxy({ url, passthrough }: ProxyInvocation): Promise<number> {
-  const proxyPath = resolveProxyPath();
-
-  return new Promise((resolve) => {
-    const child = spawn(process.execPath, [proxyPath, url, ...passthrough], {
-      stdio: "inherit",
-    });
-
-    const forwardSignal = (signal: NodeJS.Signals) => {
-      child.kill(signal);
-    };
-    process.on("SIGINT", forwardSignal);
-    process.on("SIGTERM", forwardSignal);
-
-    const stopForwarding = () => {
-      process.off("SIGINT", forwardSignal);
-      process.off("SIGTERM", forwardSignal);
-    };
-
-    child.on("exit", (code, signal) => {
-      stopForwarding();
-      resolve(code ?? (signal ? 1 : 0));
-    });
-    child.on("error", (err) => {
-      stopForwarding();
-      process.stderr.write(`fatal: failed to start mcp-remote proxy: ${err.message}\n`);
-      resolve(1);
-    });
-  });
+/** The installed package version, read from package.json. */
+export function readVersion(): string {
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
+    version: string;
+  };
+  return pkg.version;
 }
-
-async function main(): Promise<number> {
-  const rawArgs = process.argv.slice(2);
-  const cmd = rawArgs[0];
-
-  if (cmd === "help" || cmd === "--help" || cmd === "-h") {
-    process.stdout.write(HELP_TEXT);
-    return 0;
-  }
-
-  if (cmd !== undefined && cmd !== "mcp") {
-    process.stderr.write(`Unknown command: ${cmd}\n`);
-    return 2;
-  }
-
-  return runProxy(resolveProxyArgs(rawArgs, process.env));
-}
-
-main()
-  .then((code) => {
-    process.exitCode = code;
-  })
-  .catch((err) => {
-    process.stderr.write(`fatal: ${err instanceof Error ? err.message : String(err)}\n`);
-    process.exitCode = 1;
-  });
