@@ -27,6 +27,16 @@ jobs:
           # NOTE: no registry-url here — it writes an .npmrc _authToken line
           # referencing the unset NODE_AUTH_TOKEN, which breaks the OIDC
           # trusted-publishing exchange (npm returns 404 on the PUT).
+      - name: Check the release tag matches package.json
+        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          PKG="v$(node -p "require('./packages/mcp/package.json').version")"
+          if [ "$PKG" != "$TAG" ]; then
+            printf '::error::release tag %s does not match package.json version %s\n' "$TAG" "$PKG"
+            exit 1
+          fi
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r build
       - run: pnpm --filter ato-mcp test
