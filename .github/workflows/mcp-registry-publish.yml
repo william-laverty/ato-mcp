@@ -1,0 +1,40 @@
+name: mcp-registry-publish
+
+# Lists the server in the official MCP Registry after each npm release.
+# Runs alongside npm-publish.yml on the same release event and waits for the
+# published npm version to appear, because the registry verifies the package's
+# mcpName against the npm tarball.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # OIDC login to the registry, no stored token
+    steps:
+      - uses: actions/checkout@v6
+      - name: Resolve version
+        id: v
+        run: echo "version=$(node -p "require('./packages/mcp/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Wait for npm to serve ato-mcp@${{ steps.v.outputs.version }}
+        run: |
+          for i in $(seq 1 30); do
+            if npm view "ato-mcp@${{ steps.v.outputs.version }}" version >/dev/null 2>&1; then exit 0; fi
+            sleep 20
+          done
+          echo "::error::ato-mcp@${{ steps.v.outputs.version }} never appeared on npm"
+          exit 1
+      - name: Set version in server.json
+        run: |
+          jq --arg v "${{ steps.v.outputs.version }}" \
+            '.version = $v | .packages[].version = $v' server.json > server.tmp && mv server.tmp server.json
+      - name: Install mcp-publisher
+        run: curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+      - run: ./mcp-publisher validate
+      - run: ./mcp-publisher login github-oidc
+      - run: ./mcp-publisher publish
