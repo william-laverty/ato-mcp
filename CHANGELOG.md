@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.2.1
+
+- MCP Registry listing moves to the existing domain namespace `au.com.ato-mcp/ato-mcp`
+  (the v2.2.0 attempt under `io.github.william-laverty` collided with it). `mcpName` in
+  package.json updated to match; no code changes.
+
 ## v2.2.0
 
 - **`mcp-remote` 0.1.38 → 0.14.2.** Clears a high-severity `undici` advisory in the

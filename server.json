@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.william-laverty/ato-mcp",
+  "name": "au.com.ato-mcp/ato-mcp",
   "title": "Australian Tax MCP",
   "description": "Cited Australian tax answers from 34,500+ ATO documents, legislation and public rulings.",
   "repository": {
@@ -8,7 +8,7 @@
     "source": "github"
   },
   "websiteUrl": "https://ato-mcp.com.au",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "remotes": [
     {
       "type": "streamable-http",
@@ -20,7 +20,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "ato-mcp",
-      "version": "2.2.0",
+      "version": "2.2.1",
       "transport": {
         "type": "stdio"
       }
