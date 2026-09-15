@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Install help
+    url: https://ato-mcp.com.au/install
+    about: Step-by-step setup for every MCP client.
+  - name: Security report
+    url: https://github.com/william-laverty/ato-mcp/security/advisories/new
+    about: Report a vulnerability privately.
+  - name: Email
+    url: mailto:william@ato-mcp.com.au
+    about: Anything else, including account or sign-in problems.
