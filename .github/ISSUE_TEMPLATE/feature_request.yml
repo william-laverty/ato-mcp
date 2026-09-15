@@ -1,0 +1,21 @@
+name: Feature request
+description: A new tool, corpus source, client integration, or capability
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What can't an agent do today?
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: Proposed shape
+      description: Tool name, inputs, outputs. A sketch is fine.
+  - type: textarea
+    id: who
+    attributes:
+      label: Who benefits
+      description: Which taxpayer shapes or workflows?

@@ -1,0 +1,54 @@
+name: Bug report
+description: Something broken in a tool, a tool's answer, or an install path
+labels: [bug]
+body:
+  - type: dropdown
+    id: client
+    attributes:
+      label: MCP client
+      description: Which host are you connecting from?
+      options:
+        - Claude Code
+        - Claude.ai / Claude Desktop
+        - ChatGPT
+        - Codex CLI
+        - Gemini CLI
+        - Cursor
+        - VS Code (Copilot)
+        - Windsurf
+        - Other (say which below)
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How it is connected
+      options:
+        - Remote endpoint (https://api.ato-mcp.com.au/mcp)
+        - npm package (npx -y ato-mcp)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the tool name and arguments if a tool call is involved. Redact anything personal.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Output of `npx ato-mcp --version` (npm users), plus Node and OS.
+      placeholder: "ato-mcp 2.2.0, Node 22.12, macOS 15"
+  - type: textarea
+    id: source
+    attributes:
+      label: Controlling source (tax-content issues only)
+      description: Link the ATO page, ruling, or ITAA section that shows the correct position.
