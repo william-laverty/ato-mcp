@@ -6,7 +6,7 @@ Tool failures are returned as MCP error content of the form `{"kind": "error", "
 
 ### Citations
 
-The workflow tools attach **Citation** objects, resolved live from the corpus (hybrid keyword + vector search, de-duplicated to the best chunk per document):
+The workflow tools attach **Citation** objects, resolved live from the corpus (hybrid search, de-duplicated to the best chunk per document):
 
 ```json
 { "chunk_id": "…", "doc_id": "…", "title": "…", "snippet": "…", "score": 0.03 }
@@ -18,7 +18,7 @@ The workflow tools attach **Citation** objects, resolved live from the corpus (h
 | `doc_id` | Parent document identifier — resolve with `get_doc`. |
 | `title` | Parent document title. |
 | `snippet` | Short extract from the cited chunk. |
-| `score` | Retrieval relevance score (rank-fusion value; comparable within one response only). |
+| `score` | Retrieval relevance score; comparable within one response only. |
 
 If live citation resolution is partially degraded under load, a workflow tool still returns its full result with fewer (or no) citations and says so in `notes` — it never silently drops citations and never fails the whole call for that reason.
 
@@ -43,7 +43,7 @@ If live citation resolution is partially degraded under load, a workflow tool st
 
 ## search
 
-Hybrid BM25 + vector search over the ATO corpus (ato.gov.au guidance, ITAA 1997 legislation, ATO public rulings). `hybrid` mode runs the keyword and vector legs in parallel, over-fetches each, and fuses them with reciprocal-rank fusion; `keyword` and `vector` run a single leg. Returns the top-k chunks, each carrying `chunk_id`/`doc_id` for follow-up retrieval.
+Hybrid keyword + semantic search over the ATO corpus (ato.gov.au guidance; the ITAA 1997, ITAA 1936 and GST Act; ATO public rulings). `hybrid` combines both signals; `keyword` and `vector` use one alone. Returns the top-k chunks, each carrying `chunk_id`/`doc_id` for follow-up retrieval.
 
 ### Input
 
@@ -297,7 +297,7 @@ Response (abridged):
 
 ## fetch
 
-Live-fetch a document over HTTPS by scheme-prefixed URI — for content newer than, or outside, the installed corpus. Does not require a corpus. Scheme mapping:
+Live-fetch a document over HTTPS by scheme-prefixed URI — for content newer than, or outside, the corpus snapshot. Scheme mapping:
 
 | scheme | resolves to |
 |---|---|
@@ -344,7 +344,7 @@ Response (abridged):
 
 ## stats
 
-Report corpus coverage: schema version and document/chunk counts. The cheapest health check: call it first to confirm the service is reachable. Never throws.
+Report corpus coverage: schema version and document/chunk counts (the corpus is refreshed monthly). The cheapest health check: call it first to confirm the service is reachable. Never throws.
 
 ### Input
 
@@ -369,8 +369,8 @@ Response (abridged):
 {
   "installed": true,
   "schema_version": "0.3.0",
-  "docs": 29861,
-  "chunks": 209588
+  "docs": 34564,
+  "chunks": 286638
 }
 ```
 
@@ -421,8 +421,6 @@ No parameters (`{}`).
 | `facts_updated_at` | string | Timestamp. |
 | `schema_version` | literal `1` | |
 
-- `mode` — `"local"` or `"hosted"`.
-- `fetched_from` — `"config_file"` (local config.json) or `"hosted_api"`.
 
 ### Example
 
@@ -446,19 +444,17 @@ Response (abridged):
     "has_crypto": true,
     "current_fy": "2025-26",
     "…": "…"
-  },
-  "mode": "local",
-  "fetched_from": "config_file"
+  }
 }
 ```
 
-**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding has not been completed.
+**Errors:** throws a `Personal facts not set` error, pointing at https://ato-mcp.com.au/account, when no tax profile has been saved.
 
 ---
 
 # Workflow tools
 
-All four workflow tools require personal facts (onboarding) and an installed corpus. Each result includes [`citations`](#citations) per item, a `notes` array (including a degradation note if citation resolution was impaired), and a `disclaimer` string.
+All four workflow tools require personal facts (onboarding). Each result includes [`citations`](#citations) per item, a `notes` array (including a degradation note if citation resolution was impaired), and a `disclaimer` string.
 
 ## deduction_discovery
 
@@ -531,7 +527,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
+**Errors:** throws a `Personal facts not set` error, pointing at https://ato-mcp.com.au/account, when no tax profile has been saved; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## depreciation_helper
 
@@ -611,7 +607,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available. (A pre-9-May-2006 acquisition makes diminishing value `unavailable` — it does not throw.)
+**Errors:** throws a `Personal facts not set` error, pointing at https://ato-mcp.com.au/account, when no tax profile has been saved; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available. (A pre-9-May-2006 acquisition makes diminishing value `unavailable` — it does not throw.)
 
 ## bas_prep_checklist
 
@@ -674,7 +670,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
+**Errors:** throws a `Personal facts not set` error, pointing at https://ato-mcp.com.au/account, when no tax profile has been saved; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ## audit_risk_check
 
@@ -750,7 +746,7 @@ Response (abridged):
 }
 ```
 
-**Errors:** throws `Personal facts not set. Complete onboarding at ato-mcp.com.au/onboard.` when onboarding is incomplete; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
+**Errors:** throws a `Personal facts not set` error, pointing at https://ato-mcp.com.au/account, when no tax profile has been saved; throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 
 ---
 
@@ -758,4 +754,4 @@ Response (abridged):
 
 - Every workflow tool returns **structured data plus ATO citations, not tax advice**, and says so in its `disclaimer` field. Verify material decisions with a registered tax agent.
 - `audit_risk_check` risk bands and `deduction_discovery` confidence ratings are **heuristic indicators** built on conservative rules of thumb — not audit predictions, ATO determinations, or numeric benchmarking.
-- Citations resolve against the installed corpus snapshot; for time-sensitive matters check `stats.staleness_days` and confirm currency with `fetch` against the live source.
+- Citations resolve against the current corpus snapshot, which is refreshed monthly. For time-sensitive matters check `published_at` on the cited hit and confirm currency with `fetch` against the live source.
