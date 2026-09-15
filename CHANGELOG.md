@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.2.0
+
+- **`mcp-remote` 0.1.38 → 0.14.2.** Clears a high-severity `undici` advisory in the
+  bundled proxy and picks up stale-registration recovery, SSE reconnect fixes,
+  `--protocol auto`, `--device-code` for headless sign-in and `--keep-alive`. Credentials
+  now live under `~/.mcp-auth/mcp-remote-v1`, so npm-client users sign in once more after
+  upgrading. Remote-endpoint users are unaffected.
+- New `ato-mcp version` / `--version` / `-v`.
+- The CLI moved to `dist/cli.js`; `dist/index.js` is now a side-effect-free module, so
+  importing the package no longer starts the proxy.
+- Listed in the official MCP Registry as `io.github.william-laverty/ato-mcp`, covering both
+  the remote endpoint and this package.
+- Housekeeping: Node 22/24 CI matrix with the smoke test, release-tag guard on publish,
+  Dependabot, SECURITY.md, issue forms, and a tool reference brought in line with the
+  hosted service.
+
 ## v2.1.4
 
 - README: the Claude Code and Gemini CLI install commands now use `--scope user`, so a
@@ -11,6 +27,18 @@
   package on every publish, so the npm page always matches GitHub. New tagline,
   workflows-first tool section, explicit ATO non-affiliation statement.
 - Package description updated to match. No code changes.
+
+## v2.1.0 – v2.1.2
+
+- v2.1.0: license change MIT → **AGPL-3.0-only**. Versions ≤ 2.0.6 remain MIT.
+- v2.1.1, v2.1.2: npm page gains the disclaimer and license sections, synced with the
+  repo README. No code changes.
+
+## v2.0.1 – v2.0.6
+
+- npm README iterations: standard `npx` config first, then per-client install
+  instructions with badges for VS Code, Cursor and the rest. No code changes.
+  (v2.0.3 was tagged against the wrong commit and never published.)
 
 ## v2.0.0
 

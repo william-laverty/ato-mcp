@@ -1,6 +1,7 @@
 {
   "name": "ato-mcp",
-  "version": "2.1.4",
+  "mcpName": "io.github.william-laverty/ato-mcp",
+  "version": "2.2.0",
   "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ Australian Taxation Office documents",
   "keywords": [
     "australian",

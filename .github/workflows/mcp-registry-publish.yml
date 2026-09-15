@@ -1,0 +1,53 @@
+name: mcp-registry-publish
+
+# Lists the server in the official MCP Registry after each npm release.
+# Runs alongside npm-publish.yml on the same release event and waits for the
+# published npm version to appear, because the registry verifies the package's
+# mcpName against the npm tarball.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+env:
+  MCP_PUBLISHER_VERSION: v1.8.1
+  MCP_PUBLISHER_SHA256: a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # OIDC login to the registry, no stored token
+    steps:
+      - uses: actions/checkout@v6
+      - name: Resolve version from package.json
+        run: |
+          VERSION="$(node -p "require('./packages/mcp/package.json').version")"
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            printf '::error::package.json version is not semver: %s\n' "$VERSION"
+            exit 1
+          fi
+          printf 'VERSION=%s\n' "$VERSION" >> "$GITHUB_ENV"
+      - name: Wait for npm to serve the version
+        run: |
+          for i in $(seq 1 30); do
+            if npm view "ato-mcp@${VERSION}" version >/dev/null 2>&1; then exit 0; fi
+            sleep 20
+          done
+          printf '::error::ato-mcp@%s never appeared on npm\n' "$VERSION"
+          exit 1
+      - name: Set version in server.json
+        run: |
+          jq --arg v "$VERSION" '.version = $v | .packages[].version = $v' server.json > server.tmp
+          mv server.tmp server.json
+      - name: Install mcp-publisher (pinned, checksum verified)
+        run: |
+          curl -fsSL -o mcp-publisher.tar.gz \
+            "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          printf '%s  mcp-publisher.tar.gz\n' "$MCP_PUBLISHER_SHA256" | sha256sum -c -
+          tar xzf mcp-publisher.tar.gz mcp-publisher
+      - run: ./mcp-publisher validate
+      - run: ./mcp-publisher login github-oidc
+      - run: ./mcp-publisher publish
