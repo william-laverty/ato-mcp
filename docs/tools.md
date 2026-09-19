@@ -35,7 +35,23 @@ If live citation resolution is partially degraded under load, a workflow tool st
 **Workflow tools**
 [`deduction_discovery`](#deduction_discovery) · [`depreciation_helper`](#depreciation_helper) · [`bas_prep_checklist`](#bas_prep_checklist) · [`audit_risk_check`](#audit_risk_check)
 
+[Plans and limits](#plans-and-limits)
+
 [Disclaimers](#disclaimers)
+
+---
+
+# Plans and limits
+
+Free accounts have 50 corpus lookups per calendar month (Australia/Sydney), resetting on the 1st. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited, subject to fair use. Pricing: https://ato-mcp.com.au/pricing
+
+When 10 or fewer lookups remain, results carry a `notice` string. When the allowance is used up, a tool call returns an `isError` result:
+
+```json
+{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 50 lookups for September 2026. The allowance resets on 1 October 2026 (Sydney time). To continue now, the account owner can upgrade to Pro at https://ato-mcp.com.au/upgrade. Tell the user this and do not retry this call.", "plan": "free", "used": 50, "limit": 50, "resets_at": "2026-10-01T00:00:00+10:00", "upgrade_url": "https://ato-mcp.com.au/upgrade" }
+```
+
+Agents should relay the message and stop retrying. A Pro account that exceeds fair use receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
 
 ---
 
@@ -356,6 +372,13 @@ No parameters (`{}`).
 - `schema_version` — corpus schema version (e.g. `"0.3.0"`), or `null`.
 - `docs` — number of documents.
 - `chunks` — number of chunks.
+- `plan` — `"free"` or `"pro"`.
+- `enforced` — whether lookup limits apply to this account.
+- `lookups_used` — lookups used this month (Free only; `null` on Pro).
+- `lookups_limit` — monthly allowance (Free only; `null` on Pro).
+- `lookups_remaining` — remaining this month (Free only; `null` on Pro).
+- `resets_at` — ISO 8601 timestamp (Sydney) when the month resets (Free only; `null` on Pro).
+- `upgrade_url` — link to the upgrade page (Free only; `null` on Pro).
 
 ### Example
 
