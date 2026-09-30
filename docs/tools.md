@@ -43,15 +43,15 @@ If live citation resolution is partially degraded under load, a workflow tool st
 
 # Plans and limits
 
-Free accounts have 50 corpus lookups per calendar month (Australia/Sydney), resetting on the 1st. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited, subject to fair use. Pricing: https://ato-mcp.com.au/pricing
+Free accounts have 50 corpus lookups per calendar month (Australia/Sydney), resetting on the 1st. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited. Pricing: https://ato-mcp.com.au/pricing
 
-When 10 or fewer lookups remain, results carry a `notice` string. When the allowance is used up, a tool call returns an `isError` result:
+When 10 or fewer lookups remain, results carry a `notice` string. A Pro account whose last payment failed gets a `notice` asking the owner to update their card on its first call of each day (Sydney time); the call still succeeds. While a founding offer is running, the limit message also mentions it with its own link. When the Free allowance is used up, a tool call returns an `isError` result:
 
 ```json
-{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 50 lookups for September 2026. The allowance resets on 1 October 2026 (Sydney time). To continue now, the account owner can upgrade to Pro at https://ato-mcp.com.au/upgrade. Tell the user this and do not retry this call.", "plan": "free", "used": 50, "limit": 50, "resets_at": "2026-10-01T00:00:00+10:00", "upgrade_url": "https://ato-mcp.com.au/upgrade" }
+{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 50 lookups for September 2026. The allowance resets on 1 October 2026 (Sydney time). To continue now, the account owner can upgrade to Pro (unlimited lookups from $12.42 a month, billed yearly) at https://ato-mcp.com.au/pricing?src=limit. Tell the user this and do not retry this call.", "plan": "free", "used": 50, "limit": 50, "resets_at": "2026-10-01T00:00:00+10:00", "upgrade_url": "https://ato-mcp.com.au/pricing?src=limit" }
 ```
 
-Agents should relay the message and stop retrying. A Pro account that exceeds fair use receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
+Agents should relay the message and stop retrying. A Pro account that hits the daily fair-use ceiling receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
 
 ---
 
@@ -374,11 +374,16 @@ No parameters (`{}`).
 - `chunks` — number of chunks.
 - `plan` — `"free"` or `"pro"`.
 - `enforced` — whether lookup limits apply to this account.
-- `lookups_used` — lookups used this month (Free only; `null` on Pro).
+- `lookups_used` — lookups used this month.
 - `lookups_limit` — monthly allowance (Free only; `null` on Pro).
 - `lookups_remaining` — remaining this month (Free only; `null` on Pro).
 - `resets_at` — ISO 8601 timestamp (Sydney) when the month resets (Free only; `null` on Pro).
-- `upgrade_url` — link to the upgrade page (Free only; `null` on Pro).
+- `billing_interval` — `"month"` or `"year"` on Pro; `null` on Free.
+- `renews_at` — ISO 8601 timestamp of the next renewal on Pro; `null` if a cancel is scheduled or on Free.
+- `ends_at` — ISO 8601 timestamp when Pro ends, set only when a cancel is scheduled.
+- `cancel_scheduled` — `true` when Pro is set to end at the period end.
+- `past_due` — `true` when the last Pro payment failed and is being retried.
+- `upgrade_url` — link to the upgrade page (Free only).
 
 ### Example
 
