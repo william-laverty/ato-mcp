@@ -15,7 +15,7 @@ importers:
   packages/mcp:
     dependencies:
       mcp-remote:
-        specifier: ^0.14.3
+        specifier: 0.14.3
         version: 0.14.3
     devDependencies:
       '@types/node':

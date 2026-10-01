@@ -1,18 +1,24 @@
 version: 2
 updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+    open-pull-requests-limit: 3
+
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
-      day: monday
-      time: "09:00"
-      timezone: Australia/Canberra
     groups:
-      dev-dependencies:
-        dependency-type: development
-    labels: [dependencies]
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: monthly
-    labels: [dependencies]
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+      minor-and-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]
+        patterns: ["*"]
+    open-pull-requests-limit: 3
