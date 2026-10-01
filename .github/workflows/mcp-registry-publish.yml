@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Resolve version from package.json
         run: |
           VERSION="$(node -p "require('./packages/mcp/package.json').version")"
