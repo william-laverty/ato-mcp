@@ -1,7 +1,7 @@
 {
   "name": "ato-mcp",
   "mcpName": "au.com.ato-mcp/ato-mcp",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Your AI agent, fluent in Australian tax. MCP server with cited answers from 34,500+ Australian Taxation Office documents",
   "keywords": [
     "australian",

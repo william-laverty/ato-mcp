@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
+import { diagnose } from "./doctor.js";
 import {
   HELP_TEXT,
   readVersion,
@@ -39,6 +40,16 @@ function runProxy({ url, passthrough }: ProxyInvocation): Promise<number> {
   });
 }
 
+async function runDoctor(url: string): Promise<number> {
+  process.stdout.write(`Checking ${url}\n\n`);
+  const { checks, hint } = await diagnose(url);
+  for (const check of checks) {
+    process.stdout.write(`  ${check.ok ? "ok  " : "FAIL"}  ${check.message}\n`);
+  }
+  if (hint) process.stdout.write(`\n${hint}\n`);
+  return checks.every((check) => check.ok) ? 0 : 1;
+}
+
 export async function main(argv: string[], env: NodeJS.ProcessEnv): Promise<number> {
   const cmd = argv[0];
 
@@ -50,6 +61,10 @@ export async function main(argv: string[], env: NodeJS.ProcessEnv): Promise<numb
   if (cmd === "version" || cmd === "--version" || cmd === "-v") {
     process.stdout.write(`${readVersion()}\n`);
     return 0;
+  }
+
+  if (cmd === "doctor") {
+    return runDoctor(resolveProxyArgs([], env).url);
   }
 
   if (cmd !== undefined && cmd !== "mcp") {
