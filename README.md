@@ -168,20 +168,6 @@ stdio host to the hosted server with the same browser sign-in.
 
 Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install?utm_source=github&utm_medium=readme)**
 
-### Can't sign in?
-
-If your client fails to sign in with errors like `InvalidHTTPResponse`,
-`HTTPParserError` or `Invalid character in chunk size`, run:
-
-```bash
-npx -y ato-mcp doctor
-```
-
-It checks the connection from your machine. If it reports a certificate that isn't from
-a public certificate authority, antivirus HTTPS scanning (often called a "web shield")
-or a corporate proxy is rewriting the traffic. Exclude `api.ato-mcp.com.au` from it and
-sign in again.
-
 ## What's in the corpus
 
 Everything the ATO publishes, in one searchable place, refreshed monthly:
