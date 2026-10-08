@@ -35,6 +35,13 @@ describe("ato-mcp CLI", () => {
     }
   });
 
+  it("doctor checks the configured endpoint and exits 1 when it is unreachable", () => {
+    const { code, stdout } = run("doctor");
+    expect(code).toBe(1);
+    expect(stdout).toContain("Checking http://127.0.0.1:9/mcp");
+    expect(stdout).toContain("FAIL  Sign-in metadata unreadable");
+  });
+
   it("rejects unknown commands with exit 2 and never starts the proxy", () => {
     const { code, stderr } = run("bogus");
     expect(code).toBe(2);

@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.3.0
+
+- New `ato-mcp doctor`: checks the connection to the hosted endpoint from your machine
+  and says whether a sign-in failure comes from the network or the service. It names
+  any certificate not issued by a public certificate authority, which is how antivirus
+  HTTPS scanning and corporate proxies show up. They can rewrite responses into a form
+  MCP clients reject (`InvalidHTTPResponse`, `Invalid character in chunk size`).
+
 ## v2.2.1
 
 - MCP Registry listing moves to the existing domain namespace `au.com.ato-mcp/ato-mcp`

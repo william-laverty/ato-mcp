@@ -15,6 +15,8 @@ Usage:
   ato-mcp mcp [args...]   # same as above; extra args are passed through to
                            # the bundled mcp-remote proxy (e.g. --debug,
                            # --transport http-only, a callback port)
+  ato-mcp doctor           # check this machine can reach the hosted endpoint
+                           # (run it if your client can't sign in)
   ato-mcp version          # print the installed version
   ato-mcp help             # this message
 

@@ -32,7 +32,7 @@ body:
     id: what
     attributes:
       label: What happened?
-      description: Include the tool name and arguments if a tool call is involved. Redact anything personal.
+      description: Include the tool name and arguments if a tool call is involved. For sign-in failures, paste the output of `npx -y ato-mcp doctor`. Redact anything personal.
     validations:
       required: true
   - type: textarea
