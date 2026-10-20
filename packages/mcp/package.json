@@ -53,13 +53,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "mcp-remote": "0.14.3"
+    "mcp-remote": "0.15.1"
   },
   "devDependencies": {
     "@types/node": "22.20.3",
-    "tsx": "4.23.13",
+    "tsx": "4.23.15",
     "typescript": "5.9.3",
-    "vite": "8.3.0",
-    "vitest": "5.0.1"
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
   }
 }
