@@ -7,6 +7,11 @@
   any certificate not issued by a public certificate authority, which is how antivirus
   HTTPS scanning and corporate proxies show up. They can rewrite responses into a form
   MCP clients reject (`InvalidHTTPResponse`, `Invalid character in chunk size`).
+- **`mcp-remote` 0.14.2 → 0.15.2.** Sign-in fixes: the callback port is released once
+  sign-in finishes, OAuth retries stop after a timeout, discovery state survives the
+  callback, and the browser opens for a fresh registration after a stale one is cleared.
+  Saved credentials carry over; no new sign-in needed.
+- CI now tests Node 22, 24 and 26.
 
 ## v2.2.1
 
