@@ -378,7 +378,7 @@ No parameters (`{}`).
 - `lookups_limit` — monthly allowance (Free only; `null` on Pro).
 - `lookups_remaining` — remaining this month (Free only; `null` on Pro).
 - `resets_at` — ISO 8601 timestamp (Sydney) when the month resets (Free only; `null` on Pro).
-- `billing_interval` — `"month"` or `"year"` on Pro; `null` on Free.
+- `billing_interval` — `"year"` or `"lifetime"` on Pro (`"month"` on older plans); `null` on Free.
 - `renews_at` — ISO 8601 timestamp of the next renewal on Pro; `null` if a cancel is scheduled or on Free.
 - `ends_at` — ISO 8601 timestamp when Pro ends, set only when a cancel is scheduled.
 - `cancel_scheduled` — `true` when Pro is set to end at the period end.
