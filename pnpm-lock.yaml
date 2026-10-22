@@ -15,8 +15,8 @@ importers:
   packages/mcp:
     dependencies:
       mcp-remote:
-        specifier: 0.15.1
-        version: 0.15.1
+        specifier: 0.15.2
+        version: 0.15.2
     devDependencies:
       '@types/node':
         specifier: 22.20.3
@@ -861,8 +861,8 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
-  mcp-remote@0.15.1:
-    resolution: {integrity: sha512-znJhxnoQZTDx9AieHZrRYs8YqWKpyH1SKyFEFnMTMDUPpx6r9dSc/L4lKf18DdWMQqKpbwWbfIZfyiVg2RSXzg==}
+  mcp-remote@0.15.2:
+    resolution: {integrity: sha512-3PrXMgjJew6xbZH21D7AbtOoHwhvjWt1IY6wepHjKTZLPSkTPifdMVBFuoxsuF6WK6nUlZIgpSj5o5NscJ+XXw==}
     hasBin: true
 
   media-typer@0.3.0:
@@ -1914,7 +1914,7 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  mcp-remote@0.15.1:
+  mcp-remote@0.15.2:
     dependencies:
       express: 4.22.3
       open: 10.2.0
