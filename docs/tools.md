@@ -43,15 +43,15 @@ If live citation resolution is partially degraded under load, a workflow tool st
 
 # Plans and limits
 
-Free accounts have 50 corpus lookups per calendar month (Australia/Sydney), resetting on the 1st. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited. Pricing: https://ato-mcp.com.au/pricing
+Free accounts have 25 corpus lookups a month, and the allowance resets monthly. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited. Pricing: https://ato-mcp.com.au/pricing
 
-When 10 or fewer lookups remain, results carry a `notice` string. A Pro account whose last payment failed gets a `notice` asking the owner to update their card on its first call of each day (Sydney time); the call still succeeds. While a founding offer is running, the limit message also mentions it with its own link. When the Free allowance is used up, a tool call returns an `isError` result:
+When 10 or fewer lookups remain, results carry a `notice` string. A Pro account whose last payment failed gets a `notice` asking the owner to update their card on its first call of each day (Sydney time); the call still succeeds. When the Free allowance is used up, a tool call returns an `isError` result:
 
 ```json
-{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 50 lookups for September 2026. The allowance resets on 1 October 2026 (Sydney time). To continue now, the account owner can upgrade to Pro (unlimited lookups from $12.42 a month, billed yearly) at https://ato-mcp.com.au/pricing?src=limit. Tell the user this and do not retry this call.", "plan": "free", "used": 50, "limit": 50, "resets_at": "2026-10-01T00:00:00+10:00", "upgrade_url": "https://ato-mcp.com.au/pricing?src=limit" }
+{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 25 of its lookups. The allowance resets on 14 March 2027. To keep going now, the account owner can get lifetime Pro for $499: https://ato-mcp.com.au/upgrade?interval=lifetime&src=limit. Yearly is $25 a month ($300 a year); compare plans at https://ato-mcp.com.au/pricing?src=limit. Tell the user this and do not retry this call.", "plan": "free", "used": 25, "limit": 25, "resets_at": "2027-03-14T02:14:09.457+00:00", "upgrade_url": "https://ato-mcp.com.au/pricing?src=limit", "lifetime_url": "https://ato-mcp.com.au/upgrade?interval=lifetime&src=limit" }
 ```
 
-Agents should relay the message and stop retrying. A Pro account that hits the daily fair-use ceiling receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
+The error carries `upgrade_url` (the pricing page) and `lifetime_url` (the lifetime checkout link). Agents should relay the message and stop retrying. A Pro account that hits the daily fair-use ceiling receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
 
 ---
 
