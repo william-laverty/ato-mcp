@@ -4,6 +4,10 @@ ato-mcp exposes 13 MCP tools. Every tool returns structured JSON; search hits an
 The personal-context tool ([`get_user_facts`](#get_user_facts)) and the four workflow tools ([`deduction_discovery`](#deduction_discovery), [`depreciation_helper`](#depreciation_helper), [`bas_prep_checklist`](#bas_prep_checklist), [`audit_risk_check`](#audit_risk_check)) require completed onboarding; they throw until personal facts are set.
 Tool failures are returned as MCP error content of the form `{"kind": "error", "message": "..."}`.
 
+### When it runs
+
+The connector is for Australian tax questions only. Each tax tool's description tells your AI agent so, and the server asks it to read your saved profile on the first tax question in a conversation, not at the start of every conversation. All tools are read-only.
+
 ### Citations
 
 The workflow tools attach **Citation** objects, resolved live from the corpus (hybrid search, de-duplicated to the best chunk per document):
@@ -410,7 +414,7 @@ Response (abridged):
 
 ## get_user_facts
 
-Return the authenticated user's personal tax facts captured during onboarding — state, residency, ABN/business structure, GST registration, household and investment flags, and the current financial year. Call once when a session starts and reason from the result throughout; the workflow tools read the same facts server-side.
+Return the authenticated user's personal tax facts captured during onboarding — state, residency, ABN/business structure, GST registration, household and investment flags, and the current financial year. Call once, on the first Australian tax question in a conversation, and reason from it for the rest of that conversation; the workflow tools read the same facts server-side.
 
 ### Input
 
