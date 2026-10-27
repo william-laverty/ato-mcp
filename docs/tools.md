@@ -6,7 +6,7 @@ Tool failures are returned as MCP error content of the form `{"kind": "error", "
 
 ### When it runs
 
-The connector is for Australian tax questions only. Each tool's description tells your AI agent so, and the server asks it to read your saved profile on the first tax question in a conversation, not at the start of every conversation. All tools are read-only.
+The connector is for Australian tax questions only. Each tax tool's description tells your AI agent so, and the server asks it to read your saved profile on the first tax question in a conversation, not at the start of every conversation. All tools are read-only.
 
 ### Citations
 
@@ -414,7 +414,7 @@ Response (abridged):
 
 ## get_user_facts
 
-Return the authenticated user's personal tax facts captured during onboarding — state, residency, ABN/business structure, GST registration, household and investment flags, and the current financial year. Call once when a session starts and reason from the result throughout; the workflow tools read the same facts server-side.
+Return the authenticated user's personal tax facts captured during onboarding — state, residency, ABN/business structure, GST registration, household and investment flags, and the current financial year. Call once, on the first Australian tax question in a conversation, and reason from it for the rest of that conversation; the workflow tools read the same facts server-side.
 
 ### Input
 
