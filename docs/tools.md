@@ -43,7 +43,7 @@ If live citation resolution is partially degraded under load, a workflow tool st
 
 # Plans and limits
 
-Free accounts have 25 corpus lookups a month, and the allowance resets monthly. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited. Pricing: https://ato-mcp.com.au/pricing
+Free accounts have 25 corpus lookups every 30 days. Each 30-day period runs from when the account was created. A lookup is any tool call except `get_user_facts` and `stats`. Pro accounts are unlimited. Pricing: https://ato-mcp.com.au/pricing
 
 When 10 or fewer lookups remain, results carry a `notice` string. A Pro account whose last payment failed gets a `notice` asking the owner to update their card on its first call of each day (Sydney time); the call still succeeds. When the Free allowance is used up, a tool call returns an `isError` result:
 
@@ -374,10 +374,10 @@ No parameters (`{}`).
 - `chunks` — number of chunks.
 - `plan` — `"free"` or `"pro"`.
 - `enforced` — whether lookup limits apply to this account.
-- `lookups_used` — lookups used this month.
-- `lookups_limit` — monthly allowance (Free only; `null` on Pro).
-- `lookups_remaining` — remaining this month (Free only; `null` on Pro).
-- `resets_at` — ISO 8601 timestamp (Sydney) when the month resets (Free only; `null` on Pro).
+- `lookups_used` — lookups used in the current 30-day period.
+- `lookups_limit` — the allowance for each 30-day period (Free only; `null` on Pro).
+- `lookups_remaining` — remaining in the current period (Free only; `null` on Pro).
+- `resets_at` — ISO 8601 timestamp (Sydney) when the next period starts (Free only; `null` on Pro).
 - `billing_interval` — `"year"` or `"lifetime"` on Pro (`"month"` on older plans); `null` on Free.
 - `renews_at` — ISO 8601 timestamp of the next renewal on Pro; `null` if a cancel is scheduled or on Free.
 - `ends_at` — ISO 8601 timestamp when Pro ends, set only when a cancel is scheduled.
