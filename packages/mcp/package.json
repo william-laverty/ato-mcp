@@ -56,10 +56,10 @@
     "mcp-remote": "0.15.2"
   },
   "devDependencies": {
-    "@types/node": "22.20.3",
+    "@types/node": "22.20.5",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
-    "vite": "8.3.4",
+    "vite": "8.3.5",
     "vitest": "5.0.5"
   }
 }
