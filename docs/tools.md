@@ -90,6 +90,7 @@ Hybrid keyword + semantic search over the ATO corpus (ato.gov.au guidance; the I
   - `title`, `url`, `doc_type` — parent document metadata.
   - `published_at` — the source document's last-published date (nullable). Check it when citing rates or thresholds and prefer recent sources.
   - `doc_status` — present only when the source document is not current (e.g. `"withdrawn"`).
+  - `income_years` — present only when the page is about specific income years (e.g. `["2016-17"]`). Unless the query names a year, pages only about years before last year rank below current ones.
 
 ### Example
 
@@ -135,7 +136,7 @@ Fetch chunk bodies by `chunk_id`, optionally widened with neighbouring chunks (`
 
 ### Output
 
-- `chunks` — array of chunk records in the same shape as `search` hits (`chunk_id`, `doc_id`, `ord`, `text`, `heading_path`, `title`, `url`, `doc_type`, `published_at`, and `doc_status` when the source is not current). Unlike `search`, chunks from withdrawn documents are always returned — you asked for them explicitly — with `doc_status` set.
+- `chunks` — array of chunk records in the same shape as `search` hits (`chunk_id`, `doc_id`, `ord`, `text`, `heading_path`, `title`, `url`, `doc_type`, `published_at`, `doc_status` when the source is not current, and `income_years` when the page is about specific years). Unlike `search`, chunks from withdrawn documents are always returned — you asked for them explicitly — with `doc_status` set.
 
 ### Example
 
