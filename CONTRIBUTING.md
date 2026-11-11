@@ -10,7 +10,7 @@ content are still welcome here and will be routed to the right place.
 ## Setup
 
 ```bash
-pnpm install && pnpm -r build      # Node 22+, pnpm 10 (pinned via packageManager)
+pnpm install && pnpm -r build      # Node 22+, pnpm 12 (pinned via packageManager)
 ```
 
 ## Before you open a PR
