@@ -343,7 +343,7 @@ A name with no value at the date lands in `unavailable`:
 
 | field | type | required | default | notes |
 |---|---|---|---|---|
-| `uri` | string | yes | — | 1–2048 chars. Page to fetch: a url from search results rewritten to its scheme (see table above), e.g. `"ato:individuals-and-families/your-tax-return"` for an ato.gov.au page or `"ato-law:TXR/TR20241/NAT/ATO/00001"` for a ruling. |
+| `uri` | string | yes | — | 1–2048 chars. Page to fetch: a url from search results rewritten to its scheme (see table above), e.g. `"ato:individuals-and-families/your-tax-return"` for an ato.gov.au page or `"ato-law:TXR/TR20241/NAT/ATO/00001"` for a ruling. A full https URL on one of these sites also works, so links in a fetched page can be followed as given. |
 
 ### Output
 
