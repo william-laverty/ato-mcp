@@ -183,7 +183,7 @@ Everything the ATO publishes, in one searchable place, refreshed monthly:
 **34,500+ documents (286,000+ searchable passages)**, refreshed monthly and
 served from the hosted platform.
 
-## The 13 tools
+## The 12 tools
 
 **Workflows** are the reason this exists:
 
@@ -204,7 +204,7 @@ never advice in its own voice**.
 so the agent never re-asks.
 
 **Retrieval:** `search` (keyword and semantic retrieval), `get_chunks`,
-`get_doc`, `get_doc_anchors` (cross-references), `get_definition` (statutory,
+`get_doc` (full text, optional cross-references), `get_definition` (statutory,
 point-in-time), `get_threshold` (time-keyed values), `fetch` (live page fetch),
 `stats`.
 
