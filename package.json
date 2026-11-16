@@ -1,7 +1,6 @@
 {
-  "name": "ato-mcp",
+  "name": "ato-mcp-workspace",
   "private": true,
-  "version": "0.1.0",
   "engines": {
     "node": ">=22",
     "pnpm": ">=12"
@@ -11,7 +10,6 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "test:smoke": "bash scripts/smoke.sh",
-    "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {

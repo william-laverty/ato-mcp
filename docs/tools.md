@@ -1,6 +1,6 @@
-# ato-mcp tool reference
+# Australian Tax MCP tool reference
 
-ato-mcp exposes 12 MCP tools. Every tool returns structured JSON; search hits and citations carry resolvable identifiers — pass a `chunk_id` to [`get_chunks`](#get_chunks) for the passage and its neighbours, or a `doc_id` to [`get_doc`](#get_doc) for the full document.
+Australian Tax MCP exposes 12 MCP tools. Every tool returns structured JSON; search hits and citations carry resolvable identifiers — pass a `chunk_id` to [`get_chunks`](#get_chunks) for the passage and its neighbours, or a `doc_id` to [`get_doc`](#get_doc) for the full document.
 The personal-context tool ([`get_user_facts`](#get_user_facts)) and the four workflow tools ([`deduction_discovery`](#deduction_discovery), [`depreciation_helper`](#depreciation_helper), [`bas_prep_checklist`](#bas_prep_checklist), [`audit_risk_check`](#audit_risk_check)) read the user's saved tax profile. When none is saved they don't fail: they return `profile_saved: false` with a `setup_url` and a `message` (see [Profile not saved](#profile-not-saved)).
 Tool failures are returned as MCP error content of the form `{"kind": "error", "message": "..."}`.
 
@@ -30,7 +30,7 @@ When the user hasn't saved a tax profile, the four workflow tools return a norma
 
 ### Citations
 
-The workflow tools attach **Citation** objects, resolved live from the corpus (hybrid search, de-duplicated to the best chunk per document):
+The workflow tools attach **Citation** objects, resolved live from the corpus, one per document:
 
 ```json
 { "chunk_id": "…", "doc_id": "…", "title": "…", "snippet": "…", "score": 0.03 }
@@ -136,8 +136,6 @@ Response (abridged):
   ]
 }
 ```
-
-A legacy `mode` field is still accepted from older callers but is no longer part of the published schema.
 
 **Errors:** throws `Corpus unavailable. This is a server-side issue — please try again shortly.` when the corpus store is not available.
 

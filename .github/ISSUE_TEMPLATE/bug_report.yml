@@ -45,8 +45,8 @@ body:
     id: versions
     attributes:
       label: Versions
-      description: Output of `npx ato-mcp --version` (npm users), plus Node and OS.
-      placeholder: "ato-mcp 2.2.0, Node 22.12, macOS 15"
+      description: Output of `npx -y ato-mcp --version` (npm users), plus Node and OS.
+      placeholder: "ato-mcp 2.3.1, Node 24, macOS 26"
   - type: textarea
     id: source
     attributes:

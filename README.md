@@ -170,14 +170,14 @@ Full instructions: **[ato-mcp.com.au/install](https://ato-mcp.com.au/install?utm
 
 ## What's in the corpus
 
-Everything the ATO publishes, in one searchable place, refreshed monthly:
+ATO guidance, legislation and public rulings in one searchable place:
 
 | Source | Contents |
 |---|---|
 | **ato.gov.au** | 23,000+ guidance pages, forms & instructions, occupation guides, myTax help |
-| **Legislation** | ITAA 1997, ITAA 1936 and the GST Act: 6,468 sections + 2,310 statutory definitions (point-in-time aware) |
+| **Legislation** | ITAA 1997, ITAA 1936 and the GST Act: 6,400+ sections + 2,300+ statutory definitions (point-in-time aware) |
 | **ATO public rulings** | 4,900+ rulings across 10 types (TR, TD, GSTR, GSTD, PR, CR, LCR, PCG, MT, FTR), withdrawn rulings flagged |
-| **Cross-references** | 64,217 links between rulings and legislation |
+| **Cross-references** | 64,000+ links between rulings and legislation |
 | **Thresholds** | Time-keyed values (instant asset write-off, GST registration, CGT discount, super caps, …) |
 
 **34,500+ documents (286,000+ searchable passages)**, refreshed monthly and
@@ -203,7 +203,7 @@ never advice in its own voice**.
 (business structure, GST registration, investments, super type, residency, …)
 so the agent never re-asks.
 
-**Retrieval:** `search` (keyword and semantic retrieval), `get_chunks`,
+**Retrieval:** `search` (ranked, cited passages), `get_chunks`,
 `get_doc` (full text, optional cross-references), `get_definition` (statutory,
 point-in-time), `get_threshold` (time-keyed values), `fetch` (live page fetch),
 `stats`.
@@ -217,7 +217,7 @@ does not consider your full financial circumstances and it is not a registered
 tax agent service. Confidence ratings and risk bands are guides, not
 professional judgement. Verify material decisions with a registered tax agent.
 
-ato-mcp is an independent service. It is not affiliated with or endorsed by
+Australian Tax MCP is an independent service. It is not affiliated with or endorsed by
 the Australian Taxation Office. ATO content remains subject to ATO publication
 terms. Legislation text is reproduced from the Federal Register of Legislation
 under its open licensing.

@@ -10,8 +10,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "types": ["node"]
