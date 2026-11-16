@@ -2,6 +2,9 @@
 
 ## v2.3.1
 
+- **Better answers from the hosted service.** Search returns more relevant passages for
+  tax questions, and the knowledge base is rebuilt more reliably, so documents stay
+  current between refreshes. Both apply to every client automatically.
 - **`mcp-remote` 0.15.2 → 0.16.6.** Security fix: the device-code grant now requires
   https (CVE-2026-108716), and credentials no longer follow a redirect to another origin.
   Also: a refresh token is redeemed once after a 401 instead of discarding every stored
