@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.3.1
+
+- **Better answers from the hosted service.** Search returns more relevant passages for
+  tax questions, and the knowledge base is rebuilt more reliably, so documents stay
+  current between refreshes. Both apply to every client automatically.
+- **`mcp-remote` 0.15.2 → 0.16.6.** Security fix: the device-code grant now requires
+  https (CVE-2026-108716), and credentials no longer follow a redirect to another origin.
+  Also: a refresh token is redeemed once after a 401 instead of discarding every stored
+  token, the cached registration loads before scopes are compared, and a new
+  `--bind-host` option picks the sign-in callback's listen address.
+- Tool reference updated for the current hosted tool surface (`get_threshold` takes a
+  list of names, `get_doc` returns citation links with `include_citations`, `search`
+  filters by `source`) and the readable-text `fetch` output.
+- Housekeeping: pnpm 12 and refreshed dev dependencies. No client code changes.
+
 ## v2.3.0
 
 - New `ato-mcp doctor`: checks the connection to the hosted endpoint from your machine
