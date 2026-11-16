@@ -351,10 +351,10 @@ A name with no value at the date lands in `unavailable`:
 - `url` — the resolved HTTPS URL fetched.
 - `status` — HTTP status code (always `200`; failures raise an error instead).
 - `content_type` — response `content-type` header, or `null`.
-- `body` — response body text.
+- `body` — the page as readable text: main content, headings, lists and table rows, with links written as absolute markdown links. Scripts, styles and site navigation are dropped. Non-HTML responses are returned as-is.
 - `served_from` — `"live"` for a direct fetch of the source site; `"corpus"` when the source blocked automated access and the stored corpus copy was served instead (`ato:`/`ato-law:` only).
 - `retrieved_at` — when `served_from` is `"corpus"`, the timestamp the stored copy was retrieved.
-- `truncated` — when `served_from` is `"corpus"`, `true` if the stored copy was capped at the same length as `get_doc` (read the rest with `get_chunks`).
+- `truncated` — `true` when the text was capped at 80,000 characters, the same length as `get_doc`. For a stored copy (`served_from: "corpus"`), read the rest with `get_chunks`.
 
 ### Example
 
