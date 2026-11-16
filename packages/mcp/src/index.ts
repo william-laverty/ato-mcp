@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 
 export const DEFAULT_URL = "https://api.ato-mcp.com.au/mcp";
 
-export const HELP_TEXT = `ato-mcp - stdio proxy for the hosted ATO tax MCP server (ato-mcp.com.au)
+export const HELP_TEXT = `ato-mcp - stdio proxy for Australian Tax MCP, the hosted server at ato-mcp.com.au
 
 Speaks MCP over stdio to your AI client and proxies every tool call to the
 hosted endpoint. First run opens your browser to sign in (OAuth); after that,

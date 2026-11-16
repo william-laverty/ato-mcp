@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { spawn } from "node:child_process";
 import { diagnose } from "./doctor.js";
 import {
@@ -50,7 +49,7 @@ async function runDoctor(url: string): Promise<number> {
   return checks.every((check) => check.ok) ? 0 : 1;
 }
 
-export async function main(argv: string[], env: NodeJS.ProcessEnv): Promise<number> {
+async function main(argv: string[], env: NodeJS.ProcessEnv): Promise<number> {
   const cmd = argv[0];
 
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {

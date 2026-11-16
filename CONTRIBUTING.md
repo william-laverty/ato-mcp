@@ -27,12 +27,11 @@ CI runs the same commands.
 
 - The client stays **thin and dependency-light**: it's a stdio proxy (`packages/mcp/src/cli.ts`) that
   spawns the bundled `mcp-remote` against the hosted endpoint, which handles the browser
-  OAuth sign-in and token cache. No native deps beyond `mcp-remote`, no local corpus, no
-  tool logic — tool behaviour changes happen server-side.
+  OAuth sign-in and token cache. No runtime dependencies beyond `mcp-remote`, no local
+  corpus, no tool logic — tools are defined and changed server-side.
 - No silent failures: propagate the child process's exit code and forward SIGINT/SIGTERM
   so Ctrl-C actually stops the proxy.
-- Tool schema changes must stay in sync with the hosted API and be reflected in
-  [`docs/tools.md`](docs/tools.md).
+- When the hosted tools change, update [`docs/tools.md`](docs/tools.md) to match.
 
 ## Tax content issues
 
