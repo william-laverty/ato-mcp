@@ -72,10 +72,10 @@ Free accounts have 25 corpus lookups every 30 days. Each 30-day period runs from
 When 10 or fewer lookups remain, results carry a `notice` string, e.g. `"Free plan: 8 of 25 lookups left (resets 14 March 2027). Plan details: https://ato-mcp.com.au/pricing?src=notice"`. A Pro account whose last payment failed gets a `notice` asking the owner to update their card on its first call of each day (Sydney time); the call still succeeds. When the Free allowance is used up, a tool call returns an `isError` result:
 
 ```json
-{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 25 of its lookups. The allowance resets on 14 March 2027. Plan details: https://ato-mcp.com.au/pricing?src=limit. Tell the user this and do not retry this call.", "plan": "free", "used": 25, "limit": 25, "resets_at": "2027-03-14T02:14:09.457+00:00", "plans_url": "https://ato-mcp.com.au/pricing?src=limit" }
+{ "kind": "error", "code": "lookup_limit_reached", "message": "Lookup limit reached: this Free account has used all 25 of its lookups. The allowance resets on 14 March 2027. Plan details: https://ato-mcp.com.au/pricing?src=limit. Tell the user this and do not retry this call.", "plan": "free", "used": 25, "limit": 25, "resets_at": "2027-03-14T02:14:09.457+00:00", "upgrade_url": "https://ato-mcp.com.au/pricing?src=limit" }
 ```
 
-The error carries `plans_url`, an informational link to the plans page. Agents should relay the message and stop retrying. A Pro account that hits the daily fair-use ceiling receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
+The error carries `upgrade_url`, an informational link to the plans page. Agents should relay the message and stop retrying. A Pro account that hits the daily fair-use ceiling receives `code: "fair_use_ceiling"` with instructions to email william@ato-mcp.com.au.
 
 ---
 
@@ -401,7 +401,7 @@ No parameters (`{}`).
 - `ends_at` — ISO 8601 timestamp when Pro ends, set only when a cancel is scheduled.
 - `cancel_scheduled` — `true` when Pro is set to end at the period end.
 - `past_due` — `true` when the last Pro payment failed and is being retried.
-- `plans_url` — informational link to the page describing the plans (Free only).
+- `upgrade_url` — informational link to the page describing the plans (Free only).
 
 ### Example
 
@@ -422,7 +422,7 @@ Response (abridged):
   "lookups_limit": 25,
   "lookups_remaining": 18,
   "resets_at": "2027-03-14T02:14:09.457+00:00",
-  "plans_url": "https://ato-mcp.com.au/pricing?src=stats"
+  "upgrade_url": "https://ato-mcp.com.au/pricing?src=stats"
 }
 ```
 
