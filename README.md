@@ -199,9 +199,8 @@ served from the hosted platform.
 Every workflow tool returns **structured data and resolvable ATO citations,
 never advice in its own voice**.
 
-**Personal context:** `get_user_facts`, 25 facts captured once at onboarding
-(business structure, GST registration, investments, super type, residency, …)
-so the agent never re-asks.
+**Personal context:** `get_user_facts`, the optional tax profile you save (such
+as your business structure and GST status), so the agent never re-asks.
 
 **Retrieval:** `search` (ranked, cited passages), `get_chunks`,
 `get_doc` (full text, optional cross-references), `get_definition` (statutory,
